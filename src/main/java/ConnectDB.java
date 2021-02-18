@@ -19,14 +19,4 @@ public class ConnectDB {
 		}
 	}
 	
-	public static void main(String[] args) {
-		ConnectDB connect = new ConnectDB();
-		Connection abc = connect.getConnection();
-		if(abc!=null) {
-			System.out.print("ok");
-		}else {
-			System.out.print("not ok");
-		}
-		
-	}
 }
