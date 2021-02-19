@@ -1,10 +1,24 @@
 package xxminhmie.sgu.javagui.model;
 
+import java.sql.Date;
+
 public class CustomerModel extends AbstractModel<CustomerModel>{
 	protected String fullName;
 	protected String phone;
 	protected String email;
 	protected java.sql.Date dob;
+	
+	
+	public CustomerModel() {
+		super();
+	}
+	public CustomerModel(Long id,String fullName, String phone, String email, Date dob) {
+		super(id);
+		this.fullName = fullName;
+		this.phone = phone;
+		this.email = email;
+		this.dob = dob;
+	}
 	public String getFullName() {
 		return fullName;
 	}

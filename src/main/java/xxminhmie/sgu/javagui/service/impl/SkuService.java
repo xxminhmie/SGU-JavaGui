@@ -48,6 +48,7 @@ public class SkuService implements ISkuService{
 		updateSku.setModifiedDate(new java.sql.Date(System.currentTimeMillis()));
 		ProductModel product = productDao.findOneByBrand(updateSku.getProductBrand());
 		updateSku.setProductId(product.getId());
+		skuDao.update(updateSku);
 		return skuDao.findOne(updateSku.getId());
 	}
 

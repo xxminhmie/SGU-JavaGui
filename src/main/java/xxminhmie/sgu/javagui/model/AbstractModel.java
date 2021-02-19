@@ -12,6 +12,14 @@ public class AbstractModel<T> {
 	protected String modifiedBy;
 	protected Long[] ids;
 	protected List<T> listResult = new ArrayList<>();
+	
+	public AbstractModel() {
+		super();
+	}
+	public AbstractModel(Long id) {
+		super();
+		this.id = id;
+	}
 	public Long getId() {
 		return id;
 	}

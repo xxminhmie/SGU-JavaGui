@@ -55,11 +55,13 @@ public class SkuDAO extends AbstractDAO<SkuModel> implements ISkuDAO{
 		StringBuilder sql = new StringBuilder("UPDATE sku SET productid = ?, color = ?, size = ?,");
 		sql.append(" quantity = ?, price = ?, sellprice = ?, status = ?, image = ?,");
 		sql.append(" createddate = ?, createdby = ?");
+		sql.append(" WHERE id = ?");
 		this.update(sql.toString(),
 				updateSku.getProductId(), updateSku.getColor(), updateSku.getSize(),
 				updateSku.getQuantity(), updateSku.getPrice(), updateSku.getSellPrice(),
 				updateSku.getStatus(), updateSku.getImage(),
-				updateSku.getCreatedDate(), updateSku.getCreatedBy());
+				updateSku.getCreatedDate(), updateSku.getCreatedBy(),
+				updateSku.getId());
 	}
 
 	@Override

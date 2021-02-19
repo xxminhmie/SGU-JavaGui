@@ -55,8 +55,15 @@ public class CustomerDAO extends AbstractDAO<CustomerModel> implements ICustomer
 
 	@Override
 	public void update(CustomerModel updateCustomer) {
-		// TODO Auto-generated method stub
-
+		StringBuilder sql = new StringBuilder("UPDATE customer SET fullname = ?, phone = ?,");
+		sql.append(" email = ?, dob = ?");
+//		sql.append("createddate = ?, modifieddate = ?");
+		sql.append(" WHERE id = ?");
+		this.update(sql.toString(), 
+				updateCustomer.getFullName(), updateCustomer.getPhone(),
+				updateCustomer.getEmail(), updateCustomer.getDob(),
+//				updateCustomer.getCreatedDate(), updateCustomer.getModifiedDate(),
+				updateCustomer.getId());
 	}
 
 	@Override

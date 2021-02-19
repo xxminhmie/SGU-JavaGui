@@ -2,6 +2,7 @@ package xxminhmie.sgu.javagui.gui.table;
 
 import java.util.List;
 
+import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 
 import xxminhmie.sgu.javagui.model.CustomerModel;
@@ -20,6 +21,9 @@ public class CustomerModelData extends AbstractTableModel {
 	@Override
 	public int getColumnCount() {
 		return columnNames.length;
+	}
+	public CustomerService getService() {
+		return this.service;
 	}
 
 	@Override
@@ -64,5 +68,11 @@ public class CustomerModelData extends AbstractTableModel {
 	}
 	public CustomerModel getCustomerModel(int rowIndex) {
 		return data.get(rowIndex);
+	}
+	//refresh data
+	public void loadData(JTable table) {
+		this.data = this.service.findAll();
+	    fireTableChanged(null);
+	    
 	}
 }

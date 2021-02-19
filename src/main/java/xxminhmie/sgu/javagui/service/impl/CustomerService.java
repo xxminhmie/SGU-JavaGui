@@ -43,8 +43,12 @@ public class CustomerService implements ICustomerService {
 
 	@Override
 	public CustomerModel update(CustomerModel updateCustomer) {
-		// TODO Auto-generated method stub
-		return null;
+		CustomerModel oldCustomer = cusDao.findOne(updateCustomer.getId());
+		updateCustomer.setCreatedDate(oldCustomer.getCreatedDate());
+		updateCustomer.setCreatedBy(oldCustomer.getCreatedBy());
+		updateCustomer.setModifiedDate(new java.sql.Date(System.currentTimeMillis()));
+		cusDao.update(updateCustomer);
+		return cusDao.findOne(updateCustomer.getId());
 	}
 
 	@Override
