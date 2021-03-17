@@ -41,26 +41,23 @@ public class SkuDAO extends AbstractDAO<SkuModel> implements ISkuDAO{
 	@Override
 	public Long save(SkuModel skuModel) {
 		StringBuilder sql = new StringBuilder("INSERT INTO sku");
-		sql.append("(productid, color, size, quantity, price, sellprice, status, image, createddate, createdby)");
+		sql.append("(productid, color, size, quantity, price, sellprice, status, image)");
 		sql.append(" VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 		return this.insert(sql.toString(), 
 				skuModel.getProductId(),skuModel.getColor(), skuModel.getSize(),
-				skuModel.getQuantity(), skuModel.getPrice(), skuModel.getSellPrice(),
-				skuModel.getStatus(), skuModel.getImage(), skuModel.getCreatedDate(),
-				skuModel.getCreatedBy());
+				skuModel.getQuantity(), skuModel.getPrice(), skuModel.getImportPrice(),
+				skuModel.getStatus(), skuModel.getImage());
 	}
 
 	@Override
 	public void update(SkuModel updateSku) {
 		StringBuilder sql = new StringBuilder("UPDATE sku SET productid = ?, color = ?, size = ?,");
 		sql.append(" quantity = ?, price = ?, sellprice = ?, status = ?, image = ?,");
-		sql.append(" createddate = ?, createdby = ?");
 		sql.append(" WHERE id = ?");
 		this.update(sql.toString(),
 				updateSku.getProductId(), updateSku.getColor(), updateSku.getSize(),
-				updateSku.getQuantity(), updateSku.getPrice(), updateSku.getSellPrice(),
+				updateSku.getQuantity(), updateSku.getPrice(), updateSku.getImportPrice(),
 				updateSku.getStatus(), updateSku.getImage(),
-				updateSku.getCreatedDate(), updateSku.getCreatedBy(),
 				updateSku.getId());
 	}
 

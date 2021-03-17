@@ -9,14 +9,17 @@ public interface ICustomerService {
 	List<CustomerModel> findAll(Pageble pageble);
 	
 	List<CustomerModel> findAll();
+	
+	List<CustomerModel> search(String str);
 
 	CustomerModel findOne(Long id);
 	List<CustomerModel> findByPhone(String phone);
 	
 	CustomerModel save(CustomerModel customer);
 	CustomerModel update(CustomerModel updateCustomer);
-	void delete(long[] ids);
+	void delete(Long[] ids);
 	
 	int getTotalItem();
 
+	
 }

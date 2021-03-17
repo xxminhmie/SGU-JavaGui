@@ -1,5 +1,6 @@
 package xxminhmie.sgu.javagui.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -36,25 +37,22 @@ public class CustomerService implements ICustomerService {
 	}
 
 	@Override
-	public CustomerModel save(CustomerModel customer) {
-		// TODO Auto-generated method stub
-		return null;
+	public CustomerModel save(CustomerModel customerModel) {
+		Long customerId = cusDao.save(customerModel);
+		return cusDao.findOne(customerId);
 	}
 
 	@Override
 	public CustomerModel update(CustomerModel updateCustomer) {
-		CustomerModel oldCustomer = cusDao.findOne(updateCustomer.getId());
-		updateCustomer.setCreatedDate(oldCustomer.getCreatedDate());
-		updateCustomer.setCreatedBy(oldCustomer.getCreatedBy());
-		updateCustomer.setModifiedDate(new java.sql.Date(System.currentTimeMillis()));
 		cusDao.update(updateCustomer);
 		return cusDao.findOne(updateCustomer.getId());
 	}
 
 	@Override
-	public void delete(long[] ids) {
-		// TODO Auto-generated method stub
-		
+	public void delete(Long[] ids) {
+		for(Long id : ids) {
+			cusDao.delete(id);
+		}
 	}
 
 	@Override
@@ -62,7 +60,25 @@ public class CustomerService implements ICustomerService {
 		// TODO Auto-generated method stub
 		return 0;
 	}
-
-	
-
+	@Override
+	public List<CustomerModel> search(String str) {
+		List<CustomerModel> list = this.findAll();
+		List<CustomerModel> resultList = new ArrayList<CustomerModel>();
+		int index = 0;
+; 		Boolean flag = false;
+		for (CustomerModel e : list) {
+			flag = false;
+			String id = String.valueOf(e.getId());
+			String fullName = e.getFullName().toLowerCase();
+			String phone = e.getPhone();
+			String email = e.getEmail();
+			if(id.contains(str) || fullName.contains(str.toLowerCase()) ||phone.contains(str) || phone.contains(str) || email.contains(str)) {
+				flag = true;
+			}			
+			if(flag==true) {
+				resultList.add(e);
+			}
+		}
+		return resultList;
+	}
 }

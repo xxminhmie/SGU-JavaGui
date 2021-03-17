@@ -6,10 +6,6 @@ import java.util.List;
 public class AbstractModel<T> {
 	
 	protected Long id;
-	protected java.sql.Date createdDate;
-	protected java.sql.Date modifiedDate;
-	protected String createdBy;
-	protected String modifiedBy;
 	protected Long[] ids;
 	protected List<T> listResult = new ArrayList<>();
 	
@@ -25,30 +21,6 @@ public class AbstractModel<T> {
 	}
 	public void setId(Long id) {
 		this.id = id;
-	}
-	public java.sql.Date getCreatedDate() {
-		return createdDate;
-	}
-	public void setCreatedDate(java.sql.Date createdDate) {
-		this.createdDate = createdDate;
-	}
-	public java.sql.Date getModifiedDate() {
-		return modifiedDate;
-	}
-	public void setModifiedDate(java.sql.Date modifiedDate) {
-		this.modifiedDate = modifiedDate;
-	}
-	public String getCreatedBy() {
-		return createdBy;
-	}
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
-	public String getModifiedBy() {
-		return modifiedBy;
-	}
-	public void setModifiedBy(String modifiedBy) {
-		this.modifiedBy = modifiedBy;
 	}
 	public Long[] getIds() {
 		return ids;

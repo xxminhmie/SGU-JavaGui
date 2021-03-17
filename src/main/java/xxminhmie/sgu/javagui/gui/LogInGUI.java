@@ -1,24 +1,25 @@
 package xxminhmie.sgu.javagui.gui;
 
-
 import java.awt.Color;
 import java.awt.Font;
-import java.util.List;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-import xxminhmie.sgu.javagui.model.CustomerModel;
-import xxminhmie.sgu.javagui.service.impl.CustomerService;
+import xxminhmie.sgu.javagui.service.impl.AccountService;
 
-public class LogInGUI extends JPanel {
-	
+public class LogInGUI extends JFrame {
+
 	Color h1Color;
 	Color fieldBColor;
 	Color fieldFColor;
@@ -27,66 +28,94 @@ public class LogInGUI extends JPanel {
 	Color buttonBColor;
 	Color buttonFColor;
 	Color buttonHoverBColor;
-	
-	public LogInGUI(){
+
+	JLabel label;
+	JTextField userText;
+	JPasswordField passwordText;
+	JCheckBox checkBox;
+
+	public LogInGUI() {
 		this.h1Color = new Color(62, 54, 104);
 		this.fieldBColor = new Color(230, 230, 230);
 		this.fieldFColor = new Color(144, 142, 155);
 		this.checkboxFColor = new Color(148, 148, 148);
 		this.buttonBColor = new Color(128, 128, 253);
 		this.buttonFColor = new Color(237, 240, 255);
-		
 		this.createPanel();
 	}
+
 	public void createPanel() {
-		this.setBounds(400, 140, 400, 400);
+//		this.setSize(1200, 700);
+		this.setSize(400, 400);
+//		this.setBounds(400, 140, 400, 400);
 		this.setLayout(null);
-		
-		JLabel label = new JLabel("LOGIN", JLabel.CENTER);
-		label.setSize(400,80);
+		this.setLocationRelativeTo(null); // this will center your application
+		this.setResizable(false);
+
+
+		/*
+		 * LABEL
+		 */
+		this.label = new JLabel("LOGIN", JLabel.CENTER);
+		label.setSize(400, 80);
 		label.setFont(new Font("Helvetica", Font.BOLD, 26));
 		label.setForeground(this.h1Color);
 		add(label);
-		
-		
-		JTextField userText = new JTextField(20);
-		userText.setBounds(40,100,320,50);
+
+		/*
+		 * USER NAME TEXT FIELD
+		 */
+		this.userText = new JTextField(20);
+		userText.setBounds(40, 100, 320, 50);
 		userText.setBackground(this.fieldBColor);
 		userText.setForeground(this.fieldFColor);
-		userText.setBorder(BorderFactory.createCompoundBorder(
-		        userText.getBorder(), 
-		        BorderFactory.createEmptyBorder(5,10,5,10)));
+		userText.setBorder(BorderFactory.createCompoundBorder(userText.getBorder(),
+				BorderFactory.createEmptyBorder(5, 10, 5, 10)));
+		userText.requestFocus();
 		add(userText);
-		
-		CustomerService cs = new CustomerService();
-//		CustomerModel model = cs.findOne(1L);
-//		userText.setText(model.getFullName());
 
-		List<CustomerModel> list = cs.findAll();
-		userText.setText(list.get(0).getFullName());
-
-		
-		JPasswordField passwordText = new JPasswordField(20);
+		/*
+		 * PASSWORD TEXT FIELD
+		 */
+		this.passwordText = new JPasswordField(20);
 		passwordText.setBounds(40, 160, 320, 50);
 		passwordText.setBackground(this.fieldBColor);
 		passwordText.setForeground(this.fieldFColor);
-		passwordText.setBorder(BorderFactory.createCompoundBorder(
-		        passwordText.getBorder(), 
-		        BorderFactory.createEmptyBorder(5,10,5,10)));
+		passwordText.setBorder(BorderFactory.createCompoundBorder(passwordText.getBorder(),
+				BorderFactory.createEmptyBorder(5, 10, 5, 10)));
 		add(passwordText);
-		
-		JCheckBox checkBox = new JCheckBox("Rememeber Me");
+
+		userText.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					passwordText.requestFocus();
+				}
+
+			}
+		});
+
+		/*
+		 * REMEMBER ME CHECK BOX
+		 */
+		this.checkBox = new JCheckBox("Rememeber Me");
 		checkBox.setBounds(40, 210, 200, 30);
 		checkBox.setForeground(this.checkboxFColor);
 		checkBox.setFont(new Font("Helvetica", Font.PLAIN, 13));
 		add(checkBox);
-		
-		JLabel forgotLabel = new JLabel("Forgot?",JLabel.RIGHT);
+
+		/*
+		 * FORGOT PASSWORD LABEL
+		 */
+		JLabel forgotLabel = new JLabel("Forgot?", JLabel.RIGHT);
 		forgotLabel.setForeground(this.buttonBColor);
 		forgotLabel.setFont(new Font("Helvetica", Font.PLAIN, 13));
-		forgotLabel.setBounds(0,210,360,30);
+		forgotLabel.setBounds(0, 210, 360, 30);
 		add(forgotLabel);
 
+		/*
+		 * LOGIN BUTTON
+		 */
 		JButton loginButton = new JButton("Login");
 		loginButton.setBounds(40, 250, 320, 50);
 		loginButton.setBackground(this.buttonBColor);
@@ -95,40 +124,72 @@ public class LogInGUI extends JPanel {
 		loginButton.setBorderPainted(false);
 
 		this.add(loginButton);
-		
+
 		loginButton.addMouseListener(new java.awt.event.MouseAdapter() {
-		    public void mouseEntered(java.awt.event.MouseEvent evt) {
-		        loginButton.setBackground(new Color(103, 103, 207));
-		    }
+			public void mouseEntered(java.awt.event.MouseEvent evt) {
+				loginButton.setBackground(new Color(103, 103, 207));
+			}
 
-		    public void mouseExited(java.awt.event.MouseEvent evt) {
-		        loginButton.setBackground(new Color(128, 128, 253));
-		    }
+			public void mouseExited(java.awt.event.MouseEvent evt) {
+				loginButton.setBackground(new Color(128, 128, 253));
+			}
 		});
-		
-		forgotLabel.addMouseListener(new java.awt.event.MouseAdapter() {
-		    public void mouseEntered(java.awt.event.MouseEvent evt) {
-		    	forgotLabel.setText("<HTML><U>Forgot?</U></HTML>");
-		    }
 
-		    public void mouseExited(java.awt.event.MouseEvent evt) {
-		    	forgotLabel.setText("Forgot?");
-		    }
+		forgotLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+			public void mouseEntered(java.awt.event.MouseEvent evt) {
+				forgotLabel.setText("<HTML><U>Forgot?</U></HTML>");
+			}
+
+			public void mouseExited(java.awt.event.MouseEvent evt) {
+				forgotLabel.setText("Forgot?");
+			}
+		});
+		passwordText.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					loginButton.doClick();
+				}
+
+			}
+		});
+		loginButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+//                JOptionPane.showMessageDialog(null, "Clicked");
+				checkLogin();
+			}
+
 		});
 	}
-	
-	public static void main(String[] args) {
-		JFrame frame = new JFrame();
-		frame.setSize(1200, 700);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setLocationRelativeTo(null); // this will center your application
-		
-		frame.setLayout(null);
 
-		JPanel login = new LogInGUI();
-		frame.add(login);
-		frame.setVisible(true);
-		frame.setResizable(false);
-		
+	protected void checkLogin() {
+		String user = this.userText.getText();
+		String pass = String.valueOf(passwordText.getPassword());
+		if (user.isBlank()) {
+			JOptionPane.showMessageDialog(null, "Username must not be null or empty!");
+			this.userText.requestFocus();
+			return;
+		}
+		if (pass.isBlank()) {
+			JOptionPane.showMessageDialog(null, "Password must not be null or empty!");
+			this.passwordText.requestFocus();
+			return;
+		}
+
+		AccountService accService = new AccountService();
+		if (accService.findByUsername(user) != null) {
+			this.dispose();//destroy login frame
+			
+			//Remember me 2021.03.15
+			if(this.checkBox.isSelected()==true) {
+				
+			}
+			ApplicationGUI app = new ApplicationGUI();
+			app.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			app.setVisible(true);
+		}
+
 	}
 }

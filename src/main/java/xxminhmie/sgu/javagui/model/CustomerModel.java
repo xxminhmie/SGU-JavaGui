@@ -19,6 +19,12 @@ public class CustomerModel extends AbstractModel<CustomerModel>{
 		this.email = email;
 		this.dob = dob;
 	}
+	public CustomerModel(String fullName, String phone, String email, Date dob) {
+		this.fullName = fullName;
+		this.phone = phone;
+		this.email = email;
+		this.dob = dob;
+	}
 	public String getFullName() {
 		return fullName;
 	}

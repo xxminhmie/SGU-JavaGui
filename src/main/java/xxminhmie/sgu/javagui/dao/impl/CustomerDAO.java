@@ -34,7 +34,7 @@ public class CustomerDAO extends AbstractDAO<CustomerModel> implements ICustomer
 	public CustomerModel findOne(Long id) {
 		String sql = "SELECT * FROM customer WHERE id = ?";
 		List<CustomerModel> cus = this.query(sql, new CustomerMapper(), id);
-		return cus.isEmpty() ? null : cus.get(0);
+		return cus.isEmpty() ? null : cus.get(0);//get id
 	}
 
 	@Override
@@ -47,7 +47,7 @@ public class CustomerDAO extends AbstractDAO<CustomerModel> implements ICustomer
 	public Long save(CustomerModel customerModel) {
 		StringBuilder sql = new StringBuilder("INSERT INTO customer");
 		sql.append("(fullname, phone, email, dob) ");
-		sql.append("VALUES (?, ?, ?, ?");
+		sql.append("VALUES (?, ?, ?, ?);");
 		return this.insert(sql.toString(),
 				customerModel.getFullName(), customerModel.getPhone(),
 				customerModel.getEmail(), customerModel.getDob());
@@ -68,8 +68,8 @@ public class CustomerDAO extends AbstractDAO<CustomerModel> implements ICustomer
 
 	@Override
 	public void delete(Long id) {
-		// TODO Auto-generated method stub
-
+		String sql = "DELETE FROM customer WHERE id = ?";
+		this.update(sql, id);
 	}
 
 	@Override

@@ -33,7 +33,6 @@ public class SkuService implements ISkuService{
 
 	@Override
 	public SkuModel save(SkuModel skuModel) {
-		skuModel.setCreatedDate(new java.sql.Date(System.currentTimeMillis()));
 		ProductModel productModel = productDao.findOneByBrand(skuModel.getProductBrand());
 		skuModel.setProductId(productModel.getId());
 		Long skuId = skuDao.save(skuModel);
@@ -42,10 +41,6 @@ public class SkuService implements ISkuService{
 
 	@Override
 	public SkuModel update(SkuModel updateSku) {
-		SkuModel oldSku = skuDao.findOne(updateSku.getId());
-		updateSku.setCreatedDate(oldSku.getCreatedDate());
-		updateSku.setCreatedBy(oldSku.getCreatedBy());
-		updateSku.setModifiedDate(new java.sql.Date(System.currentTimeMillis()));
 		ProductModel product = productDao.findOneByBrand(updateSku.getProductBrand());
 		updateSku.setProductId(product.getId());
 		skuDao.update(updateSku);

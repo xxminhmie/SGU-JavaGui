@@ -11,28 +11,31 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import xxminhmie.sgu.javagui.gui.panel.CustomerPanel;
 import xxminhmie.sgu.javagui.gui.sidebar.SidebarContainer;
 
-public class ApplicationGUI {
-	public static void main(String[] args) {
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				new ApplicationGUI().displayGUI();
-			}
-		});
-	}
+public class ApplicationGUI extends JFrame{
+//	public static void main(String[] args) {
+//		SwingUtilities.invokeLater(new Runnable() {
+//			public void run() {
+//				new ApplicationGUI().displayGUI();
+//			}
+//		});
+//	}
 
 	public static final int FrameHeight = 700;
 	public static final int FrameWidth = 1200;
 
 	protected JPanel mainContent;
-
+	
+	public ApplicationGUI() {
+		this.displayGUI();
+	}
+	
 	protected void displayGUI() {
-		JFrame frame = new JFrame();
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(new Dimension(FrameWidth, FrameHeight));
-		frame.setLocationRelativeTo(null); // this will center your application
-		frame.setLayout(new BorderLayout());
+		this.setSize(new Dimension(FrameWidth, FrameHeight));
+		this.setLocationRelativeTo(null); // this will center your application
+		this.setLayout(new BorderLayout());
 
 		this.mainContent = new JPanel();
 		this.mainContent.setOpaque(true);
@@ -59,14 +62,14 @@ public class ApplicationGUI {
 //		this.mainContent.add(content3,"content3");
 
 		JPanel panel1 = new JPanel();
-		JPanel panel2 = new JPanel();
+		JPanel panel2 = new CustomerPanel();
 		JPanel panel3 = new JPanel();
 		JLabel label1 = new JLabel("Content of Card 1 is visible now!");
-		JLabel label2 = new JLabel("Content of Card 2 is visible now!");
+//		JLabel label2 = new JLabel("Content of Card 2 is visible now!");
 		JLabel label3 = new JLabel("Content of Card 3 is visible now!");
 
 		panel1.add(label1);
-		panel2.add(label2);
+//		panel2.add(label2);
 		panel3.add(label3);
 
 		mainContent.add(panel1, "link1");
@@ -79,9 +82,8 @@ public class ApplicationGUI {
 		String[] namePanel = { "link1", "link2", "link3" };
 
 		JPanel sidebar = new SidebarContainer(nameList, namePanel, this.mainContent);
-		frame.add(sidebar, BorderLayout.WEST);
-		frame.add(this.mainContent, BorderLayout.CENTER);
-		frame.setVisible(true);
+		this.add(sidebar, BorderLayout.WEST);
+		this.add(this.mainContent, BorderLayout.CENTER);
 	}
 
 }

@@ -11,21 +11,23 @@ import javax.swing.JFrame;
 public class SaveButton extends JButton{
 	public SaveButton() {
 		this.setText("Save");
-		this.setBackground(new Color(133,177,138));
+		this.setBackground(new Color(130,130,130));
 		this.setSize(new Dimension(100,40));
 //		this.setBounds(100, 100, 100, 40);
 		this.setOpaque(true);
 		this.setBorderPainted(false);
+		this.setForeground(Color.WHITE);
+
 		this.addMouseListener(new java.awt.event.MouseAdapter() {
 		    public void mouseEntered(java.awt.event.MouseEvent evt) {
-		        setBackground(new Color(29,170,46));
+		        setBackground(new Color(53,53,53));
 		        setOpaque(true);
 				setBorderPainted(false);
 				setCursor(new Cursor(Cursor.HAND_CURSOR));
 		    }
 
 		    public void mouseExited(java.awt.event.MouseEvent evt) {
-				setBackground(new Color(133,177,138));
+				setBackground(new Color(130,130,130));
 
 				setOpaque(true);
 				setBorderPainted(false);

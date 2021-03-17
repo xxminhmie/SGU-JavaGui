@@ -6,6 +6,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -125,9 +126,10 @@ public class AbstractDAO<T> implements GenericDAO<T> {
 			Long id = null;
 			connection = getConnection();
 			connection.setAutoCommit(false);
-			statement = connection.prepareStatement(sql);
+			statement = connection.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
 			this.setParameter(statement, parameters);
 			statement.executeUpdate();
+			//https://stackoverflow.com/questions/7162989/sqlexception-generated-keys-not-requested-mysql
 			resultSet = statement.getGeneratedKeys();
 			if (resultSet.next()) {
 				id = resultSet.getLong(1);
@@ -135,6 +137,7 @@ public class AbstractDAO<T> implements GenericDAO<T> {
 			connection.commit();
 			return id;
 		} catch (SQLException e) {
+			System.err.println(e.getMessage());
 			if (connection != null) {
 				try {
 					connection.rollback();

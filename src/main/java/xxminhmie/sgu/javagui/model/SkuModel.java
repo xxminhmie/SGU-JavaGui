@@ -7,7 +7,7 @@ public class SkuModel extends AbstractModel<SkuModel>{
 	protected int quantity;
 	
 	protected String price;
-	protected String sellPrice;
+	protected String importPrice;
 	
 	protected String image;
 	protected String status;
@@ -45,11 +45,11 @@ public class SkuModel extends AbstractModel<SkuModel>{
 	public void setPrice(String price) {
 		this.price = price;
 	}
-	public String getSellPrice() {
-		return sellPrice;
+	public String getImportPrice() {
+		return importPrice;
 	}
-	public void setSellPrice(String sellPrice) {
-		this.sellPrice = sellPrice;
+	public void setImportPrice(String sellPrice) {
+		this.importPrice = sellPrice;
 	}
 	public String getImage() {
 		return image;

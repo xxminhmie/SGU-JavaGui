@@ -1,4 +1,4 @@
-package xxminhmie.sgu.javagui.gui.table;
+package xxminhmie.sgu.javagui.gui.modeltable;
 
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
