@@ -69,10 +69,11 @@ public class CustomerService implements ICustomerService {
 		for (CustomerModel e : list) {
 			flag = false;
 			String id = String.valueOf(e.getId());
-			String fullName = e.getFullName().toLowerCase();
+			String firstName = e.getFirstName().toLowerCase();
+			String lastName = e.getLastName().toLowerCase();
 			String phone = e.getPhone();
 			String email = e.getEmail();
-			if(id.contains(str) || fullName.contains(str.toLowerCase()) ||phone.contains(str) || phone.contains(str) || email.contains(str)) {
+			if(id.contains(str) || firstName.contains(str.toLowerCase()) || lastName.contains(str.toLowerCase()) ||phone.contains(str) || phone.contains(str) || email.contains(str)) {
 				flag = true;
 			}			
 			if(flag==true) {

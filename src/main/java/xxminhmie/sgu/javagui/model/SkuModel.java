@@ -1,6 +1,6 @@
 package xxminhmie.sgu.javagui.model;
 
-public class SkuModel extends AbstractModel<SkuModel>{	
+public class SkuModel extends AbstractModel{	
 	protected String color;
 	protected String size;
 	

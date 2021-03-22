@@ -1,16 +1,25 @@
 package xxminhmie.sgu.javagui.model;
 
-public class StaffModel extends AbstractModel<StaffModel>{
-	protected String fullName;
+public class StaffModel extends AbstractModel{
+	protected String firstName;
+	protected String lastName;
 	protected String phone;
 	protected String email;
 	protected java.sql.Date dob;
 	protected String address;
-	public String getFullName() {
-		return fullName;
+	
+	
+	public String getFirstName() {
+		return firstName;
 	}
-	public void setFullName(String fullName) {
-		this.fullName = fullName;
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+	public String getLastName() {
+		return lastName;
+	}
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 	public String getPhone() {
 		return phone;

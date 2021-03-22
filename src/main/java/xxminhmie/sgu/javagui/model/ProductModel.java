@@ -1,6 +1,6 @@
 package xxminhmie.sgu.javagui.model;
 
-public class ProductModel extends AbstractModel<ProductModel>{
+public class ProductModel extends AbstractModel{
 	protected String name;
 	protected String brand;
 	protected String description;

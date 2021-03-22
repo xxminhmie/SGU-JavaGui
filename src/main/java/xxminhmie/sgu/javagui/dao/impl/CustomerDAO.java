@@ -46,24 +46,25 @@ public class CustomerDAO extends AbstractDAO<CustomerModel> implements ICustomer
 	@Override
 	public Long save(CustomerModel customerModel) {
 		StringBuilder sql = new StringBuilder("INSERT INTO customer");
-		sql.append("(fullname, phone, email, dob) ");
-		sql.append("VALUES (?, ?, ?, ?);");
+		sql.append("(firstname, lastname, phone, email, dob) ");
+		sql.append("VALUES (?, ?, ?, ?, ?);");
 		return this.insert(sql.toString(),
-				customerModel.getFullName(), customerModel.getPhone(),
-				customerModel.getEmail(), customerModel.getDob());
+				customerModel.getFirstName(), customerModel.getLastName(), 
+				customerModel.getPhone(), customerModel.getEmail(), 
+				customerModel.getDob());
 	}
 
 	@Override
 	public void update(CustomerModel updateCustomer) {
-		StringBuilder sql = new StringBuilder("UPDATE customer SET fullname = ?, phone = ?,");
+		StringBuilder sql = new StringBuilder("UPDATE customer SET firstname = ?, lastname = ?, phone = ?,");
 		sql.append(" email = ?, dob = ?");
 //		sql.append("createddate = ?, modifieddate = ?");
 		sql.append(" WHERE id = ?");
 		this.update(sql.toString(), 
-				updateCustomer.getFullName(), updateCustomer.getPhone(),
-				updateCustomer.getEmail(), updateCustomer.getDob(),
+				updateCustomer.getFirstName(), updateCustomer.getLastName(),  
+				updateCustomer.getPhone(), updateCustomer.getEmail(), 
 //				updateCustomer.getCreatedDate(), updateCustomer.getModifiedDate(),
-				updateCustomer.getId());
+				updateCustomer.getDob(), updateCustomer.getId());
 	}
 
 	@Override

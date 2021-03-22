@@ -28,7 +28,7 @@ public class SidebarItem extends JButton implements MouseListener{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				CardLayout cardLayout = (CardLayout) (content.getLayout());
-				System.out.println("Clicked " + panelName);
+//				System.out.println("Clicked " + panelName);
 				cardLayout.show(content,(String) panelName);
 				
 			}

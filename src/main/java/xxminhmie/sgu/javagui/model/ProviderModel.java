@@ -1,6 +1,6 @@
 package xxminhmie.sgu.javagui.model;
 
-public class ProviderModel extends AbstractModel<ProviderModel>{
+public class ProviderModel extends AbstractModel{
 	protected String name;
 	protected String address;
 	protected String email;

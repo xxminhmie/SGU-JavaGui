@@ -2,8 +2,9 @@ package xxminhmie.sgu.javagui.model;
 
 import java.sql.Date;
 
-public class CustomerModel extends AbstractModel<CustomerModel>{
-	protected String fullName;
+public class CustomerModel extends AbstractModel{
+	protected String firstName;
+	protected String lastName;
 	protected String phone;
 	protected String email;
 	protected java.sql.Date dob;
@@ -12,24 +13,32 @@ public class CustomerModel extends AbstractModel<CustomerModel>{
 	public CustomerModel() {
 		super();
 	}
-	public CustomerModel(Long id,String fullName, String phone, String email, Date dob) {
+	public CustomerModel(Long id,String firstName,String lastName, String phone, String email, Date dob) {
 		super(id);
-		this.fullName = fullName;
+		this.firstName = firstName;
+		this.lastName = lastName;
 		this.phone = phone;
 		this.email = email;
 		this.dob = dob;
 	}
-	public CustomerModel(String fullName, String phone, String email, Date dob) {
-		this.fullName = fullName;
+	public CustomerModel(String firstName,String lastName, String phone, String email, Date dob) {
+		this.firstName = firstName;
+		this.lastName = lastName;
 		this.phone = phone;
 		this.email = email;
 		this.dob = dob;
 	}
-	public String getFullName() {
-		return fullName;
+	public String getFirstName() {
+		return firstName;
 	}
-	public void setFullName(String fullName) {
-		this.fullName = fullName;
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+	public String getLastName() {
+		return lastName;
+	}
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 	public String getPhone() {
 		return phone;

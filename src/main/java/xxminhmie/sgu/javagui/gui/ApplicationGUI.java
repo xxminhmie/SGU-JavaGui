@@ -13,6 +13,7 @@ import javax.swing.SwingUtilities;
 
 import xxminhmie.sgu.javagui.gui.panel.CustomerPanel;
 import xxminhmie.sgu.javagui.gui.sidebar.SidebarContainer;
+import xxminhmie.sgu.javagui.service.impl.SidebarService;
 
 public class ApplicationGUI extends JFrame{
 //	public static void main(String[] args) {
@@ -28,6 +29,7 @@ public class ApplicationGUI extends JFrame{
 
 	protected JPanel mainContent;
 	
+	SidebarService service = new SidebarService();
 	public ApplicationGUI() {
 		this.displayGUI();
 	}
@@ -77,7 +79,7 @@ public class ApplicationGUI extends JFrame{
 		mainContent.add(panel3, "link3");
 
 
-		String[] nameList = { "Button 1", "Button 2", "Button 3" };
+		String[] nameList = { "Button 1", service.findAll().get(0).getName().toString(), "Button 3" };
 
 		String[] namePanel = { "link1", "link2", "link3" };
 

@@ -1,6 +1,6 @@
 package xxminhmie.sgu.javagui.model;
 
-public class AccountModel extends AbstractModel<AccountModel> {
+public class AccountModel extends AbstractModel {
 	protected Long roleId;
 	protected Long staffId;
 

@@ -1,4 +1,5 @@
 package xxminhmie.sgu.javagui.gui.panel;
+//TODO: kiểm tra ngày sinh hợp lệ
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -6,6 +7,8 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Date;
@@ -35,20 +38,22 @@ import xxminhmie.sgu.javagui.service.impl.CustomerService;
 
 public class CustomerPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
+
 	/******************************************************************
 	 * SETTING WIDTH, HEIGHT, COLOR OF PANEL
 	 ******************************************************************/
 	public static final int PanelWidth = 1040;
 	public static final int PanelHeight = ApplicationGUI.FrameHeight;
 	public static final Color PanelBg = Color.WHITE;
+	public static final Color DocumentListener = new Color(161, 161, 161);
 
-	/******************************************************************
-	 * COMMUNICATE WITH BACK END
-	 ******************************************************************/
+	// COMMUNICATE WITH BACK END
 	CustomerService service = new CustomerService();
 
 	/******************************************************************
+	 * 
 	 * DECLARE COMPONENTS ON PANEL
+	 * 
 	 ******************************************************************/
 	JLabel mainLabel;// "Customer Management",BorderLayout.NORTH
 	JPanel mainPanel;// BorderLayout.CENTER
@@ -74,10 +79,12 @@ public class CustomerPanel extends JPanel {
 	CustomerModel selectedRow = new CustomerModel();// Customer is being selected from Table
 	java.util.List<Long> idSelectedRowList = new java.util.ArrayList<Long>();// Contains list of customer's ID to delete
 	int selectedRowIndex;
-	Boolean enableSavebtn;
+	Boolean flagReset = false;
 
 	/******************************************************************
+	 * 
 	 * CONSTRUCTOR
+	 * 
 	 ******************************************************************/
 	public CustomerPanel() {
 		/**************************
@@ -146,8 +153,8 @@ public class CustomerPanel extends JPanel {
 		this.infoPanel.setLayout(null);
 		this.mainPanel.add(this.infoPanel, BorderLayout.WEST);
 
-		String[] infoName = { "ID: ", "Full Name: ", "Phone: ", "Email: ", "DoB: " };
-		this.infoTfList = new JTextField[4];
+		String[] infoName = { "ID: ", "First Name: ", "Last Name: ", "Phone: ", "Email: ", "DoB: " };
+		this.infoTfList = new JTextField[5];
 		int x = 10;
 		int y = 20;
 		// length - 1 for j date chooser used to set birth
@@ -157,13 +164,13 @@ public class CustomerPanel extends JPanel {
 			label.setBounds(x, y, 100, 30);
 			this.infoPanel.add(label);
 			this.infoTfList[i] = new JTextField();
-			this.infoTfList[i].setBounds(x + 100, y, 200, 30);
-			y += 40;
+			this.infoTfList[i].setBounds(x + 100, y, 200, 20);
+			y += 30;
 			this.infoPanel.add(this.infoTfList[i]);
 		}
 		/** J Date Chooser for date of birth **/
-		//https://www.codota.com/code/java/methods/com.toedter.calendar.JDateChooser/setDateFormatString
-		JLabel label = new JLabel(infoName[4]);
+		// https://www.codota.com/code/java/methods/com.toedter.calendar.JDateChooser/setDateFormatString
+		JLabel label = new JLabel(infoName[5]);
 		label.setBounds(x, y, 100, 30);
 		this.infoPanel.add(label);
 		this.dateChooser = new JDateChooser();
@@ -229,19 +236,6 @@ public class CustomerPanel extends JPanel {
 		this.table = new JTable(model);
 		this.table.setDefaultRenderer(Object.class, new Renderer());
 
-		// cach 2
-//		table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
-//			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-//					boolean hasFocus, int row, int column) {
-//				JLabel label = 
-//						(JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row,column);
-//				Color c = new Color(140, 140, 140);
-//
-//				label.setBackground(c);
-//				return label;
-//			}
-//		});
-
 		/** GET SELECTED VALUE TO DISPLAY ON TEXT FIELD **/
 		this.table.addMouseListener(new java.awt.event.MouseAdapter() {
 			@Override
@@ -254,17 +248,19 @@ public class CustomerPanel extends JPanel {
 					selectedRowIndex = rowIndex;
 					/** GET MANUALLY ALL ROW **/
 					selectedRow.setId((Long) table.getModel().getValueAt(rowIndex, 0));
-					selectedRow.setFullName((String) table.getModel().getValueAt(rowIndex, 1));
-					selectedRow.setPhone((String) table.getModel().getValueAt(rowIndex, 2));
-					selectedRow.setEmail((String) table.getModel().getValueAt(rowIndex, 3));
-					selectedRow.setDob((java.sql.Date) table.getModel().getValueAt(rowIndex, 4));
+					selectedRow.setFirstName((String) table.getModel().getValueAt(rowIndex, 1));
+					selectedRow.setLastName((String) table.getModel().getValueAt(rowIndex, 2));
+					selectedRow.setPhone((String) table.getModel().getValueAt(rowIndex, 3));
+					selectedRow.setEmail((String) table.getModel().getValueAt(rowIndex, 4));
+					selectedRow.setDob((java.sql.Date) table.getModel().getValueAt(rowIndex, 5));
 
 				}
 				/** DISPLAY TO TEXT FIELD **/
 				infoTfList[0].setText(selectedRow.getId().toString());
-				infoTfList[1].setText(selectedRow.getFullName());
-				infoTfList[2].setText(selectedRow.getPhone());
-				infoTfList[3].setText(selectedRow.getEmail());
+				infoTfList[1].setText(selectedRow.getFirstName());
+				infoTfList[2].setText(selectedRow.getLastName());
+				infoTfList[3].setText(selectedRow.getPhone());
+				infoTfList[4].setText(selectedRow.getEmail());
 				dateChooser.setDate(selectedRow.getDob());
 				getAllSelectedRow(table);
 			}
@@ -275,163 +271,253 @@ public class CustomerPanel extends JPanel {
 		/** ADD SCROLL PANE TO MAIN PANEL **/
 		this.tbPanel.add(this.pane);
 
-		/********************** bắt sự kiện text field **************************/
-		// full name
+		/****************************************************************
+		 * 
+		 * TEXT FIELD KEY LISTENER
+		 * 
+		 */
+		this.infoTfList[1].addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					infoTfList[1 + 1].requestFocus();
+				}
+			}
+
+		});
+		this.infoTfList[2].addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					infoTfList[2 + 1].requestFocus();
+				}
+			}
+
+		});
+		this.infoTfList[3].addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					infoTfList[3 + 1].requestFocus();
+				}
+			}
+
+		});
+		/*
+		 * https://stackoverflow.com/questions/20945380/how-to-set-focus-on-jdatechooser-when-frame-is-loaded-in-swing
+		 */
+		this.infoTfList[4].addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					dateChooser.getDateEditor().getUiComponent().requestFocus();
+				}
+			}
+
+		});
+		this.dateChooser.getDateEditor().getUiComponent().addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					saveBtn.doClick();
+				}
+			}
+
+		});
+		/****************************************************************
+		 * 
+		 * DOCUMENT LISTENER OF text field
+		 * 
+		 */
+		// first name
 		this.infoTfList[1].getDocument().addDocumentListener(new DocumentListener() {
+
+			public void changedUpdate(DocumentEvent arg0) {
+			}
+
+			public void insertUpdate(DocumentEvent arg0) {
+				change(1, selectedRow.getFirstName());
+			}
+
+			public void removeUpdate(DocumentEvent arg0) {
+				change(1, selectedRow.getFirstName());
+
+			}
+		});
+		// last name
+		this.infoTfList[2].getDocument().addDocumentListener(new DocumentListener() {
 			public void changedUpdate(DocumentEvent arg0) {
 
 			}
 
 			public void insertUpdate(DocumentEvent arg0) {
-				if (selectedRow.getFullName() != null && infoTfList[1] != null) {
-					if (selectedRow.getFullName().equals(infoTfList[1].getText()) == false) {
-						infoTfList[1].setForeground(Color.BLUE);
-					} else {
-						infoTfList[1].setForeground(Color.BLACK);
-					}
-				}
+				change(2, selectedRow.getLastName());
 
 			}
 
 			public void removeUpdate(DocumentEvent arg0) {
-				if (selectedRow.getFullName() != null && infoTfList[1] != null) {
-					if (selectedRow.getFullName().equals(infoTfList[1].getText()) == false) {
-						infoTfList[1].setForeground(Color.BLUE);
-					} else {
-						infoTfList[1].setForeground(Color.BLACK);
-					}
-				}
+				change(2, selectedRow.getLastName());
+
 			}
 		});
 
 		// phone
-		this.infoTfList[2].getDocument().addDocumentListener(new DocumentListener() {
-			public void changedUpdate(DocumentEvent arg0) {
-			}
-
-			public void insertUpdate(DocumentEvent arg0) {
-				if (selectedRow.getPhone() != null && infoTfList[2] != null) {
-					if (selectedRow.getPhone().toLowerCase().equals(infoTfList[2].getText().toLowerCase()) == false) {
-						infoTfList[2].setForeground(Color.BLUE);
-					} else {
-						infoTfList[2].setForeground(Color.BLACK);
-					}
-				}
-			}
-
-			public void removeUpdate(DocumentEvent arg0) {
-				if (selectedRow.getPhone() != null && infoTfList[2] != null) {
-					if (selectedRow.getPhone().toLowerCase().equals(infoTfList[2].getText().toLowerCase()) == false) {
-						infoTfList[2].setForeground(Color.BLUE);
-					} else {
-						infoTfList[2].setForeground(Color.BLACK);
-					}
-				}
-			}
-		});
-		// email
 		this.infoTfList[3].getDocument().addDocumentListener(new DocumentListener() {
 			public void changedUpdate(DocumentEvent arg0) {
 			}
 
 			public void insertUpdate(DocumentEvent arg0) {
-				if (selectedRow.getEmail() != null && infoTfList[3] != null) {
-					if (selectedRow.getEmail().equals(infoTfList[3].getText()) == false) {
-						infoTfList[3].setForeground(Color.BLUE);
-					} else {
-						infoTfList[3].setForeground(Color.BLACK);
-					}
-				}
+				change(3, selectedRow.getPhone());
 			}
 
 			public void removeUpdate(DocumentEvent arg0) {
-				if (selectedRow.getEmail() != null && infoTfList[3] != null) {
-					if (selectedRow.getEmail().equals(infoTfList[3].getText()) == false) {
-						infoTfList[3].setForeground(Color.BLUE);
-					} else {
-						infoTfList[3].setForeground(Color.BLACK);
-					}
-				}
+				change(3, selectedRow.getPhone());
+			}
+		});
+		// email
+		this.infoTfList[4].getDocument().addDocumentListener(new DocumentListener() {
+
+			public void changedUpdate(DocumentEvent arg0) {
+			}
+
+			public void insertUpdate(DocumentEvent arg0) {
+				change(4, selectedRow.getEmail());
+			}
+
+			public void removeUpdate(DocumentEvent arg0) {
+				change(4, selectedRow.getEmail());
 			}
 		});
 	}
 
+	/******************************************************************
+	 * 
+	 * TEXT FIELD HANDLE
+	 * 
+	 ******************************************************************/
+
+	public void change(int index, String str) {
+		if (flagReset == false) {
+			if (str != null && infoTfList[index] != null) {
+				if (str.equals(infoTfList[index].getText()) == false) {
+					infoTfList[index].setForeground(DocumentListener);
+				} else {
+					infoTfList[index].setForeground(Color.BLACK);
+				}
+			}
+		} else {
+			infoTfList[index].setForeground(Color.BLACK);
+		}
+
+	}
+
+	/******************************************************************
+	 * 
+	 * SAVE BUTTON HANDLE
+	 * 
+	 ******************************************************************/
 	protected int saveButtonClicked() {
-//**************** GET ID from text field
+		/*
+		 * Get informations from text field
+		 */
+
+		// ID
 		Long id = null;
 		if (this.infoTfList[0].getText().equals("")) {
+			// new
 			id = -1L;
 		} else {
 			try {
 				id = Long.parseLong(this.infoTfList[0].getText());
 			} catch (java.lang.NumberFormatException e) {
-				JOptionPane.showMessageDialog(null, e.getMessage());
+				JOptionPane.showMessageDialog(null, "ID: " + e.getMessage());
 			}
 		}
-//**************** GET FULL NAME from text field
-		String fullName = null;
+		// FIRST NAME
+		String firstName = null;
 		if (this.infoTfList[1].getText().equals("") == false) {
-			fullName = this.infoTfList[1].getText();
-			fullName = WhiteSpaceValidator.validate(fullName);
+			firstName = this.infoTfList[1].getText();
+			firstName = WhiteSpaceValidator.validate(firstName);
+		} else {
+			JOptionPane.showMessageDialog(null, "First Name must be not null!");
+			this.infoTfList[1].requestFocus();
+			return -1;
 		}
-
-//**************** GET PHONE from text field
-		String phone = null;
+		// LAST NAME
+		String lastName = null;
 		if (this.infoTfList[2].getText().equals("") == false) {
-			phone = this.infoTfList[2].getText();
+			lastName = this.infoTfList[2].getText();
+			lastName = WhiteSpaceValidator.validate(lastName);
+		} else {
+			JOptionPane.showMessageDialog(null, "Last Name must be not null!");
+			this.infoTfList[2].requestFocus();
+			return -1;
+		}
+		// PHONE
+		String phone = null;
+		if (this.infoTfList[3].getText().equals("") == false) {
+			phone = this.infoTfList[3].getText();
 			phone = WhiteSpaceValidator.validate(phone);
 			PhoneValidator phoneValidator = new PhoneValidator();
 			if (!phoneValidator.validate(phone)) {
-				JOptionPane.showMessageDialog(null, "Invalid Phone");
+				JOptionPane.showMessageDialog(null, "Invalid Phone! Please insert again!");
+				this.infoTfList[3].requestFocus();
 				return -1;
 			}
+		} else {
+			JOptionPane.showMessageDialog(null, "Phone must be not null!");
+			this.infoTfList[3].requestFocus();
+			return -1;
 		}
-
-//**************** GET EMAIL from text field
+		// GET EMAIL
 		String email = null;
-		if (this.infoTfList[3].getText().equals("") == false) {
-			email = this.infoTfList[3].getText();
+		if (this.infoTfList[4].getText().equals("") == false) {
+			email = this.infoTfList[4].getText();
 			email = WhiteSpaceValidator.validate(email);
 			EmailValidator emailValidator = new EmailValidator();
 			if (!emailValidator.validate(email)) {
-				JOptionPane.showMessageDialog(null, "Invalid Email");
+				JOptionPane.showMessageDialog(null, "Invalid Email! Please insert again!");
+				this.infoTfList[4].requestFocus();
 				return -1;
 			}
+		} else {
+			JOptionPane.showMessageDialog(null, "Email must be not null!");
+			this.infoTfList[4].requestFocus();
+			return -1;
 		}
 
-//**************** GET EMAIL from date chooser
+		// GET DOB from date chooser
 		Date dob = null;
 		try {
 			dob = new Date(this.dateChooser.getDate().getTime());
 		} catch (java.lang.NullPointerException e) {
-			JOptionPane.showMessageDialog(null, e.getMessage());
+			JOptionPane.showMessageDialog(null, "Invalid Date of Birth! Please insert or choose again!");
 			return -1;
 		}
 
-//******************************* CONFIRM SAVE ************************************************
+		/*
+		 * Confirm to save this changes
+		 */
 		int click = JOptionPane.showConfirmDialog(null, "Do you want to save this changes?");
 		if (click == JOptionPane.YES_OPTION) {
-			// (Long id,String fullName, String phone, String email,Date dob)
 			boolean flag = false;
-			/*------------------------------ UPDATE ----------------------------------*/
 			if (id > 0) {
-				if (service.update(new CustomerModel(id, fullName, phone, email, dob)) != null) {
+				/* UPDATE */
+				if (service.update(new CustomerModel(id, firstName, lastName, phone, email, dob)) != null) {
 					flag = true;
 				}
-			}
-			/*------------------------------ CREATE NEW ----------------------------------*/
-			else {
-//				System.out.println(fullName.toString() + phone.toString() + email.toString() + dob.toString());
-				if (service.save(new CustomerModel(fullName, phone, email, dob)) != null) {
+			} else {
+				/* CREATE */
+				if (service.save(new CustomerModel(firstName, lastName, phone, email, dob)) != null) {
 					flag = true;
 				}
 				;
 			}
 			if (flag == true) {
 				this.model.loadData(this.table);
-				this.infoTfList[1].setForeground(Color.BLACK);
-				this.infoTfList[2].setForeground(Color.BLACK);
-				this.infoTfList[3].setForeground(Color.BLACK);
+				for (int i = 1; i < this.infoTfList.length; i++) {
+					this.infoTfList[i].setForeground(Color.BLACK);
+				}
 				table.setRowSelectionInterval(selectedRowIndex, selectedRowIndex);
 			}
 		}
@@ -443,11 +529,15 @@ public class CustomerPanel extends JPanel {
 		}
 		if (click == JOptionPane.CLOSED_OPTION) {
 		}
-
 		return 0;
 
 	}
 
+	/******************************************************************
+	 * 
+	 * DELETE BUTTON HANDLE
+	 * 
+	 ******************************************************************/
 	protected void deleteButtonClicked() {
 		if (selectedRowIndex > 0) {
 			int click = JOptionPane.showConfirmDialog(null, "Are you sure for delete this customer?");
@@ -471,34 +561,20 @@ public class CustomerPanel extends JPanel {
 
 	}
 
+	/******************************************************************
+	 * 
+	 * RESET BUTTON HANDLE
+	 * 
+	 ******************************************************************/
 	protected void resetButtonClicked() {
+		this.flagReset = true;
 		for (int i = 0; i < this.infoTfList.length; i++) {
 			this.infoTfList[i].setText("");
 		}
 		this.dateChooser.setDate(null);
 
 	}
-//	protected int getChange() {
-//		//selectedRow and list text field
-//		if(selectedRow.getFullName().toLowerCase().equals(this.infoTfList[1].getText().toLowerCase())) {
-//			return -1;
-//		}
-//		if(selectedRow.getEmail().equals(this.infoTfList[3].getText())) {
-//			return -1;
-//		}
-//		if(selectedRow.getPhone().toLowerCase().equals(this.infoTfList[2].getText().toLowerCase())) {
-//			return -1;
-//		}
-//		if(selectedRow.getDob().toString().toLowerCase().equals(this.dateChooser.getDate().toString().toLowerCase())) {
-//			return -1;
-//		}
-//
-//
-//	}
 
-//	protected CustomerModel textFieldToModel() {
-//		
-//	}
 	public void getAllSelectedRow(JTable entryTable) {
 //		AbstractTableModel model = (AbstractTableModel) entryTable.getModel();
 		if (entryTable.getRowCount() > 0) {
@@ -532,7 +608,6 @@ public class CustomerPanel extends JPanel {
 		 */
 		frame.pack();
 		frame.getContentPane().requestFocusInWindow();
-		
 
 	}
 

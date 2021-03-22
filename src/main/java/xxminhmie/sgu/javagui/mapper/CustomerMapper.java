@@ -12,7 +12,8 @@ public class CustomerMapper implements RowMapper<CustomerModel> {
 		try {
 			CustomerModel cus = new CustomerModel();
 			cus.setId(rs.getLong("id"));
-			cus.setFullName(rs.getString("fullname"));
+			cus.setFirstName(rs.getString("firstname"));
+			cus.setLastName(rs.getString("lastname"));
 			cus.setEmail(rs.getString("email"));
 			cus.setPhone(rs.getString("phone"));
 			cus.setDob(rs.getDate("dob"));

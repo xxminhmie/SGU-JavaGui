@@ -16,7 +16,7 @@ public class CustomerModelData extends AbstractTableModel {
 	 * Custom header 
 	 * https://stackoverflow.com/questions/11567721/change-background-color-of-jtable-column-heads 
 	 */
-    String columnNames[] = { "ID", "FullName","Phone","Email","DOB" };
+    String columnNames[] = { "ID", "First Name","Last Name","Phone","Email","DOB" };
 
 	@Override
 	public int getRowCount() {
@@ -37,15 +37,18 @@ public class CustomerModelData extends AbstractTableModel {
 			return data.get(rowIndex).getId();
 		}
 		if (columnIndex == 1) {
-			return data.get(rowIndex).getFullName();
+			return data.get(rowIndex).getFirstName();
 		}
 		if (columnIndex == 2) {
-			return data.get(rowIndex).getPhone();
+			return data.get(rowIndex).getLastName();
 		}
 		if (columnIndex == 3) {
-			return data.get(rowIndex).getEmail();
+			return data.get(rowIndex).getPhone();
 		}
 		if (columnIndex == 4) {
+			return data.get(rowIndex).getEmail();
+		}
+		if (columnIndex == 5) {
 			return data.get(rowIndex).getDob();
 		}
 		return null;
@@ -56,15 +59,18 @@ public class CustomerModelData extends AbstractTableModel {
 			data.get(rowIndex).setId((Long) aValue);
 		}
 		if (columnIndex == 1) {
-			data.get(rowIndex).setFullName((String) aValue);
+			data.get(rowIndex).setFirstName((String) aValue);
 		}
 		if (columnIndex == 2) {
-			data.get(rowIndex).setPhone((String) aValue);
+			data.get(rowIndex).setLastName((String) aValue);
 		}
 		if (columnIndex == 3) {
-			data.get(rowIndex).setEmail((String) aValue);
+			data.get(rowIndex).setPhone((String) aValue);
 		}
 		if (columnIndex == 4) {
+			data.get(rowIndex).setEmail((String) aValue);
+		}
+		if (columnIndex == 5) {
 			data.get(rowIndex).setDob((java.sql.Date) aValue);
 		}
 		fireTableCellUpdated(rowIndex, columnIndex);

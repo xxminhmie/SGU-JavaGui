@@ -12,7 +12,8 @@ public class StaffMapper implements RowMapper<StaffModel>{
 		StaffModel sta = new StaffModel();
 		try {
 			sta.setId(rs.getLong("id"));
-			sta.setFullName(rs.getString("fullname"));
+			sta.setFirstName(rs.getString("firstname"));
+			sta.setLastName(rs.getString("lastname"));
 			sta.setEmail(rs.getString("email"));
 			sta.setPhone(rs.getString("phone"));
 			sta.setAddress(rs.getString("address"));
