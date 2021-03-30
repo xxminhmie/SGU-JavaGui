@@ -7,23 +7,8 @@ import org.apache.commons.lang3.StringUtils;
 import xxminhmie.sgu.javagui.dao.ISkuDAO;
 import xxminhmie.sgu.javagui.mapper.SkuMapper;
 import xxminhmie.sgu.javagui.model.SkuModel;
-import xxminhmie.sgu.javagui.paging.Pageble;
 
-public class SkuDAO extends AbstractDAO<SkuModel> implements ISkuDAO{
-
-	@Override
-	public List<SkuModel> findAll(Pageble pageble) {
-		StringBuilder sql = new StringBuilder("SELECT * FROM sku");
-		if(pageble.getSorter()!=null 
-			&& StringUtils.isNotBlank(pageble.getSorter().getSortName()) && StringUtils.isNotBlank(pageble.getSorter().getSortBy())) 
-		{
-			sql.append(" ORDER BY " + pageble.getSorter().getSortName()+" "+ pageble.getSorter().getSortBy()+"");
-		}
-		if(pageble.getOffset()!=null && pageble.getLimit()!=null) {
-			sql.append(" LIMIT "+pageble.getOffset()+", "+pageble.getLimit()+"");
-		}
-		return this.query(sql.toString(), new SkuMapper());
-	}
+public class SkuDAO extends AbstractDAO<SkuModel> implements ISkuDAO {
 
 	@Override
 	public SkuModel findOne(Long id) {
@@ -42,11 +27,10 @@ public class SkuDAO extends AbstractDAO<SkuModel> implements ISkuDAO{
 	public Long save(SkuModel skuModel) {
 		StringBuilder sql = new StringBuilder("INSERT INTO sku");
 		sql.append("(productid, color, size, quantity, price, sellprice, status, image)");
-		sql.append(" VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-		return this.insert(sql.toString(), 
-				skuModel.getProductId(),skuModel.getColor(), skuModel.getSize(),
-				skuModel.getQuantity(), skuModel.getPrice(), skuModel.getImportPrice(),
-				skuModel.getStatus(), skuModel.getImage());
+		sql.append(" VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		return this.insert(sql.toString(), skuModel.getProductId(), skuModel.getColor(), skuModel.getSize(),
+				skuModel.getQuantity(), skuModel.getPrice(), skuModel.getImportPrice(), skuModel.getStatus(),
+				skuModel.getImage());
 	}
 
 	@Override
@@ -54,23 +38,28 @@ public class SkuDAO extends AbstractDAO<SkuModel> implements ISkuDAO{
 		StringBuilder sql = new StringBuilder("UPDATE sku SET productid = ?, color = ?, size = ?,");
 		sql.append(" quantity = ?, price = ?, sellprice = ?, status = ?, image = ?,");
 		sql.append(" WHERE id = ?");
-		this.update(sql.toString(),
-				updateSku.getProductId(), updateSku.getColor(), updateSku.getSize(),
-				updateSku.getQuantity(), updateSku.getPrice(), updateSku.getImportPrice(),
-				updateSku.getStatus(), updateSku.getImage(),
-				updateSku.getId());
+		this.update(sql.toString(), updateSku.getProductId(), updateSku.getColor(), updateSku.getSize(),
+				updateSku.getQuantity(), updateSku.getPrice(), updateSku.getImportPrice(), updateSku.getStatus(),
+				updateSku.getImage(), updateSku.getId());
 	}
 
 	@Override
 	public void delete(Long id) {
 		String sql = "DELETE FROM sku WHERE id = ?";
-		this.update(sql, id);;
+		this.update(sql, id);
+		;
 	}
 
 	@Override
 	public int getTotalItem() {
 		String sql = "SELECT count(*) FROM sku";
 		return count(sql);
+	}
+
+	@Override
+	public List<SkuModel> findAll() {
+		String sql = "SELECT * FROM sku";
+		return this.query(sql.toString(), new SkuMapper());
 	}
 
 }

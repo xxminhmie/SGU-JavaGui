@@ -1,9 +1,47 @@
 package xxminhmie.sgu.javagui.model;
-
+//DONE
 public class ProductModel extends AbstractModel{
 	protected String name;
 	protected String brand;
 	protected String description;
+	protected String status;
+	public ProductModel() {
+		
+	}
+	public ProductModel(Long id,String name, String brand, String description) {
+		super(id);
+		this.name = name;
+		this.brand = brand;
+		this.description = description;
+		this.status = "Actived";
+
+	}
+	
+	public ProductModel(Long id,String name, String brand) {
+		super(id);
+		this.name = name;
+		this.brand = brand;
+		this.description = "";
+		this.status = "Actived";
+
+	}
+	
+	public ProductModel(String name, String brand, String description) {
+		super();
+		this.name = name;
+		this.brand = brand;
+		this.description = description;
+		this.status = "Actived";
+
+	}
+	public ProductModel(String name, String brand) {
+		super();
+		this.name = name;
+		this.brand = brand;
+		this.description = "";
+		this.status = "Actived";
+
+	}
 	public String getName() {
 		return name;
 	}
@@ -21,6 +59,12 @@ public class ProductModel extends AbstractModel{
 	}
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 }

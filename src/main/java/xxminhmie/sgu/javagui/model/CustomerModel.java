@@ -1,5 +1,5 @@
 package xxminhmie.sgu.javagui.model;
-
+//DONE
 import java.sql.Date;
 
 public class CustomerModel extends AbstractModel{

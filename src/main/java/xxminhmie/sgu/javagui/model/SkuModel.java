@@ -13,7 +13,6 @@ public class SkuModel extends AbstractModel{
 	protected String status;
 	
 	protected Long productId;
-	protected String productBrand;
 
 	public Long getProductId() {
 		return productId;
@@ -63,14 +62,4 @@ public class SkuModel extends AbstractModel{
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	public String getProductBrand() {
-		return productBrand;
-	}
-	public void setProductBrand(String brand) {
-		this.productBrand = brand;
-	}
-	
-	
-	
-
 }

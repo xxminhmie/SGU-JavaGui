@@ -38,15 +38,6 @@ import xxminhmie.sgu.javagui.service.impl.CustomerService;
 
 public class CustomerPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
-
-	/******************************************************************
-	 * SETTING WIDTH, HEIGHT, COLOR OF PANEL
-	 ******************************************************************/
-	public static final int PanelWidth = 1040;
-	public static final int PanelHeight = ApplicationGUI.FrameHeight;
-	public static final Color PanelBg = Color.WHITE;
-	public static final Color DocumentListener = new Color(161, 161, 161);
-
 	// COMMUNICATE WITH BACK END
 	CustomerService service = new CustomerService();
 
@@ -90,8 +81,8 @@ public class CustomerPanel extends JPanel {
 		/**************************
 		 * INITIALIZE BG PANEL include main label, main panel
 		 **************************/
-		this.setBackground(PanelBg);
-		this.setPreferredSize(new Dimension(PanelWidth, PanelHeight));
+		this.setBackground(AbstractPanel.PanelBg);
+		this.setPreferredSize(new Dimension(AbstractPanel.PanelWidth,AbstractPanel.PanelHeight));
 		this.setLayout(new BorderLayout());
 
 		/***************************
@@ -130,17 +121,23 @@ public class CustomerPanel extends JPanel {
 		this.search.getDocument().addDocumentListener(new DocumentListener() {
 			@Override
 			public void insertUpdate(DocumentEvent e) {
-				model.loadData(table, search.getText());
+				System.out.println(search.getText());
+
+//				model.loadData(table, search.getText());
 			}
 
 			@Override
 			public void removeUpdate(DocumentEvent e) {
-				model.loadData(table, search.getText());
+				System.out.println(search.getText());
+
+//				model.loadData(table, search.getText());
 			}
 
 			@Override
 			public void changedUpdate(DocumentEvent e) {
-				model.loadData(table, search.getText());
+				System.out.println(search.getText());
+
+//				model.loadData(table, search.getText());
 			}
 
 		});
@@ -192,8 +189,8 @@ public class CustomerPanel extends JPanel {
 		this.mainPanel.add(this.btnPanel);
 
 		/** SAVE BUTTON **/
-		this.saveBtn = new SaveButton();
-		this.saveBtn.setBounds(20, 0, 100, 40);
+		this.saveBtn = new SaveButton(20,0);
+//		this.saveBtn.setBounds(20, 0, 100, 40);
 		this.btnPanel.add(this.saveBtn);
 		this.saveBtn.addActionListener(new ActionListener() {
 			@Override
@@ -203,8 +200,8 @@ public class CustomerPanel extends JPanel {
 		});
 
 		/** DELETE BUTTON **/
-		this.deleteBtn = new DeleteButton();
-		this.deleteBtn.setBounds(20, 50, 100, 40);
+		this.deleteBtn = new DeleteButton(20,50);
+//		this.deleteBtn.setBounds(20, 50, 100, 40);
 		this.btnPanel.add(this.deleteBtn);
 		this.deleteBtn.addActionListener(new ActionListener() {
 			@Override
@@ -214,8 +211,8 @@ public class CustomerPanel extends JPanel {
 		});
 
 		/** RESET BUTTON **/
-		this.resetBtn = new ResetButton();
-		this.resetBtn.setBounds(20, 100, 100, 40);
+		this.resetBtn = new ResetButton(20,100);
+//		this.resetBtn.setBounds(20, 100, 100, 40);
 		this.btnPanel.add(this.resetBtn);
 		this.resetBtn.addActionListener(new ActionListener() {
 			@Override
@@ -400,7 +397,7 @@ public class CustomerPanel extends JPanel {
 		if (flagReset == false) {
 			if (str != null && infoTfList[index] != null) {
 				if (str.equals(infoTfList[index].getText()) == false) {
-					infoTfList[index].setForeground(DocumentListener);
+					infoTfList[index].setForeground(AbstractPanel.DocumentListener);
 				} else {
 					infoTfList[index].setForeground(Color.BLACK);
 				}

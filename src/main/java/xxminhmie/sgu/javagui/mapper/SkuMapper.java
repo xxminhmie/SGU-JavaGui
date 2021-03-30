@@ -12,11 +12,12 @@ public class SkuMapper implements RowMapper<SkuModel>{
 		try {
 			SkuModel sku = new SkuModel();
 			sku.setId(rs.getLong("id"));
+			sku.setProductId(rs.getLong("productid"));
 			sku.setColor(rs.getString("color"));
 			sku.setSize(rs.getString("size"));
 			sku.setQuantity(rs.getInt("quantity"));
 			sku.setPrice(rs.getString("price"));
-			sku.setImportPrice(rs.getString("sellprice"));
+			sku.setImportPrice(rs.getString("importprice"));
 			sku.setImage(rs.getString("image"));
 			sku.setStatus(rs.getString("status"));
 			return sku;

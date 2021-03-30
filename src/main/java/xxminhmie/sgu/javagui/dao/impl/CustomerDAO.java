@@ -7,23 +7,10 @@ import org.apache.commons.lang3.StringUtils;
 import xxminhmie.sgu.javagui.dao.ICustomerDAO;
 import xxminhmie.sgu.javagui.mapper.CustomerMapper;
 import xxminhmie.sgu.javagui.model.CustomerModel;
-import xxminhmie.sgu.javagui.paging.Pageble;
 
 public class CustomerDAO extends AbstractDAO<CustomerModel> implements ICustomerDAO {
 
-	@Override
-	public List<CustomerModel> findAll(Pageble pageble) {
-		StringBuilder sql = new StringBuilder("SELECT * FROM customer");
-		if(pageble.getSorter()!=null
-			&& StringUtils.isNoneBlank((pageble.getSorter().getSortName())) && StringUtils.isNoneBlank(pageble.getSorter().getSortBy()))
-		{
-			sql.append(" ORDER BY "+pageble.getSorter().getSortName()+" "+pageble.getSorter().getSortBy()+"");
-		}
-		if(pageble.getOffset()!=null && pageble.getLimit()!=null) {
-			sql.append(" LIMIT "+pageble.getOffset()+", "+pageble.getLimit()+"");
-		}
-		return this.query(sql.toString(),new CustomerMapper());	
-	}
+	
 	@Override
 	public List<CustomerModel> findAll() {
 		StringBuilder sql = new StringBuilder("SELECT * FROM customer");

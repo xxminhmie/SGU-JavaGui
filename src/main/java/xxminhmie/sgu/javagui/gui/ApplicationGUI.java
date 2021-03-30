@@ -5,6 +5,8 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -12,10 +14,14 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import xxminhmie.sgu.javagui.gui.panel.CustomerPanel;
+import xxminhmie.sgu.javagui.gui.panel.POPanel;
+import xxminhmie.sgu.javagui.gui.panel.ProductPanel;
+import xxminhmie.sgu.javagui.gui.panel.StaffPanel;
+import xxminhmie.sgu.javagui.gui.panel.SupplierPanel;
 import xxminhmie.sgu.javagui.gui.sidebar.SidebarContainer;
 import xxminhmie.sgu.javagui.service.impl.SidebarService;
 
-public class ApplicationGUI extends JFrame{
+public class ApplicationGUI extends JFrame {
 //	public static void main(String[] args) {
 //		SwingUtilities.invokeLater(new Runnable() {
 //			public void run() {
@@ -28,12 +34,14 @@ public class ApplicationGUI extends JFrame{
 	public static final int FrameWidth = 1200;
 
 	protected JPanel mainContent;
-	
+	JPanel sidebar;
+
 	SidebarService service = new SidebarService();
+
 	public ApplicationGUI() {
 		this.displayGUI();
 	}
-	
+
 	protected void displayGUI() {
 		this.setSize(new Dimension(FrameWidth, FrameHeight));
 		this.setLocationRelativeTo(null); // this will center your application
@@ -46,46 +54,39 @@ public class ApplicationGUI extends JFrame{
 		CardLayout card = new CardLayout();
 		this.mainContent.setLayout(card);
 
-//		JPanel content1 = new JPanel();
-//		content1.setOpaque(true);
-//		content1.setBackground(Color.RED);
-//		content1.setPreferredSize(new Dimension(400,400));
-//		this.mainContent.add(content1,"content1");
-
-//		
-//		JPanel content2 = new JPanel();
-//		content2.setOpaque(true);
-//		content2.setBackground(Color.BLUE);
-//		this.mainContent.add(content2,"content2");
-
-//		JPanel content3 = new JPanel();
-//		content3.setOpaque(true);
-//		content3.setBackground(Color.GREEN);
-//		this.mainContent.add(content3,"content3");
-
-		JPanel panel1 = new JPanel();
+		JPanel panel1 = new ProductPanel();
 		JPanel panel2 = new CustomerPanel();
-		JPanel panel3 = new JPanel();
-		JLabel label1 = new JLabel("Content of Card 1 is visible now!");
-//		JLabel label2 = new JLabel("Content of Card 2 is visible now!");
-		JLabel label3 = new JLabel("Content of Card 3 is visible now!");
+		JPanel panel3 = new StaffPanel();
+		JPanel panel4 = new SupplierPanel();
+		JPanel panel5 = new POPanel();
 
-		panel1.add(label1);
-//		panel2.add(label2);
-		panel3.add(label3);
 
 		mainContent.add(panel1, "link1");
 		mainContent.add(panel2, "link2");
 		mainContent.add(panel3, "link3");
+		mainContent.add(panel4, "link4");
+		mainContent.add(panel5, "link5");
 
 
-		String[] nameList = { "Button 1", service.findAll().get(0).getName().toString(), "Button 3" };
 
-		String[] namePanel = { "link1", "link2", "link3" };
+		String[] nameList = { service.findAll().get(0).getName().toString(),
+								service.findAll().get(1).getName().toString(), 
+								service.findAll().get(2).getName().toString(),
+								service.findAll().get(3).getName().toString(),
+								service.findAll().get(4).getName().toString()
+							};
 
-		JPanel sidebar = new SidebarContainer(nameList, namePanel, this.mainContent);
+		String[] namePanel = { "link1", "link2", "link3","link4","link5" };
+
+		this.sidebar = new SidebarContainer(nameList, namePanel, this.mainContent);
 		this.add(sidebar, BorderLayout.WEST);
 		this.add(this.mainContent, BorderLayout.CENTER);
+
+		panel1.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+
+			}
+		});
 	}
 
 }

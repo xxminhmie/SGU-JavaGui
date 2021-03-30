@@ -1,57 +1,14 @@
 package xxminhmie.sgu.javagui.gui.common;
 
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Dimension;
-
-import javax.swing.JButton;
-import javax.swing.JFrame;
-
-
-public class SaveButton extends JButton{
-	public SaveButton() {
-		this.setText("Save");
-		this.setBackground(new Color(130,130,130));
-		this.setSize(new Dimension(100,40));
-//		this.setBounds(100, 100, 100, 40);
-		this.setOpaque(true);
-		this.setBorderPainted(false);
-		this.setForeground(Color.WHITE);
-
-		this.addMouseListener(new java.awt.event.MouseAdapter() {
-		    public void mouseEntered(java.awt.event.MouseEvent evt) {
-		        setBackground(new Color(53,53,53));
-		        setOpaque(true);
-				setBorderPainted(false);
-				setCursor(new Cursor(Cursor.HAND_CURSOR));
-		    }
-
-		    public void mouseExited(java.awt.event.MouseEvent evt) {
-				setBackground(new Color(130,130,130));
-
-				setOpaque(true);
-				setBorderPainted(false);
-		    
-		    }});
-
+public class SaveButton extends AbstractButton{
+	public SaveButton(int x, int y) {
+		super(x, y);
+		setNameBtn("Save");
+		init();
 	}
-	public static void main(String[] args) {
-		JFrame frame = new JFrame();
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(new Dimension(1040, 700));
-		frame.setLocationRelativeTo(null); // this will center your application
-		frame.setLayout(null);
-
-		SaveButton add = new SaveButton();
-		DeleteButton del = new DeleteButton();
-		ResetButton re = new ResetButton();
-		del.setBounds(100, 100, 100, 40);
-		re.setBounds(200, 200, 100, 40);
-		frame.add(del);
-		frame.add(add);
-		frame.add(re);
-		frame.setVisible(true);
-	}
-
-
+	public SaveButton(int x, int y,int w, int h) {
+		super(x, y, w, h);
+		setNameBtn("Save");
+		init();
+	}	
 }

@@ -18,33 +18,21 @@ public class SidebarContainer extends JPanel {
 	protected static final Color SidebarFg = Color.WHITE;
 
 	protected JButton[] listItem;
+	protected JPanel accountPanel;
 	
 	public SidebarContainer(String[] nameList, String[] namePanel,JPanel content) {
 		this.setBackground(SidebarBg);
 		this.setPreferredSize(new Dimension(SidebarWidth, ApplicationGUI.FrameHeight));
 		this.setLayout(new FlowLayout());
+		
+		this.accountPanel = new AccountPanel();
+		add(accountPanel);
 		this.listItem = new SidebarItem[nameList.length];
+		
 		for(int i=0; i<nameList.length; i++) {
 			this.listItem[i] = new SidebarItem(nameList[i], namePanel[i],content);
 			this.add(this.listItem[i]);
 		}
-
 	}
 	
-
-//	public static void main(String[] args) {
-//		JFrame frame = new JFrame();
-//		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//		frame.setSize(new Dimension(1200, 700));
-//		frame.setLocationRelativeTo(null); // this will center your application
-//		frame.setLayout(new BorderLayout());
-//
-//		String[] nameList = {"Button 1","Button 2","Button 3"};
-//		
-//		JPanel sidebar = new SidebarContainer(nameList);
-//		frame.add(sidebar, BorderLayout.WEST);
-//
-//		frame.setVisible(true);
-//	}
-
 }

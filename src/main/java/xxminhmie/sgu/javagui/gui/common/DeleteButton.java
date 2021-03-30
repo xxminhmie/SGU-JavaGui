@@ -6,30 +6,17 @@ import java.awt.Dimension;
 
 import javax.swing.JButton;
 
-public class DeleteButton extends JButton{
-	public DeleteButton() {
-		this.setText("Delete");
-		this.setBackground(new Color(130,130,130));
-		this.setSize(new Dimension(100,40));
-//		this.setBounds(100, 100, 100, 40);
-		this.setOpaque(true);
-		this.setBorderPainted(false);
-		this.setForeground(Color.WHITE);
-		this.addMouseListener(new java.awt.event.MouseAdapter() {
-		    public void mouseEntered(java.awt.event.MouseEvent evt) {
-		        setBackground(new Color(53,53,53));
-		        setOpaque(true);
-				setBorderPainted(false);
-				setCursor(new Cursor(Cursor.HAND_CURSOR));
-		    }
+public class DeleteButton extends AbstractButton{
+	public DeleteButton(int x, int y) {
+		super(x, y);
+		setNameBtn("Delete");	
+		init();
 
-		    public void mouseExited(java.awt.event.MouseEvent evt) {
-				setBackground(new Color(130,130,130));
-				setOpaque(true);
-				setBorderPainted(false);
-		    
-		    }});
-
+	}
+	public DeleteButton(int x, int y, int w, int h) {
+		super(x, y, w, h);
+		setNameBtn("Delete");	
+		init();
 
 	}
 

@@ -1,11 +1,13 @@
 package xxminhmie.sgu.javagui.model;
-
+//DONE
 public class BillModel extends AbstractModel{
-	protected Long staffId;
-	protected Long customerId;
 	
+	protected Long staffId;
+	protected Long customerId;	
 	protected java.sql.Date createdDate;
 	protected String total;
+	
+	
 	public Long getStaffId() {
 		return staffId;
 	}

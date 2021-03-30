@@ -3,6 +3,8 @@ package xxminhmie.sgu.javagui.model;
 public class RoleModel extends AbstractModel {
 	protected String name;
 	protected String description;
+	
+	
 	public String getName() {
 		return name;
 	}

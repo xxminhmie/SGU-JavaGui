@@ -15,6 +15,7 @@ public class ProductMapper implements RowMapper<ProductModel>{
 			pro.setName(rs.getString("name"));
 			pro.setBrand(rs.getString("brand"));
 			pro.setDescription(rs.getString("description"));
+			pro.setStatus(rs.getString("status"));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

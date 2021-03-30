@@ -8,17 +8,16 @@ import javax.inject.Inject;
 import xxminhmie.sgu.javagui.dao.ICustomerDAO;
 import xxminhmie.sgu.javagui.dao.impl.CustomerDAO;
 import xxminhmie.sgu.javagui.model.CustomerModel;
-import xxminhmie.sgu.javagui.paging.Pageble;
 import xxminhmie.sgu.javagui.service.ICustomerService;
 
 public class CustomerService implements ICustomerService {
 //	@Inject
 	protected CustomerDAO cusDao = new CustomerDAO();
 
-	@Override
-	public List<CustomerModel> findAll(Pageble pageble) {
-		return cusDao.findAll(pageble);
-	}
+//	@Override
+//	public List<CustomerModel> findAll(Pageble pageble) {
+//		return cusDao.findAll(pageble);
+//	}
 
 	@Override
 	public List<CustomerModel> findAll() {
