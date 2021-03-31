@@ -1,6 +1,6 @@
 package xxminhmie.sgu.javagui.model;
 //DONE
-public class BillDetailModel extends AbstractModel{
+public class BillDetailModel{
 	protected Long billId;
 	protected Long skuId;
 	protected Long discountId;

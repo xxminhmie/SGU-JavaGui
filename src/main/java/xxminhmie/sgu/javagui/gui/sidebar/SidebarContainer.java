@@ -3,6 +3,8 @@ package xxminhmie.sgu.javagui.gui.sidebar;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -19,20 +21,42 @@ public class SidebarContainer extends JPanel {
 
 	protected JButton[] listItem;
 	protected JPanel accountPanel;
-	
-	public SidebarContainer(String[] nameList, String[] namePanel,JPanel content) {
+	ActionListener itemListener = new ItemListener();
+
+	public SidebarContainer(String[] nameList, String[] namePanel, JPanel content) {
 		this.setBackground(SidebarBg);
 		this.setPreferredSize(new Dimension(SidebarWidth, ApplicationGUI.FrameHeight));
 		this.setLayout(new FlowLayout());
-		
+
 		this.accountPanel = new AccountPanel();
 		add(accountPanel);
 		this.listItem = new SidebarItem[nameList.length];
-		
-		for(int i=0; i<nameList.length; i++) {
-			this.listItem[i] = new SidebarItem(nameList[i], namePanel[i],content);
+		for (int i = 0; i < nameList.length; i++) {
+			this.listItem[i] = new SidebarItem(nameList[i], namePanel[i], content);
+			listItem[i].addActionListener(itemListener);
 			this.add(this.listItem[i]);
 		}
+
 	}
-	
+
+	class ItemListener implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			JButton button = (JButton) e.getSource();
+//			System.out.println(button.getText());
+			ItemListenerHandle(button.getText());
+		}
+
+	}
+
+	public void ItemListenerHandle(String item) {
+		for (int i = 0; i < listItem.length; i++) {
+			if (listItem[i].getText().equals(item)) {
+				this.listItem[i].setBackground(Color.RED);
+			} else {
+				this.listItem[i].setBackground(Color.BLACK);
+			}
+		}
+	}
+
 }

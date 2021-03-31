@@ -10,7 +10,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
+import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -25,6 +27,7 @@ import javax.swing.event.DocumentListener;
 
 import xxminhmie.sgu.javagui.gui.modeltable.POModelData;
 import xxminhmie.sgu.javagui.gui.validator.WhiteSpaceValidator;
+import xxminhmie.sgu.javagui.model.POModel;
 import xxminhmie.sgu.javagui.model.ProductModel;
 import xxminhmie.sgu.javagui.model.SkuModel;
 import xxminhmie.sgu.javagui.service.impl.POService;
@@ -44,7 +47,7 @@ public class POPanel extends JPanel {
 	JPanel mainPanel = new JPanel();// BorderLayout.CENTER
 
 	JPanel panel = new JPanel();
-	PODetailPanel skuPanel = new PODetailPanel(this.detailService);// Contains list of text field
+	PODetailPanel detailPanel = new PODetailPanel(this.detailService);// Contains list of text field
 
 	/*
 	 * Text field
@@ -53,6 +56,8 @@ public class POPanel extends JPanel {
 	JTextField[] tfList;
 	JTextArea text;
 	JComboBox comboStatus;
+	
+	JButton[] more = new JButton[3];
 
 	/*
 	 * Search
@@ -71,8 +76,8 @@ public class POPanel extends JPanel {
 	/*
 	 * Click on table
 	 */
-	ProductModel proSelectedRow = new ProductModel();// Customer is being selected from Table
-	java.util.List<Long> proIdSelectedRowList = new java.util.ArrayList<Long>();// Contains list of customer's ID to
+	POModel selectedRow = new POModel();// Customer is being selected from Table
+	java.util.List<Long> idSelectedRowList = new java.util.ArrayList<Long>();// Contains list of customer's ID to
 
 	int selectedRowIndex;
 
@@ -98,15 +103,15 @@ public class POPanel extends JPanel {
 		/*
 		 * Product Panel - Left
 		 */
-		this.panel.setBounds(0, 0, 310, 700);
+		this.panel.setBounds(0, 0, 380, 700);
 		this.panel.setLayout(null);
 		this.mainPanel.add(this.panel);
 
 		/*
 		 * SKU Panel - Right
 		 */
-		this.skuPanel.setBounds(320, 30, 1000, 700);
-		this.mainPanel.add(this.skuPanel);
+		this.detailPanel.setBounds(380, 30, 1000, 700);
+		this.mainPanel.add(this.detailPanel);
 
 		/*
 		 * Search
@@ -130,20 +135,20 @@ public class POPanel extends JPanel {
 			@Override
 			public void insertUpdate(DocumentEvent e) {
 				model.loadData(table, search.getText());
-				skuPanel.loadData(search.getText());
+				detailPanel.loadData(search.getText());
 			}
 
 			@Override
 			public void removeUpdate(DocumentEvent e) {
 				model.loadData(table, search.getText());
-				skuPanel.loadData(search.getText());
+				detailPanel.loadData(search.getText());
 
 			}
 
 			@Override
 			public void changedUpdate(DocumentEvent e) {
 				model.loadData(table, search.getText());
-				skuPanel.loadData(search.getText());
+				detailPanel.loadData(search.getText());
 
 			}
 
@@ -152,48 +157,43 @@ public class POPanel extends JPanel {
 		 * Text field
 		 */
 		this.tfPanel = new JPanel();
-		this.tfPanel.setBounds(0, 30, 310, 240);
+		this.tfPanel.setBounds(0, 30, 380, 240);
 		this.tfPanel.setOpaque(true);
 		this.tfPanel.setLayout(null);
 		this.panel.add(this.tfPanel);
 
-		String[] infoName = { "ID: ", "Name: ", "Brand: ", "Description: ", "Status: " };
-		String[] comboStatusSelection = { "Actived", "Locked" };
-		this.tfList = new JTextField[5];
+		String[] infoName = { "ID: ", "StaffID: ", "SupplierID: ", "Created Date: ", "Total", "Status: " };
+		String[] comboStatusSelection = { "Pending ", "Confirmed", "Sent to Supplier", "Canceled" };
+		this.tfList = new JTextField[6];
 		int x = 10;
 		int y = 20;
 		// this for loop initialize label and text field, set position for both
 		for (int i = 0; i < this.tfList.length; i++) {
 			JLabel label = new JLabel(infoName[i]);
 			this.tfPanel.add(label);
-			if (i == 4) {
-				label.setBounds(x, y + 50, 100, 30);
+			if (i == 5) {
+				label.setBounds(x, y, 100, 30);
 				comboStatus = new JComboBox(comboStatusSelection);
 				comboStatus.setSelectedItem(null);
-				comboStatus.setBounds(x + 80, y + 5 + 50, 200, 20);
+				comboStatus.setBounds(x + 90, y + 5, 190, 20);
 				this.tfPanel.add(comboStatus);
 			} else {
-				if (i == 3) {
-					label.setBounds(x, y, 100, 30);
-					text = new JTextArea();
-					text.setBounds(x + 80 + 4, y + 5, 190, 70);
-					text.setColumns(20);
-					text.setLineWrap(true);
-					text.setRows(5);
-					text.setWrapStyleWord(true);
-					this.tfPanel.add(text);
-
-				} else {
-					label.setBounds(x, y, 100, 30);
-
-					tfList[i] = new JTextField();
-					this.tfList[i].setBounds(x + 80, y + 5, 200, 20);
-					this.tfPanel.add(this.tfList[i]);
-				}
-
+				label.setBounds(x, y, 100, 30);
+				tfList[i] = new JTextField();
+				this.tfList[i].setBounds(x + 90, y + 5, 190, 20);
+				this.tfPanel.add(this.tfList[i]);
 			}
+
 			y += 30;
 
+		}
+		int moreX = 10+80+200;
+		int moreY = 20+30+5+30;
+		for(int i=0; i<3; i++) {
+			this.more[i] = new JButton("...");
+			this.more[i].setBounds(moreX, moreY, 40, 20);
+			this.panel.add(this.more[i]);
+			moreY+=30;
 		}
 		/** set read - only for ID text field **/
 		this.tfList[0].setEditable(false);
@@ -232,28 +232,29 @@ public class POPanel extends JPanel {
 				if (rowIndex >= 0 && col >= 0) {
 					selectedRowIndex = rowIndex;
 					/** GET MANUALLY ALL ROW **/
-					proSelectedRow.setId((Long) table.getModel().getValueAt(rowIndex, 0));
-					proSelectedRow.setName((String) table.getModel().getValueAt(rowIndex, 1));
-					proSelectedRow.setBrand((String) table.getModel().getValueAt(rowIndex, 2));
-					proSelectedRow.setDescription((String) table.getModel().getValueAt(rowIndex, 3));
-					proSelectedRow.setStatus((String) table.getModel().getValueAt(rowIndex, 4));
+					selectedRow.setId((Long) table.getModel().getValueAt(rowIndex, 0));
+					selectedRow.setStaffId((Long) table.getModel().getValueAt(rowIndex, 1));
+					selectedRow.setSupplierId((Long) table.getModel().getValueAt(rowIndex, 2));
+					selectedRow.setCreatedDate((java.sql.Date) table.getModel().getValueAt(rowIndex, 3));
+					selectedRow.setTotal((String) table.getModel().getValueAt(rowIndex, 4));
+					selectedRow.setStatus((String) table.getModel().getValueAt(rowIndex, 5));
 
 				}
 				/** DISPLAY TO TEXT FIELD **/
-				tfList[0].setText(proSelectedRow.getId().toString());
-				tfList[1].setText(proSelectedRow.getName());
-				tfList[2].setText(proSelectedRow.getBrand());
-//				tfList[3].setText(proSelectedRow.getDescription());
-				text.setText(proSelectedRow.getDescription());
-				if (proSelectedRow.getStatus().equals(comboStatus.getItemAt(0))) {
-					comboStatus.setSelectedIndex(0);
-				} else {
-					comboStatus.setSelectedIndex(1);
+				tfList[0].setText(selectedRow.getId().toString());
+				tfList[1].setText(selectedRow.getStaffId().toString());
+				tfList[2].setText(selectedRow.getSupplierId().toString());
+				tfList[3].setText(selectedRow.getCreatedDate().toString());
+				tfList[4].setText(selectedRow.getTotal());
+				for (int i = 0; i < 4; i++) {
+					if (selectedRow.getStatus().equals(comboStatus.getItemAt(i))) {
+						comboStatus.setSelectedIndex(i);
+						break;
+					}
 				}
-
 				getAllSelectedRow(table);
 
-				findAllSkuByProductId(proSelectedRow.getId());
+				findAllSkuByProductId(selectedRow.getId());
 			}
 		});
 
@@ -275,7 +276,7 @@ public class POPanel extends JPanel {
 		 * scroll pane
 		 */
 		this.pane = new JScrollPane(this.table);
-		this.pane.setBounds(0, 20, 300, 360);
+		this.pane.setBounds(0, 20, 360, 360);
 		/** ADD SCROLL PANE TO MAIN PANEL **/
 		this.tbPanel.add(this.pane);
 		this.panel.add(this.tbPanel);
@@ -283,7 +284,7 @@ public class POPanel extends JPanel {
 		/*
 		 * reset button listener
 		 */
-		this.skuPanel.resetBtn.addActionListener(new ActionListener() {
+		this.detailPanel.resetBtn.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -294,7 +295,7 @@ public class POPanel extends JPanel {
 		/*
 		 * button adding action listener
 		 */
-		this.skuPanel.addBtn.addActionListener(new ActionListener() {
+		this.detailPanel.addBtn.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -302,11 +303,11 @@ public class POPanel extends JPanel {
 			}
 
 		});
-		this.skuPanel.tfList[1].getDocument().addDocumentListener(new DocumentListener() {
+		this.detailPanel.tfList[1].getDocument().addDocumentListener(new DocumentListener() {
 
 			@Override
 			public void insertUpdate(DocumentEvent e) {
-				displayProductFromSku(Long.parseLong(skuPanel.tfList[1].getText()));
+				displayProductFromSku(Long.parseLong(detailPanel.tfList[1].getText()));
 			}
 
 			@Override
@@ -316,10 +317,28 @@ public class POPanel extends JPanel {
 
 			@Override
 			public void changedUpdate(DocumentEvent e) {
-				displayProductFromSku(Long.parseLong(skuPanel.tfList[1].getText()));
+				displayProductFromSku(Long.parseLong(detailPanel.tfList[1].getText()));
 
 			}
 
+		});
+		
+		/*
+		 * more button add listener
+		 */
+		this.more[0].addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JFrame f = new JFrame();
+				CustomerPanel p = new CustomerPanel();
+				f.getContentPane().add(p);
+				f.setSize(new Dimension(1000,500));
+				f.setVisible(true);
+				f.setLocationRelativeTo(null); // this will center your application
+
+			}
+			
 		});
 	}// END CONSTRUCTOR////////////////////////////////////
 
@@ -328,7 +347,7 @@ public class POPanel extends JPanel {
 	 */
 	public void resetButtonHandle() {
 //		this.flagReset = true;
-		this.skuPanel.resetButtonHandle();
+		this.detailPanel.resetButtonHandle();
 
 		for (int i = 0; i < this.tfList.length; i++) {
 			if (i == 4) {
@@ -406,7 +425,7 @@ public class POPanel extends JPanel {
 //		getGeneratedKeys(savedId);
 //		table.setRowSelectionInterval(selectedRowIndex, selectedRowIndex);
 //
-//		this.skuPanel.addButtonHandle(savedId);
+//		this.detailPanel.addButtonHandle(savedId);
 		return 0;
 	}
 
@@ -445,28 +464,28 @@ public class POPanel extends JPanel {
 //		this.proSelectedRow = this.poService.findOne(productId);
 
 		/** DISPLAY TO TEXT FIELD **/
-		tfList[0].setText(proSelectedRow.getId().toString());
-		tfList[1].setText(proSelectedRow.getName());
-		tfList[2].setText(proSelectedRow.getBrand());
-		text.setText(proSelectedRow.getDescription());
-		if (proSelectedRow.getStatus().equals(comboStatus.getItemAt(0))) {
-			comboStatus.setSelectedIndex(0);
-		} else {
-			comboStatus.setSelectedIndex(1);
-		}
-		getAllSelectedRow(table);
-		int row = -1;
-		for (int rowIndex = 0; rowIndex < this.model.getRowCount(); rowIndex++) {
-			Long idAtRow = (Long) this.model.getValueAt(rowIndex, 0);
-
-			if (idAtRow == productId) {
-				row = rowIndex;
-				break;
-			}
-		}
-		if (row >= 0) {
-			this.table.setRowSelectionInterval(row, row);
-		}
+//		tfList[0].setText(selectedRow.getId().toString());
+//		tfList[1].setText(selectedRow.getName());
+//		tfList[2].setText(proSelectedRow.getBrand());
+//		text.setText(proSelectedRow.getDescription());
+//		if (proSelectedRow.getStatus().equals(comboStatus.getItemAt(0))) {
+//			comboStatus.setSelectedIndex(0);
+//		} else {
+//			comboStatus.setSelectedIndex(1);
+//		}
+//		getAllSelectedRow(table);
+//		int row = -1;
+//		for (int rowIndex = 0; rowIndex < this.model.getRowCount(); rowIndex++) {
+//			Long idAtRow = (Long) this.model.getValueAt(rowIndex, 0);
+//
+//			if (idAtRow == productId) {
+//				row = rowIndex;
+//				break;
+//			}
+//		}
+//		if (row >= 0) {
+//			this.table.setRowSelectionInterval(row, row);
+//		}
 	}
 
 	/*
@@ -477,10 +496,10 @@ public class POPanel extends JPanel {
 		if (entryTable.getRowCount() > 0) {
 			if (entryTable.getSelectedRowCount() > 0) {
 				int selectedRow[] = entryTable.getSelectedRows();
-				proIdSelectedRowList.clear();
+				idSelectedRowList.clear();
 				for (int i : selectedRow) {
 					Long id = (Long) entryTable.getValueAt(i, 0);
-					proIdSelectedRowList.add(id);
+					idSelectedRowList.add(id);
 				}
 			}
 		}
@@ -490,8 +509,8 @@ public class POPanel extends JPanel {
 	 * click on product table, find list of sku of this selected product
 	 */
 	public void findAllSkuByProductId(Long id) {
-		this.skuPanel.loadData(id);
-		this.skuPanel.tfList[1].setText(String.valueOf(id));
+		this.detailPanel.loadData(id);
+		this.detailPanel.tfList[1].setText(String.valueOf(id));
 	}
 
 	public void menuItemLockHandle() {

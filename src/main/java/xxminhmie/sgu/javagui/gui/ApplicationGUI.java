@@ -13,9 +13,13 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import xxminhmie.sgu.javagui.gui.panel.AccountPanel;
+import xxminhmie.sgu.javagui.gui.panel.BillPanel;
 import xxminhmie.sgu.javagui.gui.panel.CustomerPanel;
+import xxminhmie.sgu.javagui.gui.panel.DiscountPanel;
 import xxminhmie.sgu.javagui.gui.panel.POPanel;
 import xxminhmie.sgu.javagui.gui.panel.ProductPanel;
+import xxminhmie.sgu.javagui.gui.panel.RolePanel;
 import xxminhmie.sgu.javagui.gui.panel.StaffPanel;
 import xxminhmie.sgu.javagui.gui.panel.SupplierPanel;
 import xxminhmie.sgu.javagui.gui.sidebar.SidebarContainer;
@@ -55,28 +59,34 @@ public class ApplicationGUI extends JFrame {
 		this.mainContent.setLayout(card);
 
 		JPanel panel1 = new ProductPanel();
-		JPanel panel2 = new CustomerPanel();
-		JPanel panel3 = new StaffPanel();
+		JPanel panel2 = new BillPanel();
+		JPanel panel3 = new POPanel();
 		JPanel panel4 = new SupplierPanel();
-		JPanel panel5 = new POPanel();
-
+		JPanel panel5 = new DiscountPanel();
+		JPanel panel6 = new StaffPanel();
+		JPanel panel7 = new CustomerPanel();
+		JPanel panel8 = new AccountPanel();
+		JPanel panel9 = new RolePanel();
 
 		mainContent.add(panel1, "link1");
 		mainContent.add(panel2, "link2");
 		mainContent.add(panel3, "link3");
 		mainContent.add(panel4, "link4");
 		mainContent.add(panel5, "link5");
-
-
+		mainContent.add(panel6, "link6");
+		mainContent.add(panel7, "link7");
+		mainContent.add(panel8, "link8");
+		mainContent.add(panel9, "link9");
 
 		String[] nameList = { service.findAll().get(0).getName().toString(),
-								service.findAll().get(1).getName().toString(), 
-								service.findAll().get(2).getName().toString(),
-								service.findAll().get(3).getName().toString(),
-								service.findAll().get(4).getName().toString()
-							};
+				service.findAll().get(1).getName().toString(), service.findAll().get(2).getName().toString(),
+				service.findAll().get(3).getName().toString(), service.findAll().get(4).getName().toString(),
+				service.findAll().get(5).getName().toString(), service.findAll().get(6).getName().toString(),
+				service.findAll().get(7).getName().toString(), service.findAll().get(8).getName().toString(),
 
-		String[] namePanel = { "link1", "link2", "link3","link4","link5" };
+		};
+
+		String[] namePanel = { "link1", "link2", "link3", "link4", "link5","link6","link7","link8","link9" };
 
 		this.sidebar = new SidebarContainer(nameList, namePanel, this.mainContent);
 		this.add(sidebar, BorderLayout.WEST);

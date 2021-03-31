@@ -97,11 +97,12 @@ public class POModelData extends AbstractTableModel {
 	}
 	public void setColumnWidth(JTable table) {
 		TableColumnModel columnModel = table.getColumnModel();
-//		columnModel.getColumn(0).setPreferredWidth(40);
-//		columnModel.getColumn(1).setPreferredWidth(220);
-//		columnModel.getColumn(2).setPreferredWidth(80);
-//		columnModel.getColumn(3).setPreferredWidth(60);
-//		columnModel.getColumn(4).setPreferredWidth(160);
+		columnModel.getColumn(0).setPreferredWidth(40);
+		columnModel.getColumn(1).setPreferredWidth(80);
+		columnModel.getColumn(2).setPreferredWidth(80);
+		columnModel.getColumn(3).setPreferredWidth(160);
+		columnModel.getColumn(4).setPreferredWidth(160);
+		columnModel.getColumn(5).setPreferredWidth(140);
 	}
 
 }

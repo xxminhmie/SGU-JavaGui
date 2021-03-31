@@ -58,9 +58,4 @@ public class CustomerModel extends AbstractModel{
 	public void setDob(java.sql.Date dob) {
 		this.dob = dob;
 	}
-	
-	
-	
-	
-
 }

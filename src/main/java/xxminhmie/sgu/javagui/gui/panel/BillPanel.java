@@ -1,5 +1,7 @@
 package xxminhmie.sgu.javagui.gui.panel;
 
-public class BillPanel {
+import javax.swing.JPanel;
+
+public class BillPanel extends JPanel{
 
 }

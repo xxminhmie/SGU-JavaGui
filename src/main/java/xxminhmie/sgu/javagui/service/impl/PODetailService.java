@@ -22,9 +22,9 @@ public class PODetailService implements IPODetailService{
 	}
 
 	@Override
-	public Long save(PODetailModel detailModel) {
+	public void save(PODetailModel detailModel) {
 		// TODO Auto-generated method stub
-		return dao.save(detailModel);
+		dao.save(detailModel);
 	}
 
 	@Override

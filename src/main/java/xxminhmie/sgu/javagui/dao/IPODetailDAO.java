@@ -8,7 +8,7 @@ public interface IPODetailDAO extends GenericDAO<PODetailModel> {
 	List<PODetailModel> findAll();
 	PODetailModel findOne(Long poId, Long skuId);
 	
-	Long save(PODetailModel detailModel);
+	void save(PODetailModel detailModel);
 	void update(PODetailModel updateDetail);
 	void delete(Long poId, Long skuId);
 

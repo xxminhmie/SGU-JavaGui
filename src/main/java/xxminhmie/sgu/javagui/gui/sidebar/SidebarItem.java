@@ -1,6 +1,7 @@
 package xxminhmie.sgu.javagui.gui.sidebar;
 
 import java.awt.CardLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -37,7 +38,7 @@ public class SidebarItem extends JButton implements MouseListener{
 	}
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		
+
 	}
 
 	@Override

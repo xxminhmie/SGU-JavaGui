@@ -10,7 +10,7 @@ public interface IPODetailService {
 	List<PODetailModel> findAll();
 	PODetailModel findOne(Long poId, Long skuId);
 	
-	Long save(PODetailModel detailModel);
+	void save(PODetailModel detailModel);
 	PODetailModel update(PODetailModel updateModel);
 	void delete(Map<Long,Long> ids);
 	

@@ -63,21 +63,15 @@ public class CustomerService implements ICustomerService {
 	public List<CustomerModel> search(String str) {
 		List<CustomerModel> list = this.findAll();
 		List<CustomerModel> resultList = new ArrayList<CustomerModel>();
-		int index = 0;
-; 		Boolean flag = false;
 		for (CustomerModel e : list) {
-			flag = false;
 			String id = String.valueOf(e.getId());
 			String firstName = e.getFirstName().toLowerCase();
 			String lastName = e.getLastName().toLowerCase();
 			String phone = e.getPhone();
 			String email = e.getEmail();
 			if(id.contains(str) || firstName.contains(str.toLowerCase()) || lastName.contains(str.toLowerCase()) ||phone.contains(str) || phone.contains(str) || email.contains(str)) {
-				flag = true;
-			}			
-			if(flag==true) {
 				resultList.add(e);
-			}
+			}			
 		}
 		return resultList;
 	}

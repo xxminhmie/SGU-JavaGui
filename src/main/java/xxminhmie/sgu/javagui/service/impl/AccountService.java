@@ -1,18 +1,74 @@
 package xxminhmie.sgu.javagui.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import xxminhmie.sgu.javagui.dao.impl.AccountDAO;
 import xxminhmie.sgu.javagui.model.AccountModel;
 import xxminhmie.sgu.javagui.service.IAccountService;
 
-public class AccountService implements IAccountService{
+public class AccountService implements IAccountService {
 
-	AccountDAO accDao = new AccountDAO();
-	
+	AccountDAO dao = new AccountDAO();
+
 	@Override
 	public List<AccountModel> findByUsername(String username) {
-		return accDao.findByUsername(username);
+		return dao.findByUsername(username);
+	}
+
+	@Override
+	public List<AccountModel> findAll() {
+		// TODO Auto-generated method stub
+		return dao.findAll();
+	}
+
+	@Override
+	public AccountModel findOne(Long id) {
+		// TODO Auto-generated method stub
+		return dao.findOne(id);
+	}
+
+	@Override
+	public AccountModel save(AccountModel model) {
+		Long id = dao.save(model);
+		return dao.findOne(id);
+	}
+
+	@Override
+	public AccountModel update(AccountModel update) {
+		dao.update(update);
+		return dao.findOne(update.getId());
+	}
+
+	@Override
+	public void delete(Long[] ids) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public List<AccountModel> search(String str) {
+		List<AccountModel> list = this.findAll();
+		List<AccountModel> resultList = new ArrayList<AccountModel>();
+		for (AccountModel e : list) {
+			String id = String.valueOf(e.getId());
+			String roleId = String.valueOf(e.getRoleId());
+			String staffId = String.valueOf(e.getStaffId());
+			String username = e.getUsername().toLowerCase();
+
+			if (id.contains(str) || roleId.contains(str.toLowerCase()) || staffId.contains(str.toLowerCase())
+					|| username.contains(str)) {
+				resultList.add(e);
+			}
+
+		}
+		return resultList;
+	}
+
+	@Override
+	public int getTotalItem() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }

@@ -2,11 +2,11 @@ package xxminhmie.sgu.javagui.model;
 //DONE
 import java.sql.Date;
 
-public class DiscountModel {
+public class DiscountModel extends AbstractModel {
 	String name;
-	String description;
 	Date startDate;
 	Date endDate;
+	String description;
 	String status;
 
 	

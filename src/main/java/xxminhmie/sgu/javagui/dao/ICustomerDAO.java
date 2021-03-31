@@ -11,8 +11,8 @@ public interface ICustomerDAO extends GenericDAO<CustomerModel>{
 	CustomerModel findOne(Long id);
 	List<CustomerModel> findByPhone(String phone);
 	
-	Long save(CustomerModel customerModel);
-	void update(CustomerModel updateCustomer);
+	Long save(CustomerModel model);
+	void update(CustomerModel update);
 	void delete(Long id);
 	
 	int getTotalItem();

@@ -22,11 +22,11 @@ public class PODetailDAO extends AbstractDAO<PODetailModel> implements IPODetail
 	}
 
 	@Override
-	public Long save(PODetailModel detailModel) {
+	public void save(PODetailModel detailModel) {
 		StringBuilder sql = new StringBuilder("INSERT INTO podetail ");
 		sql.append("(poid, skuid, supplierid, quantity, unitprice, subtotal)");
 		sql.append(" VALUES(?,?,?,?,?,?);");
-		return this.insert(sql.toString(), new PODetailMapper(),
+		this.insert(sql.toString(), new PODetailMapper(),
 				detailModel.getPoId(), detailModel.getSkuId(),
 				detailModel.getSupplierId(), detailModel.getQuantity(),
 				detailModel.getUnitPrice(), detailModel.getSubTotal());
