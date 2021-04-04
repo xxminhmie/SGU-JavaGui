@@ -13,7 +13,7 @@ import xxminhmie.sgu.javagui.service.impl.PODetailService;
 public class PODetailModelData extends AbstractTableModel {
 	PODetailService service = new PODetailService();
 	List<PODetailModel> data = service.findAll();
-	String columnNames[] = { "PO ID", "SKU ID", "SupplierID", "Quantity", "Unit Price", "SubTotal" };
+	String columnNames[] = { "PO.ID", "SKU ID", "SupplierID", "Quantity", "Unit Price", "SubTotal" };
 
 	@Override
 	public int getRowCount() {
@@ -102,6 +102,12 @@ public class PODetailModelData extends AbstractTableModel {
 		this.setColumnWidth(table);
 
 	}
+//	public void loadData(JTable table, String poStr, String skuStr) {
+//		this.data = this.service.search(poStr, skuStr);
+//		fireTableChanged(null);
+//		this.setColumnWidth(table);
+//
+//	}
 
 	public void setColumnWidth(JTable table) {
 		TableColumnModel columnModel = table.getColumnModel();

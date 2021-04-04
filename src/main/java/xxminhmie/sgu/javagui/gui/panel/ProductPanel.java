@@ -45,7 +45,7 @@ public class ProductPanel extends JPanel {
 	JPanel mainPanel = new JPanel();// BorderLayout.CENTER
 
 	JPanel panel = new JPanel();
-	SkuPanel skuPanel = new SkuPanel(this.skuService);// Contains list of text field
+	SkuPanel skuPanel = new SkuPanel(this.skuService);
 
 	/*
 	 * Text field

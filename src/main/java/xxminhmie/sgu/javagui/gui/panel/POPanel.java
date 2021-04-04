@@ -28,8 +28,6 @@ import javax.swing.event.DocumentListener;
 import xxminhmie.sgu.javagui.gui.modeltable.POModelData;
 import xxminhmie.sgu.javagui.gui.validator.WhiteSpaceValidator;
 import xxminhmie.sgu.javagui.model.POModel;
-import xxminhmie.sgu.javagui.model.ProductModel;
-import xxminhmie.sgu.javagui.model.SkuModel;
 import xxminhmie.sgu.javagui.service.impl.POService;
 import xxminhmie.sgu.javagui.service.impl.PODetailService;
 
@@ -53,8 +51,7 @@ public class POPanel extends JPanel {
 	 * Text field
 	 */
 	JPanel tfPanel;// Contains list of text field
-	JTextField[] tfList;
-	JTextArea text;
+	JTextField[] tfList = new JTextField[6];
 	JComboBox comboStatus;
 	
 	JButton[] more = new JButton[3];
@@ -164,7 +161,6 @@ public class POPanel extends JPanel {
 
 		String[] infoName = { "ID: ", "StaffID: ", "SupplierID: ", "Created Date: ", "Total", "Status: " };
 		String[] comboStatusSelection = { "Pending ", "Confirmed", "Sent to Supplier", "Canceled" };
-		this.tfList = new JTextField[6];
 		int x = 10;
 		int y = 20;
 		// this for loop initialize label and text field, set position for both
@@ -254,23 +250,23 @@ public class POPanel extends JPanel {
 				}
 				getAllSelectedRow(table);
 
-				findAllSkuByProductId(selectedRow.getId());
+				findAllDetailByProductId(selectedRow.getId());
 			}
 		});
 
-		JPopupMenu popupMenu = new JPopupMenu();
-		JMenuItem menuItemLock = new JMenuItem("Lock product");
-		popupMenu.add(menuItemLock);
-
-		table.setComponentPopupMenu(popupMenu);
-
-		menuItemLock.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				menuItemLockHandle();
-			}
-
-		});
+//		JPopupMenu popupMenu = new JPopupMenu();
+//		JMenuItem menuItemLock = new JMenuItem("Lock product");
+//		popupMenu.add(menuItemLock);
+//
+//		table.setComponentPopupMenu(popupMenu);
+//
+//		menuItemLock.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				menuItemLockHandle();
+//			}
+//
+//		});
 
 		/*
 		 * scroll pane
@@ -284,14 +280,45 @@ public class POPanel extends JPanel {
 		/*
 		 * reset button listener
 		 */
-		this.detailPanel.resetBtn.addActionListener(new ActionListener() {
+//		this.detailPanel.resetBtn.addActionListener(new ActionListener() {
+//
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				resetButtonHandle();
+//			}
+//
+//		});
+		/*
+		 * reset button
+		 */
+		JPopupMenu popupMenuBtn = new JPopupMenu();
+		JMenuItem menuItemResetAll = new JMenuItem("Reset All");
+		JMenuItem menuItemResetDetail = new JMenuItem("Reset PO Detail");
 
+		popupMenuBtn.add(menuItemResetAll);
+		popupMenuBtn.add(menuItemResetDetail);
+
+		this.detailPanel.resetBtn.addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent e) {
+				popupMenuBtn.show(e.getComponent(), e.getX(), e.getY());
+			}
+		});
+
+		menuItemResetAll.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				resetButtonHandle();
+				resetAllHandle();
 			}
 
 		});
+		menuItemResetDetail.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				resetDetailHandle();
+			}
+
+		});
+		
 		/*
 		 * button adding action listener
 		 */
@@ -345,81 +372,78 @@ public class POPanel extends JPanel {
 	/*
 	 * button handle
 	 */
-	public void resetButtonHandle() {
+	public void resetAllHandle() {
 //		this.flagReset = true;
 		this.detailPanel.resetButtonHandle();
-
 		for (int i = 0; i < this.tfList.length; i++) {
-			if (i == 4) {
+			if(i==5) {
 				comboStatus.setSelectedItem(null);
-			} else {
-				if (i == 3) {
-					text.setText("");
-				} else {
-					this.tfList[i].setText("");
-
-				}
+			}else {
+				this.tfList[i].setText("");
 			}
-
 		}
+		
+	}
+	public void resetDetailHandle() {
+		this.detailPanel.resetButtonHandle();
 	}
 
 	public int addButtonHandle() {
-		Long id = null;
-		if (this.tfList[0].getText().equals("") == false) {
-			try {
-				id = Long.parseLong(tfList[0].getText());
-			} catch (java.lang.NumberFormatException e) {
-				System.out.println("ProductPanel class addButtonHandle method" + e.getMessage());
-			}
-		}
-
-		String name = tfList[1].getText();
-		if (name.isBlank()) {
-			JOptionPane.showMessageDialog(null, "Product's name must be not null!");
-			tfList[1].requestFocus();
-			return -1;
-		}
-		name = WhiteSpaceValidator.validate(name);
-
-		String brand = tfList[2].getText();
-		if (brand.isBlank()) {
-			JOptionPane.showMessageDialog(null, "Product's brand must be not null!");
-			tfList[2].requestFocus();
-			return -1;
-		}
-		brand = WhiteSpaceValidator.validate(brand);
-
-		String des = WhiteSpaceValidator.validate(text.getText());
-
-		String status = null;
-		if (comboStatus.getSelectedItem() != null) {
-			status = comboStatus.getSelectedItem().toString();
-			if (status.equals("Locked")) {
-				JOptionPane.showMessageDialog(null, "Product's status must be not locked while adding!");
-				comboStatus.requestFocus();
-				return -1;
-			}
-		}
-		// Create new product
-		Long savedId;
-		if (id == null) {
-			if (des != null) {
-//				savedId = POService.save(new ProductModel(name, brand, des));
-			} else {
-//				savedId = POService.save(new ProductModel(name, brand));
-			}
-		} else {
-			// Update product
-			if (des != null) {
-//				ProductModel pro = POService.update(new ProductModel(id, name, brand, des));
-//				savedId = pro.getId();
-			} else {
-//				ProductModel pro = POService.update(new ProductModel(id, name, brand));
-//				savedId = pro.getId();
-
-			}
-		}
+//		Long id = null;
+//		if (this.tfList[0].getText().equals("") == false) {
+//			try {
+//				id = Long.parseLong(tfList[0].getText());
+//			} catch (java.lang.NumberFormatException e) {
+//				System.out.println("ProductPanel class addButtonHandle method" + e.getMessage());
+//			}
+//		}
+//
+//		String name = tfList[1].getText();
+//		if (name.isBlank()) {
+//			JOptionPane.showMessageDialog(null, "Product's name must be not null!");
+//			tfList[1].requestFocus();
+//			return -1;
+//		}
+//		name = WhiteSpaceValidator.validate(name);
+//
+//		String brand = tfList[2].getText();
+//		if (brand.isBlank()) {
+//			JOptionPane.showMessageDialog(null, "Product's brand must be not null!");
+//			tfList[2].requestFocus();
+//			return -1;
+//		}
+//		brand = WhiteSpaceValidator.validate(brand);
+//
+//		String des = WhiteSpaceValidator.validate(text.getText());
+//
+//		String status = null;
+//		if (comboStatus.getSelectedItem() != null) {
+//			status = comboStatus.getSelectedItem().toString();
+//			if (status.equals("Locked")) {
+//				JOptionPane.showMessageDialog(null, "Product's status must be not locked while adding!");
+//				comboStatus.requestFocus();
+//				return -1;
+//			}
+//		}
+//		// Create new product
+//		Long savedId;
+//		if (id == null) {
+//			if (des != null) {
+////				savedId = POService.save(new ProductModel(name, brand, des));
+//			} else {
+////				savedId = POService.save(new ProductModel(name, brand));
+//			}
+//		} else {
+//			// Update product
+//			if (des != null) {
+////				ProductModel pro = POService.update(new ProductModel(id, name, brand, des));
+////				savedId = pro.getId();
+//			} else {
+////				ProductModel pro = POService.update(new ProductModel(id, name, brand));
+////				savedId = pro.getId();
+//
+//			}
+//		}
 
 //		this.model.loadData(this.table);
 //		getGeneratedKeys(savedId);
@@ -443,17 +467,17 @@ public class POPanel extends JPanel {
 	 * text field handle
 	 */
 	public void change(int index, String str) {
-		if (flagReset == false) {
-			if (str != null && tfList[index] != null) {
-				if (str.equals(tfList[index].getText()) == false) {
-					tfList[index].setForeground(AbstractPanel.DocumentListener);
-				} else {
-					tfList[index].setForeground(Color.BLACK);
-				}
-			}
-		} else {
-			tfList[index].setForeground(Color.BLACK);
-		}
+//		if (flagReset == false) {
+//			if (str != null && tfList[index] != null) {
+//				if (str.equals(tfList[index].getText()) == false) {
+//					tfList[index].setForeground(AbstractPanel.DocumentListener);
+//				} else {
+//					tfList[index].setForeground(Color.BLACK);
+//				}
+//			}
+//		} else {
+//			tfList[index].setForeground(Color.BLACK);
+//		}
 
 	}
 
@@ -506,11 +530,12 @@ public class POPanel extends JPanel {
 	}
 
 	/*
-	 * click on product table, find list of sku of this selected product
+	 * click on product table, find list of purchase detail of this selected purchase
 	 */
-	public void findAllSkuByProductId(Long id) {
-		this.detailPanel.loadData(id);
-		this.detailPanel.tfList[1].setText(String.valueOf(id));
+	//TODO
+	public void findAllDetailByProductId(Long id) {
+		this.detailPanel.loadData(id.toString());
+//		this.detailPanel.tfList[0].setText(String.valueOf());
 	}
 
 	public void menuItemLockHandle() {
