@@ -7,12 +7,11 @@ import xxminhmie.sgu.javagui.model.BillModel;
 import xxminhmie.sgu.javagui.service.IBillService;
 
 public class BillService implements IBillService {
-	BillDAO accDao = new BillDAO();
+	BillDAO dao = new BillDAO();
 
 	@Override
 	public List<BillModel> findAll() {
-		// TODO Auto-generated method stub
-		return null;
+		return dao.findAll();
 	}
 
 	@Override

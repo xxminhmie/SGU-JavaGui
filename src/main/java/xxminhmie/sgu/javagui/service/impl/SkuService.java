@@ -11,10 +11,7 @@ import xxminhmie.sgu.javagui.service.ISkuService;
 
 public class SkuService implements ISkuService {
 	SkuDAO skuDao = new SkuDAO();
-	ProductDAO productDao = new ProductDAO();
-
-
-
+	
 	@Override
 	public List<SkuModel> findAll() {
 		return skuDao.findAll();
@@ -23,8 +20,6 @@ public class SkuService implements ISkuService {
 	@Override
 	public SkuModel findOne(Long id) {
 		SkuModel skuModel = skuDao.findOne(id);
-		ProductModel productModel = productDao.findOne(skuModel.getProductId());
-//		skuModel.setProductBrand(productModel.getBrand());
 		return skuModel;
 	}
 
@@ -35,27 +30,19 @@ public class SkuService implements ISkuService {
 
 	@Override
 	public SkuModel save(SkuModel skuModel) {
-//		ProductModel productModel = productDao.findOneByBrand(skuModel.getProductBrand());
-//		skuModel.setProductId(productModel.getId());
-//		Long skuId = skuDao.save(skuModel);
-//		return skuDao.findOne(skuId);
-		return null;
+		Long skuId = skuDao.save(skuModel);
+		return skuDao.findOne(skuId);
 	}
 
 	@Override
 	public SkuModel update(SkuModel updateSku) {
-//		ProductModel product = productDao.findOneByBrand(updateSku.getProductBrand());
-//		updateSku.setProductId(product.getId());
-//		skuDao.update(updateSku);
-//		return skuDao.findOne(updateSku.getId());
-		return null;
+		skuDao.update(updateSku);
+		return skuDao.findOne(updateSku.getId());
 	}
 
 	@Override
-	public void delete(long[] ids) {
+	public void delete(Long[] ids) {
 		for (long id : ids) {
-			// 1.delete comment (khoa ngoai new_id)
-			// 2.delete news
 			skuDao.delete(id);
 		}
 	}
@@ -66,18 +53,24 @@ public class SkuService implements ISkuService {
 	}
 
 	@Override
-	public List<SkuModel> search(String str) {
+	public List<SkuModel> search(String str, Long productId) {
 		List<SkuModel> list = this.findAll();
 		List<SkuModel> resultList = new ArrayList<SkuModel>();
 
 		for (SkuModel e : list) {
 			String id = String.valueOf(e.getId());
-			String productId = String.valueOf(e.getProductId());
 			String color = e.getColor();
-			if (id.contains(str) || productId.contains(str.toLowerCase()) || color.contains(str.toLowerCase())) {
-				resultList.add(e);
+			if (id.contains(str) || color.toLowerCase().contains(str.toLowerCase())) {
+				if(e.getProductId() == productId) {
+					resultList.add(e);
+				}
 			}
 		}
 		return resultList;
+	}
+
+	@Override
+	public SkuModel findOneByColorSize(Long productId, String color, String size) {
+		return skuDao.findOneByColorSize(productId, color, size);
 	}
 }

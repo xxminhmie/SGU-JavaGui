@@ -19,6 +19,8 @@ public class SidebarItem extends JButton implements MouseListener{
 
 	public SidebarItem(String name, String panelName,JPanel content) {
 		this.setText(name);
+		this.setName(name);
+
 		this.setPreferredSize(new Dimension(SidebarContainer.SidebarWidth, SidebarItemHeight));
 		this.setBorderPainted(false);
 	    this.setOpaque(true);
@@ -44,6 +46,8 @@ public class SidebarItem extends JButton implements MouseListener{
 	@Override
 	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub
+//	    this.setOpaque(true);
+//		this.setBackground(SidebarContainer.SidebarBgHover);
 		
 	}
 

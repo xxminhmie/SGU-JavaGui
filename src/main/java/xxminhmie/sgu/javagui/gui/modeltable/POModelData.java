@@ -38,15 +38,12 @@ public class POModelData extends AbstractTableModel {
 			return data.get(rowIndex).getStaffId();
 		}
 		if (columnIndex == 2) {
-			return data.get(rowIndex).getSupplierId();
-		}
-		if (columnIndex == 3) {
 			return data.get(rowIndex).getCreatedDate();
 		}
-		if (columnIndex == 4) {
+		if (columnIndex == 3) {
 			return data.get(rowIndex).getTotal();
 		}	
-		if (columnIndex == 5) {
+		if (columnIndex == 4) {
 			return data.get(rowIndex).getStatus();
 		}	
 		return null;
@@ -59,15 +56,12 @@ public class POModelData extends AbstractTableModel {
 			data.get(rowIndex).setStaffId((Long) aValue);
 		}
 		if (columnIndex == 2) {
-			data.get(rowIndex).setSupplierId((Long) aValue);
-		}
-		if (columnIndex == 3) {
 			data.get(rowIndex).setCreatedDate((java.sql.Date) aValue);
 		}
-		if (columnIndex == 4) {
+		if (columnIndex == 3) {
 			data.get(rowIndex).setTotal((String) aValue);
 		}
-		if (columnIndex == 5) {
+		if (columnIndex == 4) {
 			data.get(rowIndex).setStatus((String) aValue);
 		}
 		fireTableCellUpdated(rowIndex, columnIndex);
@@ -102,7 +96,6 @@ public class POModelData extends AbstractTableModel {
 		columnModel.getColumn(2).setPreferredWidth(80);
 		columnModel.getColumn(3).setPreferredWidth(160);
 		columnModel.getColumn(4).setPreferredWidth(160);
-		columnModel.getColumn(5).setPreferredWidth(140);
 	}
 
 }

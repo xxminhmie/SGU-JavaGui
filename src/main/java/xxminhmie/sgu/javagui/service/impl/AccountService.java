@@ -18,20 +18,19 @@ public class AccountService implements IAccountService {
 
 	@Override
 	public List<AccountModel> findAll() {
-		// TODO Auto-generated method stub
 		return dao.findAll();
 	}
 
 	@Override
 	public AccountModel findOne(Long id) {
-		// TODO Auto-generated method stub
 		return dao.findOne(id);
 	}
 
 	@Override
-	public AccountModel save(AccountModel model) {
-		Long id = dao.save(model);
-		return dao.findOne(id);
+	public Long save(AccountModel model) {
+		model.toString();
+//		return dao.save(model);
+		return null;
 	}
 
 	@Override
@@ -42,8 +41,9 @@ public class AccountService implements IAccountService {
 
 	@Override
 	public void delete(Long[] ids) {
-		// TODO Auto-generated method stub
-
+		for(Long id : ids) {
+			dao.delete(id);
+		}
 	}
 
 	@Override

@@ -56,6 +56,13 @@ public class PODetailDAO extends AbstractDAO<PODetailModel> implements IPODetail
 		return 0;
 	}
 
+	@Override
+	public List<PODetailModel> findListByPOId(Long poId) {
+		String sql = "SELECT * FROM podetail WHERE poid = ?";
+		List<PODetailModel> list = this.query(sql, new PODetailMapper(), poId);
+		return list.isEmpty() ? null :  list;
+	}
+
 	
 
 }

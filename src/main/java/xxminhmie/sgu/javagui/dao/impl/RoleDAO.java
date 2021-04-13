@@ -37,7 +37,7 @@ public class RoleDAO extends AbstractDAO<RoleModel> implements IRoleDAO{
 
 	@Override
 	public void delete(Long id) {
-		String sql = "DELETE * FROM role WHERE id = ?";
+		String sql = "DELETE FROM role WHERE id = ?";
 		this.update(sql, id);
 	}
 

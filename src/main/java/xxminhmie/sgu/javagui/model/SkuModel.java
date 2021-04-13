@@ -13,7 +13,35 @@ public class SkuModel extends AbstractModel{
 	protected String status;
 	
 	protected Long productId;
+	
+	public SkuModel() {
+		
+	}
 
+	public SkuModel(String color, String size, int quantity, String price, String importPrice, String image,
+			String status, Long productId) {
+		this.color = color;
+		this.size = size;
+		this.quantity = quantity;
+		this.price = price;
+		this.importPrice = importPrice;
+		this.image = image;
+		this.status = status;
+		this.productId = productId;
+	}
+	
+	public SkuModel(Long id,String color, String size, int quantity, String price, String importPrice, String image,
+			String status, Long productId) {
+		super(id);
+		this.color = color;
+		this.size = size;
+		this.quantity = quantity;
+		this.price = price;
+		this.importPrice = importPrice;
+		this.image = image;
+		this.status = status;
+		this.productId = productId;
+	}
 	public Long getProductId() {
 		return productId;
 	}
@@ -62,4 +90,13 @@ public class SkuModel extends AbstractModel{
 	public void setStatus(String status) {
 		this.status = status;
 	}
+
+	@Override
+	public String toString() {
+		return "SkuModel [color=" + color + ", size=" + size + ", quantity=" + quantity + ", price=" + price
+				+ ", importPrice=" + importPrice + ", image=" + image + ", status=" + status + ", productId="
+				+ productId + "]";
+	}
+	
 }
+

@@ -13,7 +13,6 @@ public class POMapper implements RowMapper<POModel> {
 			POModel po = new POModel();
 			po.setId(rs.getLong("id"));
 			po.setStaffId(rs.getLong("staffid"));
-			po.setSupplierId(rs.getLong("supplierid"));
 			po.setCreatedDate(rs.getDate("createddate"));
 			po.setTotal(rs.getNString("total"));
 			po.setStatus(rs.getNString("status"));

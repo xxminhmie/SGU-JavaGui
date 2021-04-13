@@ -31,10 +31,10 @@ public class PODAO extends AbstractDAO<POModel> implements IPODAO {
 	@Override
 	public Long save(POModel poModel) {
 		StringBuilder sql = new StringBuilder("INSERT INTO po ");
-		sql.append("(staffid, supplierid, createddate,total, status) ");
-		sql.append("VALUES (?, ?, ?, ?, ?)");
+		sql.append("(staffid, createddate,total, status) ");
+		sql.append("VALUES (?, ?, ?, ?)");
 		return this.insert(sql.toString(),
-				poModel.getStaffId(), poModel.getSupplierId(), 
+				poModel.getStaffId(), 
 				poModel.getCreatedDate(), poModel.getTotal(),
 				poModel.getStatus());
 	}
@@ -42,10 +42,10 @@ public class PODAO extends AbstractDAO<POModel> implements IPODAO {
 	@Override
 	public void update(POModel poModel) {
 		StringBuilder sql = new StringBuilder("UPDATE po SET ");
-		sql.append("staffid = ?, supplierid = ?, createddate = ?, total = ?, status = ? ");
+		sql.append("staffid = ?, createddate = ?, total = ?, status = ? ");
 		sql.append("WHERE id = ");
 		this.update(sql.toString(),
-				poModel.getStaffId(), poModel.getSupplierId(), 
+				poModel.getStaffId(), 
 				poModel.getCreatedDate(), poModel.getTotal(),
 				poModel.getStatus(), poModel.getId());
 	}

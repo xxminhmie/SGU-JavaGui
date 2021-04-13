@@ -1,5 +1,6 @@
 package xxminhmie.sgu.javagui.gui.modeltable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JTable;
@@ -14,7 +15,8 @@ public class SkuModelData extends AbstractTableModel {
 	SkuService service = new SkuService();
 	List<SkuModel> data = service.findAll();
 
-	String columnNames[] = { "ID", "P.ID", "Color", "Size", "Q.ty", "Price (vnd)", "Im.Price (vnd)", "Status", "Image" };
+	String columnNames[] = { "ID", "P.ID", "Color", "Size", "Q.ty", "Price (vnd)", "Im.Price (vnd)", "Status",
+			"Image" };
 
 	@Override
 	public int getRowCount() {
@@ -113,18 +115,28 @@ public class SkuModelData extends AbstractTableModel {
 	}
 
 	// refresh data from list
-	public void loadData(JTable table, String str) {
-		this.data = this.service.search(str);
+	public void loadData(JTable table, String str, Long productId) {
+		this.data = this.service.search(str, productId);
 		fireTableChanged(null);
 		setColumnWidth(table);
 
 	}
 
-	// refresh data from row selected product
+	// refresh data from row selected product after adding
 	public void loadData(JTable table, Long productId) {
-		this.data = this.service.findByProductId(productId);
-		fireTableChanged(null);
-		setColumnWidth(table);
+		data = service.findByProductId(productId);
+		if (data != null) {
+			fireTableChanged(null);
+			setColumnWidth(table);
+		}
+
+	}
+	public void setData(List<SkuModel> data) {
+		if (data == null) {
+			this.data = new ArrayList<SkuModel>();
+		} else {
+			this.data = data;
+		}
 	}
 	
 	public void setColumnWidth(JTable table) {

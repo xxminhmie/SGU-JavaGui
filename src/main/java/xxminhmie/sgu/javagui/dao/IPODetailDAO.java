@@ -7,6 +7,7 @@ import xxminhmie.sgu.javagui.model.PODetailModel;
 public interface IPODetailDAO extends GenericDAO<PODetailModel> {
 	List<PODetailModel> findAll();
 	PODetailModel findOne(Long poId, Long skuId);
+	List<PODetailModel> findListByPOId(Long poId);
 	
 	void save(PODetailModel detailModel);
 	void update(PODetailModel updateDetail);

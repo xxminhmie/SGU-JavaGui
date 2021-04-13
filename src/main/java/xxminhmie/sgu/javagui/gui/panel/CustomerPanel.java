@@ -82,13 +82,13 @@ public class CustomerPanel extends JPanel {
 		 * INITIALIZE BG PANEL include main label, main panel
 		 **************************/
 		this.setBackground(AbstractPanel.PanelBg);
-		this.setPreferredSize(new Dimension(AbstractPanel.PanelWidth,AbstractPanel.PanelHeight));
+		this.setPreferredSize(new Dimension(AbstractPanel.PanelWidth, AbstractPanel.PanelHeight));
 		this.setLayout(new BorderLayout());
 
 		/***************************
 		 * MAIN LABEL OF BG PANEL
 		 ***************************/
-		this.mainLabel = new JLabel("Customer Management");
+		this.mainLabel = new JLabel("Customer Manager");
 		this.mainLabel.setFont(new Font("Helvetica", Font.BOLD, 24));
 		this.add(this.mainLabel, BorderLayout.NORTH);
 
@@ -189,7 +189,7 @@ public class CustomerPanel extends JPanel {
 		this.mainPanel.add(this.btnPanel);
 
 		/** SAVE BUTTON **/
-		this.saveBtn = new SaveButton(20,0);
+		this.saveBtn = new SaveButton(20, 0);
 //		this.saveBtn.setBounds(20, 0, 100, 40);
 		this.btnPanel.add(this.saveBtn);
 		this.saveBtn.addActionListener(new ActionListener() {
@@ -200,7 +200,7 @@ public class CustomerPanel extends JPanel {
 		});
 
 		/** DELETE BUTTON **/
-		this.deleteBtn = new DeleteButton(20,50);
+		this.deleteBtn = new DeleteButton(20, 50);
 //		this.deleteBtn.setBounds(20, 50, 100, 40);
 		this.btnPanel.add(this.deleteBtn);
 		this.deleteBtn.addActionListener(new ActionListener() {
@@ -211,7 +211,7 @@ public class CustomerPanel extends JPanel {
 		});
 
 		/** RESET BUTTON **/
-		this.resetBtn = new ResetButton(20,100);
+		this.resetBtn = new ResetButton(20, 100);
 //		this.resetBtn.setBounds(20, 100, 100, 40);
 		this.btnPanel.add(this.resetBtn);
 		this.resetBtn.addActionListener(new ActionListener() {
@@ -223,8 +223,7 @@ public class CustomerPanel extends JPanel {
 
 		/********************** TABLE ON MAIN PANEL **************************/
 		this.tbPanel = new JPanel();
-		this.tbPanel.setBackground(Color.red);
-		this.tbPanel.setBounds(10, 260, 1000, 360);
+		this.tbPanel.setBounds(10, 260, 700, 360);
 		this.tbPanel.setLayout(null);
 		this.mainPanel.add(this.tbPanel);
 
@@ -264,7 +263,7 @@ public class CustomerPanel extends JPanel {
 		});
 		/********************** INITIALIZE SCROLL PANE **************************/
 		this.pane = new JScrollPane(this.table);
-		this.pane.setBounds(0, 0, 1000, 360);
+		this.pane.setBounds(0, 0, 700, 360);
 		/** ADD SCROLL PANE TO MAIN PANEL **/
 		this.tbPanel.add(this.pane);
 
@@ -301,7 +300,8 @@ public class CustomerPanel extends JPanel {
 
 		});
 		/*
-		 * https://stackoverflow.com/questions/20945380/how-to-set-focus-on-jdatechooser-when-frame-is-loaded-in-swing
+		 * https://stackoverflow.com/questions/20945380/how-to-set-focus-on-jdatechooser
+		 * -when-frame-is-loaded-in-swing
 		 */
 		this.infoTfList[4].addKeyListener(new KeyAdapter() {
 			@Override
@@ -321,98 +321,11 @@ public class CustomerPanel extends JPanel {
 			}
 
 		});
-		/****************************************************************
-		 * 
-		 * DOCUMENT LISTENER OF text field
-		 * 
-		 */
-		// first name
-		this.infoTfList[1].getDocument().addDocumentListener(new DocumentListener() {
-
-			public void changedUpdate(DocumentEvent arg0) {
-			}
-
-			public void insertUpdate(DocumentEvent arg0) {
-				change(1, selectedRow.getFirstName());
-			}
-
-			public void removeUpdate(DocumentEvent arg0) {
-				change(1, selectedRow.getFirstName());
-
-			}
-		});
-		// last name
-		this.infoTfList[2].getDocument().addDocumentListener(new DocumentListener() {
-			public void changedUpdate(DocumentEvent arg0) {
-
-			}
-
-			public void insertUpdate(DocumentEvent arg0) {
-				change(2, selectedRow.getLastName());
-
-			}
-
-			public void removeUpdate(DocumentEvent arg0) {
-				change(2, selectedRow.getLastName());
-
-			}
-		});
-
-		// phone
-		this.infoTfList[3].getDocument().addDocumentListener(new DocumentListener() {
-			public void changedUpdate(DocumentEvent arg0) {
-			}
-
-			public void insertUpdate(DocumentEvent arg0) {
-				change(3, selectedRow.getPhone());
-			}
-
-			public void removeUpdate(DocumentEvent arg0) {
-				change(3, selectedRow.getPhone());
-			}
-		});
-		// email
-		this.infoTfList[4].getDocument().addDocumentListener(new DocumentListener() {
-
-			public void changedUpdate(DocumentEvent arg0) {
-			}
-
-			public void insertUpdate(DocumentEvent arg0) {
-				change(4, selectedRow.getEmail());
-			}
-
-			public void removeUpdate(DocumentEvent arg0) {
-				change(4, selectedRow.getEmail());
-			}
-		});
 	}
 
-	/******************************************************************
-	 * 
-	 * TEXT FIELD HANDLE
-	 * 
-	 ******************************************************************/
-
-	public void change(int index, String str) {
-		if (flagReset == false) {
-			if (str != null && infoTfList[index] != null) {
-				if (str.equals(infoTfList[index].getText()) == false) {
-					infoTfList[index].setForeground(AbstractPanel.DocumentListener);
-				} else {
-					infoTfList[index].setForeground(Color.BLACK);
-				}
-			}
-		} else {
-			infoTfList[index].setForeground(Color.BLACK);
-		}
-
-	}
-
-	/******************************************************************
-	 * 
-	 * SAVE BUTTON HANDLE
-	 * 
-	 ******************************************************************/
+	/*
+	 * Save button handle
+	 */
 	protected int saveButtonClicked() {
 		/*
 		 * Get informations from text field

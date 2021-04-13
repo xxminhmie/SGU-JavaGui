@@ -4,15 +4,17 @@ import java.util.List;
 
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableColumnModel;
 
 import xxminhmie.sgu.javagui.model.BillModel;
 import xxminhmie.sgu.javagui.model.RoleModel;
 import xxminhmie.sgu.javagui.service.impl.BillService;
 
-public class BillModelData extends AbstractTableModel{
+public class BillModelData extends AbstractTableModel {
 	BillService service = new BillService();
 	List<BillModel> data = service.findAll();
-	String columnNames[] = { "ID", "StaffId", "CustomerId","Created Date","Total" };
+	String columnNames[] = { "ID", "StaffId", "CustomerId", "Created Date", "Total" };
+
 	@Override
 	public int getRowCount() {
 		// TODO Auto-generated method stub
@@ -42,8 +44,9 @@ public class BillModelData extends AbstractTableModel{
 		if (columnIndex == 4) {
 			return data.get(rowIndex).getTotal();
 		}
-					return null;
+		return null;
 	}
+
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 		if (columnIndex == 0) {
 			data.get(rowIndex).setId((Long) aValue);
@@ -63,6 +66,7 @@ public class BillModelData extends AbstractTableModel{
 		fireTableCellUpdated(rowIndex, columnIndex);
 
 	}
+
 	public String getColumnName(int columnIndex) {
 		return columnNames[columnIndex];
 	}
@@ -70,19 +74,31 @@ public class BillModelData extends AbstractTableModel{
 	public boolean isCellEditable(int rowIndex, int columnIndex) {
 		return false;
 	}
+
 	public BillModel getModel(int rowIndex) {
 		return data.get(rowIndex);
 	}
-	//refresh data from database
+
+	// refresh data from database
 	public void loadData(JTable table) {
 		this.data = this.service.findAll();
-	    fireTableChanged(null);
-	}
-	//refresh data from list
-	public void loadData(JTable table, String str) {
-		this.data = this.service.search(str);
-	    fireTableChanged(null);
+		fireTableChanged(null);
 	}
 
+	// refresh data from list
+	public void loadData(JTable table, String str) {
+		this.data = this.service.search(str);
+		fireTableChanged(null);
+	}
+
+	public void setColumnWidth(JTable table) {
+		TableColumnModel columnModel = table.getColumnModel();
+		columnModel.getColumn(0).setPreferredWidth(40);
+		columnModel.getColumn(1).setPreferredWidth(220);
+		columnModel.getColumn(2).setPreferredWidth(80);
+		columnModel.getColumn(3).setPreferredWidth(60);
+		columnModel.getColumn(4).setPreferredWidth(160);
+
+	}
 
 }

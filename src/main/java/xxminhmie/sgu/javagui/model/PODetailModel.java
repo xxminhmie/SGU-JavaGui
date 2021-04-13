@@ -9,6 +9,20 @@ public class PODetailModel{
 	protected String subTotal;
 	
 	
+	
+	public PODetailModel(Long poId, Long skuId, Long supplierId, int quantity, String unitPrice, String subTotal) {
+		super();
+		this.poId = poId;
+		this.skuId = skuId;
+		this.supplierId = supplierId;
+		this.quantity = quantity;
+		this.unitPrice = unitPrice;
+		this.subTotal = subTotal;
+	}
+	public PODetailModel() {
+		super();
+	}
+	
 	public Long getPoId() {
 		return poId;
 	}

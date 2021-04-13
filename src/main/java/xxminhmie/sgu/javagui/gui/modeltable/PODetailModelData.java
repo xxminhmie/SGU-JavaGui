@@ -1,5 +1,6 @@
 package xxminhmie.sgu.javagui.gui.modeltable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JTable;
@@ -29,6 +30,14 @@ public class PODetailModelData extends AbstractTableModel {
 
 	public PODetailService getService() {
 		return this.service;
+	}
+	
+	public void setData(List<PODetailModel> data) {
+		if(data==null) {
+			this.data = new ArrayList<PODetailModel>();
+		}else {
+			this.data = data;
+		}
 	}
 
 	@Override
@@ -98,6 +107,13 @@ public class PODetailModelData extends AbstractTableModel {
 	// refresh data from list
 	public void loadData(JTable table, String str) {
 		this.data = this.service.search(str);
+		fireTableChanged(null);
+		this.setColumnWidth(table);
+
+	}
+
+	public void loadData(JTable table, Long poId) {
+		this.data = this.service.findListByPOId(poId);
 		fireTableChanged(null);
 		this.setColumnWidth(table);
 

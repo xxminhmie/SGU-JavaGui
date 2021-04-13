@@ -3,6 +3,7 @@ package xxminhmie.sgu.javagui.gui.panel;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,6 +12,7 @@ import java.awt.event.MouseEvent;
 import java.util.List;
 
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -23,7 +25,13 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import xxminhmie.sgu.javagui.gui.common.AddButton;
+import xxminhmie.sgu.javagui.gui.common.DeleteButton;
+import xxminhmie.sgu.javagui.gui.common.ResetButton;
+import xxminhmie.sgu.javagui.gui.common.SaveButton;
 import xxminhmie.sgu.javagui.gui.modeltable.ProductModelData;
+import xxminhmie.sgu.javagui.gui.panel.sub.SkuPanel;
+import xxminhmie.sgu.javagui.gui.panel.sub.SubFrame;
 import xxminhmie.sgu.javagui.gui.validator.WhiteSpaceValidator;
 import xxminhmie.sgu.javagui.model.ProductModel;
 import xxminhmie.sgu.javagui.model.SkuModel;
@@ -31,53 +39,44 @@ import xxminhmie.sgu.javagui.service.impl.ProductService;
 import xxminhmie.sgu.javagui.service.impl.SkuService;
 
 public class ProductPanel extends JPanel {
-
-	ProductService productService = new ProductService();
-	SkuService skuService = new SkuService();
-
-	/******************************************************************
-	 * 
-	 * Attributes
-	 * 
-	 ******************************************************************/
-	JLabel mainLabel = new JLabel("Product Manager");// "Customer Management",BorderLayout.NORTH
-
-	JPanel mainPanel = new JPanel();// BorderLayout.CENTER
-
+	ProductService service = new ProductService();
+	JLabel mainLabel = new JLabel("Product Manager");
+	JPanel mainPanel = new JPanel();
 	JPanel panel = new JPanel();
-	SkuPanel skuPanel = new SkuPanel(this.skuService);
-
 	/*
 	 * Text field
 	 */
-	JPanel tfPanel;// Contains list of text field
+	JPanel tfPanel;
 	JTextField[] tfList;
 	JTextArea text;
 	JComboBox comboStatus;
-
 	/*
 	 * Search
 	 */
-	JPanel searchPanel;// Contains SEARCH text field
+	JPanel searchPanel;
 	JTextField search;
-
+	/*
+	 * Button
+	 */
+	JPanel btnPanel = new JPanel();
+	ResetButton resetBtn;
+	SaveButton saveBtn;
+	AddButton addSkuBtn;
+	AddButton addBtn;
+	DeleteButton deleteBtn;
 	/*
 	 * Table
 	 */
-	JPanel tbPanel;// Contains j table on scroll pane
+	JPanel tbPanel;
 	JScrollPane pane;
 	JTable table;
 	ProductModelData model;
-
 	/*
-	 * Click on table
+	 * Handle clicking on table
 	 */
-	ProductModel proSelectedRow = new ProductModel();// Customer is being selected from Table
-	java.util.List<Long> proIdSelectedRowList = new java.util.ArrayList<Long>();// Contains list of customer's ID to
-
-	int selectedRowIndex;
-
-	Boolean flagReset = false;
+	ProductModel selectedRow = new ProductModel();// Product is being selected from Table
+	java.util.List<Long> idSelectedRowList = new java.util.ArrayList<Long>();// Contains list of product's ID to
+	int selectedRowIndex = -1;
 
 	/*
 	 * Constructor
@@ -97,17 +96,11 @@ public class ProductPanel extends JPanel {
 		this.add(this.mainPanel, BorderLayout.CENTER);
 
 		/*
-		 * Product Panel - Left
+		 * Product Panel
 		 */
-		this.panel.setBounds(0, 0, 370, 700);
+		this.panel.setBounds(0, 0, AbstractPanel.PanelWidth, 700);
 		this.panel.setLayout(null);
 		this.mainPanel.add(this.panel);
-
-		/*
-		 * SKU Panel - Right
-		 */
-		this.skuPanel.setBounds(380, 30, 1000, 700);
-		this.mainPanel.add(this.skuPanel);
 
 		/*
 		 * Search
@@ -120,42 +113,41 @@ public class ProductPanel extends JPanel {
 		this.search = new JTextField("Search...");
 		this.search.setForeground(new Color(144, 144, 144));
 		this.search.setBounds(10, 10, 300, 30);
+		this.searchPanel.add(this.search);
+
+		/*
+		 * Search's listener
+		 */
 		this.search.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				search.selectAll();
 				search.setForeground(Color.BLACK);
 			}
 		});
-		this.searchPanel.add(this.search);
 		this.search.getDocument().addDocumentListener(new DocumentListener() {
 			@Override
 			public void insertUpdate(DocumentEvent e) {
 				model.loadData(table, search.getText());
-				skuPanel.loadData(search.getText());
 			}
 
 			@Override
 			public void removeUpdate(DocumentEvent e) {
 				model.loadData(table, search.getText());
-				skuPanel.loadData(search.getText());
-
 			}
 
 			@Override
 			public void changedUpdate(DocumentEvent e) {
 				model.loadData(table, search.getText());
-				skuPanel.loadData(search.getText());
-
 			}
 
 		});
 		/*
 		 * Text field
 		 */
-		this.tfPanel = new JPanel();
-		this.tfPanel.setBounds(0, 30, 310, 240);
-		this.tfPanel.setOpaque(true);
-		this.tfPanel.setLayout(null);
+		tfPanel = new JPanel();
+		tfPanel.setBounds(0, 30, 310, 240);
+		tfPanel.setOpaque(true);
+		tfPanel.setLayout(null);
 		this.panel.add(this.tfPanel);
 
 		String[] infoName = { "ID: ", "Name: ", "Brand: ", "Description: ", "Status: " };
@@ -168,7 +160,7 @@ public class ProductPanel extends JPanel {
 			JLabel label = new JLabel(infoName[i]);
 			this.tfPanel.add(label);
 			if (i == 4) {
-				label.setBounds(x, y+50, 100, 30);
+				label.setBounds(x, y + 50, 100, 30);
 				comboStatus = new JComboBox(comboStatusSelection);
 				comboStatus.setSelectedItem(null);
 				comboStatus.setBounds(x + 80, y + 5 + 50, 200, 20);
@@ -196,36 +188,102 @@ public class ProductPanel extends JPanel {
 			y += 30;
 
 		}
-		/** set read - only for ID text field **/
-		this.tfList[0].setEditable(false);
-		this.tfList[0].setForeground(new Color(108, 108, 108));
+		/*
+		 * set read - only for ID text field
+		 */
+		tfList[0].setEditable(false);
+		tfList[0].setForeground(new Color(108, 108, 108));
 
-		this.panel.add(this.tfPanel);
+		panel.add(this.tfPanel);
+		/*
+		 * Button panel
+		 */
+		btnPanel.setBounds(320, 60, 200, 200);
+		btnPanel.setLayout(null);
+		panel.add(btnPanel);
 
+		addBtn = new AddButton(0, 10, 120, 20);
+		addBtn.setNameBtn("New Product");
+		addBtn.setBorder(null);
+		btnPanel.add(addBtn);
+		addBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				addButtonHandle();
+			}
+
+		});
+
+		saveBtn = new SaveButton(0, 40, 120, 20);
+		btnPanel.add(saveBtn);
+		saveBtn.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				saveButtonHandle();
+			}
+
+		});
+		resetBtn = new ResetButton(0, 70, 120, 20);
+		btnPanel.add(resetBtn);
+		resetBtn.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				resetButtonHandle();
+			}
+
+		});
+
+		addSkuBtn = new AddButton(0, 100, 120, 20);
+		addSkuBtn.setNameBtn("New SKUs");
+		btnPanel.add(addSkuBtn);
+		addSkuBtn.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				addSkuButtonHandle();
+			}
+
+		});
+
+		deleteBtn = new DeleteButton(0, 130, 120, 20);
+		btnPanel.add(deleteBtn);
+		deleteBtn.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				deleteButtonHandle();
+			}
+
+		});
 		/******************************************************************
 		 * 
 		 * Table panel
 		 */
-		this.tbPanel = new JPanel();
-		this.tbPanel.setBounds(10, 260, 1000, 360);
-		this.tbPanel.setLayout(null);
+		tbPanel = new JPanel();
+		tbPanel.setBounds(10, 260, 1000, 360);
+		tbPanel.setLayout(null);
 
 		/*
 		 * Table
 		 */
-		this.model = new ProductModelData();
-		this.table = new JTable(model);
-//		table.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
-
-		this.table.setDefaultRenderer(Object.class, new Renderer());
+		model = new ProductModelData();
+		table = new JTable(model);
+		table.setDefaultRenderer(Object.class, new Renderer());
 
 		model.setColumnWidth(table);
 
 		/*
-		 * Table adding listener
+		 * Table's listener
 		 */
-		/** GET SELECTED VALUE TO DISPLAY ON TEXT FIELD **/
-		this.table.addMouseListener(new java.awt.event.MouseAdapter() {
+		table.addMouseListener(new java.awt.event.MouseAdapter() {
+			/** GET SELECTED VALUE TO DISPLAY ON TEXT FIELD **/
 			@Override
 			public void mouseClicked(java.awt.event.MouseEvent evt) {
 				int rowIndex = table.rowAtPoint(evt.getPoint());
@@ -233,33 +291,24 @@ public class ProductPanel extends JPanel {
 				if (rowIndex >= 0 && col >= 0) {
 					selectedRowIndex = rowIndex;
 					/** GET MANUALLY ALL ROW **/
-					proSelectedRow.setId((Long) table.getModel().getValueAt(rowIndex, 0));
-					proSelectedRow.setName((String) table.getModel().getValueAt(rowIndex, 1));
-					proSelectedRow.setBrand((String) table.getModel().getValueAt(rowIndex, 2));
-					proSelectedRow.setDescription((String) table.getModel().getValueAt(rowIndex, 3));
-					proSelectedRow.setStatus((String) table.getModel().getValueAt(rowIndex, 4));
-
+					setSelectedProductModel();
 				}
 				/** DISPLAY TO TEXT FIELD **/
-				tfList[0].setText(proSelectedRow.getId().toString());
-				tfList[1].setText(proSelectedRow.getName());
-				tfList[2].setText(proSelectedRow.getBrand());
-//				tfList[3].setText(proSelectedRow.getDescription());
-				text.setText(proSelectedRow.getDescription());
-				if (proSelectedRow.getStatus().equals(comboStatus.getItemAt(0))) {
-					comboStatus.setSelectedIndex(0);
-				} else {
-					comboStatus.setSelectedIndex(1);
-				}
-
+				displayProductToTextField();
+				/** **/
 				getAllSelectedRow(table);
-
-				findAllSkuByProductId(proSelectedRow.getId());
+//				findAllSkuByProductId(selectedRow.getId());
 			}
 		});
 
+		/*
+		 * Right click on table's row
+		 */
 		JPopupMenu popupMenu = new JPopupMenu();
-		JMenuItem menuItemLock = new JMenuItem("Lock product");
+		JMenuItem menuItemDetail = new JMenuItem("Detail");
+		JMenuItem menuItemLock = new JMenuItem("Lock");
+
+		popupMenu.add(menuItemDetail);
 		popupMenu.add(menuItemLock);
 
 		table.setComponentPopupMenu(popupMenu);
@@ -271,66 +320,29 @@ public class ProductPanel extends JPanel {
 			}
 
 		});
+		menuItemDetail.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				menuItemDetailHandle();
+			}
+
+		});
 
 		/*
 		 * scroll pane
 		 */
-		this.pane = new JScrollPane(this.table);
-		this.pane.setBounds(0, 20, 360, 360);
+		pane = new JScrollPane(table);
+		pane.setBounds(0, 20, 700, 360);
 		/** ADD SCROLL PANE TO MAIN PANEL **/
-		this.tbPanel.add(this.pane);
-		this.panel.add(this.tbPanel);
+		tbPanel.add(pane);
+		panel.add(tbPanel);
 
-		/*
-		 * reset button listener
-		 */
-		this.skuPanel.resetBtn.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				resetButtonHandle();
-			}
-
-		});
-		/*
-		 * button adding action listener
-		 */
-		this.skuPanel.addBtn.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				addButtonHandle();
-			}
-
-		});
-		this.skuPanel.tfList[1].getDocument().addDocumentListener(new DocumentListener() {
-
-			@Override
-			public void insertUpdate(DocumentEvent e) {
-				displayProductFromSku(Long.parseLong(skuPanel.tfList[1].getText()))	;			
-			}
-
-			@Override
-			public void removeUpdate(DocumentEvent e) {
-				
-			}
-
-			@Override
-			public void changedUpdate(DocumentEvent e) {
-				displayProductFromSku(Long.parseLong(skuPanel.tfList[1].getText()))	;			
-				
-			}
-			
-		});
 	}// END CONSTRUCTOR////////////////////////////////////
 
 	/*
-	 * button handle
+	 * Reset button handle
 	 */
 	public void resetButtonHandle() {
-//		this.flagReset = true;
-		this.skuPanel.resetButtonHandle();
-
 		for (int i = 0; i < this.tfList.length; i++) {
 			if (i == 4) {
 				comboStatus.setSelectedItem(null);
@@ -346,7 +358,17 @@ public class ProductPanel extends JPanel {
 		}
 	}
 
-	public int addButtonHandle() {
+	/*
+	 * Save button handle
+	 */
+	public void saveButtonHandle() {
+		int click = JOptionPane.showConfirmDialog(null, "Are you sure to save this changes?");
+		if (click == JOptionPane.YES_OPTION) {
+			this.saveAction();
+		}
+	}
+
+	public int saveAction() {
 		Long id = null;
 		if (this.tfList[0].getText().equals("") == false) {
 			try {
@@ -387,17 +409,17 @@ public class ProductPanel extends JPanel {
 		Long savedId;
 		if (id == null) {
 			if (des != null) {
-				savedId = productService.save(new ProductModel(name, brand, des));
+				savedId = service.save(new ProductModel(name, brand, des));
 			} else {
-				savedId = productService.save(new ProductModel(name, brand));
+				savedId = service.save(new ProductModel(name, brand));
 			}
 		} else {
 			// Update product
 			if (des != null) {
-				ProductModel pro = productService.update(new ProductModel(id, name, brand, des));
+				ProductModel pro = service.update(new ProductModel(id, name, brand, des));
 				savedId = pro.getId();
 			} else {
-				ProductModel pro = productService.update(new ProductModel(id, name, brand));
+				ProductModel pro = service.update(new ProductModel(id, name, brand));
 				savedId = pro.getId();
 
 			}
@@ -406,12 +428,51 @@ public class ProductPanel extends JPanel {
 		this.model.loadData(this.table);
 		getGeneratedKeys(savedId);
 		table.setRowSelectionInterval(selectedRowIndex, selectedRowIndex);
-
-		this.skuPanel.addButtonHandle(savedId);
 		return 0;
 	}
 
-	// set selected row after adding
+	/*
+	 * add new SKUs button handle
+	 */
+	public void addSkuButtonHandle() {
+		if (this.selectedRowIndex < 0) {
+			JOptionPane.showMessageDialog(null, "Please select one product row on table to view details!");
+		} else {
+//			SkuService service = new SkuService();
+//			if(service.findByProductId(this.selectedRow.getId())==null) {
+//				openSkuFrame(-1L);
+//			}else {
+			openSkuFrame(this.selectedRow.getId());
+//			}
+		}
+	}
+
+	/*
+	 * add new product button handle
+	 */
+	public void addButtonHandle() {
+		this.tfList[0].setText("");
+	}
+
+	/*
+	 * delete button handle
+	 */
+	public void deleteButtonHandle() {
+		if (selectedRowIndex > 0) {
+			int click = JOptionPane.showConfirmDialog(null, "Are you sure to delete this product?");
+			if (click == JOptionPane.YES_OPTION) {
+//				this.service.delete(this.selectedRowList.toArray(a));
+				service.delete(this.idSelectedRowList.toArray(new Long[this.idSelectedRowList.size()]));
+				model.loadData(this.table);
+			}
+		} else {
+			JOptionPane.showMessageDialog(null, "You have not selected a value to delete!");
+		}
+	}
+
+	/*
+	 * set selected row after adding
+	 */
 	public void getGeneratedKeys(Long id) {
 		for (int i = 0; i < this.model.getRowCount(); i++) {
 			if (id == (Long) this.model.getValueAt(i, 0)) {
@@ -422,81 +483,25 @@ public class ProductPanel extends JPanel {
 	}
 
 	/*
-	 * text field handle
-	 */
-	public void change(int index, String str) {
-		if (flagReset == false) {
-			if (str != null && tfList[index] != null) {
-				if (str.equals(tfList[index].getText()) == false) {
-					tfList[index].setForeground(AbstractPanel.DocumentListener);
-				} else {
-					tfList[index].setForeground(Color.BLACK);
-				}
-			}
-		} else {
-			tfList[index].setForeground(Color.BLACK);
-		}
-
-	}
-
-	/*
-	 * click on sku table, the row product auto selected
-	 */
-	public void displayProductFromSku(Long productId) {
-		this.proSelectedRow = this.productService.findOne(productId);
-
-		/** DISPLAY TO TEXT FIELD **/
-		tfList[0].setText(proSelectedRow.getId().toString());
-		tfList[1].setText(proSelectedRow.getName());
-		tfList[2].setText(proSelectedRow.getBrand());
-		text.setText(proSelectedRow.getDescription());
-		if (proSelectedRow.getStatus().equals(comboStatus.getItemAt(0))) {
-			comboStatus.setSelectedIndex(0);
-		} else {
-			comboStatus.setSelectedIndex(1);
-		}
-		getAllSelectedRow(table);
-		int row = -1;
-		for (int rowIndex = 0; rowIndex < this.model.getRowCount(); rowIndex++) {
-			Long idAtRow = (Long) this.model.getValueAt(rowIndex, 0);
-
-			if (idAtRow == productId) {
-				row = rowIndex;
-				break;
-			}
-		}
-		if (row >= 0) {
-			this.table.setRowSelectionInterval(row, row);
-		}
-	}
-
-	/*
-	 * delete multi row handle
+	 * delete multiple row handle
 	 */
 	public void getAllSelectedRow(JTable entryTable) {
 //			AbstractTableModel model = (AbstractTableModel) entryTable.getModel();
 		if (entryTable.getRowCount() > 0) {
 			if (entryTable.getSelectedRowCount() > 0) {
 				int selectedRow[] = entryTable.getSelectedRows();
-				proIdSelectedRowList.clear();
+				idSelectedRowList.clear();
 				for (int i : selectedRow) {
 					Long id = (Long) entryTable.getValueAt(i, 0);
-					proIdSelectedRowList.add(id);
+					idSelectedRowList.add(id);
 				}
 			}
 		}
 	}
 
-	/*
-	 * click on product table, find list of sku of this selected product
-	 */
-	public void findAllSkuByProductId(Long id) {
-		this.skuPanel.loadData(id);
-		this.skuPanel.tfList[1].setText(String.valueOf(id));
-	}
-
 	public void menuItemLockHandle() {
-		List<SkuModel> list = skuService.findByProductId(this.proSelectedRow.getId());
+		SkuService service = new SkuService();
+		List<SkuModel> list = service.findByProductId(this.selectedRow.getId());
 		StringBuilder str = new StringBuilder(
 				"Are you sure to lock this product?\nThis means list of stock keeping unit will be locked.\n");
 		if (list.isEmpty() == false) {
@@ -519,22 +524,54 @@ public class ProductPanel extends JPanel {
 			JOptionPane.showMessageDialog(null, "Click Close");
 		}
 	}
-	
-	
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	public void menuItemDetailHandle() {
+		openSkuFrame(this.selectedRow.getId());
+	}
+
+	/*
+	 * Open SKU sub jframe
+	 */
+	public void openSkuFrame(Long productId) {
+		SkuPanel skuPanel = new SkuPanel(productId);
+		JFrame subFrame = new SubFrame(skuPanel);
+
+		/*
+		 * If productId > 0 -- detail else add new SKU -- null
+		 */
+		if (productId > 0) {
+			skuPanel.loadDataByProductId(productId);
+		}
+		subFrame.setVisible(true);
+
+	}
+
+	/*
+	 * 
+	 */
+	public void setSelectedProductModel() {
+		selectedRow.setId((Long) table.getModel().getValueAt(selectedRowIndex, 0));
+		selectedRow.setName((String) table.getModel().getValueAt(selectedRowIndex, 1));
+		selectedRow.setBrand((String) table.getModel().getValueAt(selectedRowIndex, 2));
+		selectedRow.setDescription((String) table.getModel().getValueAt(selectedRowIndex, 3));
+		selectedRow.setStatus((String) table.getModel().getValueAt(selectedRowIndex, 4));
+	}
+
+	/*
+	 * 
+	 */
+	public void displayProductToTextField() {
+		tfList[0].setText(selectedRow.getId().toString());
+		tfList[1].setText(selectedRow.getName());
+		tfList[2].setText(selectedRow.getBrand());
+		// Description
+		text.setText(selectedRow.getDescription());
+		if (selectedRow.getStatus().equals(comboStatus.getItemAt(0))) {
+			comboStatus.setSelectedIndex(0);
+		} else {
+			comboStatus.setSelectedIndex(1);
+		}
+
+	}
+
 }

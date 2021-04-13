@@ -1,7 +1,6 @@
 package xxminhmie.sgu.javagui.dao.impl;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -76,8 +75,8 @@ public class AbstractDAO<T> implements GenericDAO<T> {
 					statement.setString(index, (String) parameter);
 				} else if (parameter instanceof Integer) {
 					statement.setInt(index, (Integer) parameter);
-				} else if (parameter instanceof Date) {
-					statement.setDate(index, (Date) parameter);
+				} else if (parameter instanceof java.sql.Date) {
+					statement.setDate(index, (java.sql.Date) parameter);
 				}
 			}
 		} catch (SQLException e) {
@@ -94,6 +93,7 @@ public class AbstractDAO<T> implements GenericDAO<T> {
 			connection.setAutoCommit(false);
 			statement = connection.prepareStatement(sql);
 			this.setParameter(statement, parameters);
+//			System.out.println(statement.toString());
 			statement.executeUpdate();
 			connection.commit();
 		} catch (SQLException e) {
@@ -129,6 +129,7 @@ public class AbstractDAO<T> implements GenericDAO<T> {
 			connection.setAutoCommit(false);
 			statement = connection.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
 			this.setParameter(statement, parameters);
+			System.out.println(sql);
 			statement.executeUpdate();
 			//https://stackoverflow.com/questions/7162989/sqlexception-generated-keys-not-requested-mysql
 			resultSet = statement.getGeneratedKeys();

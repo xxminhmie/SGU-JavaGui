@@ -87,7 +87,7 @@ public class StaffPanel extends JPanel {
 		/***************************
 		 * MAIN LABEL OF BG PANEL
 		 ***************************/
-		this.mainLabel = new JLabel("Staff Management");
+		this.mainLabel = new JLabel("Staff Manager");
 		this.mainLabel.setFont(new Font("Helvetica", Font.BOLD, 24));
 		this.add(this.mainLabel, BorderLayout.NORTH);
 
@@ -232,7 +232,7 @@ public class StaffPanel extends JPanel {
 		 ***************************************************************/
 		this.tbPanel = new JPanel();
 		this.tbPanel.setBackground(Color.red);
-		this.tbPanel.setBounds(10, 260, 1000, 360);
+		this.tbPanel.setBounds(10, 260, 700, 360);
 		this.tbPanel.setLayout(null);
 		this.mainPanel.add(this.tbPanel);
 
@@ -274,7 +274,7 @@ public class StaffPanel extends JPanel {
 		});
 		/********************** INITIALIZE SCROLL PANE **************************/
 		this.pane = new JScrollPane(this.table);
-		this.pane.setBounds(0, 0, 1000, 360);
+		this.pane.setBounds(0, 0, 700, 360);
 		/** ADD SCROLL PANE TO MAIN PANEL **/
 		this.tbPanel.add(this.pane);
 

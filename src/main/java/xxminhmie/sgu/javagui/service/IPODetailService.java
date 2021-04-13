@@ -8,7 +8,10 @@ import xxminhmie.sgu.javagui.model.PODetailModel;
 
 public interface IPODetailService {
 	List<PODetailModel> findAll();
+	List<PODetailModel> findListByPOId(Long poId);
+
 	PODetailModel findOne(Long poId, Long skuId);
+
 	
 	void save(PODetailModel detailModel);
 	PODetailModel update(PODetailModel updateModel);

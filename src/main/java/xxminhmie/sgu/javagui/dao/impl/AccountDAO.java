@@ -11,8 +11,8 @@ public class AccountDAO extends AbstractDAO<AccountModel> implements IAccountDAO
 	@Override
 	public Long save(AccountModel model) {
 		StringBuilder sql = new StringBuilder("INSERT INTO account ");
-		sql.append(" (staffid, roleid, username, password) ");
-		sql.append(" VALUES (?,?,?,?);");
+		sql.append("(staffid, roleid, 'username', password) ");
+		sql.append(" VALUES (?,?,?,?)");
 		return this.insert(sql.toString(), new AccountMapper(), model.getStaffId(), model.getId(), model.getUsername(),
 				model.getPassword());
 	}
@@ -28,7 +28,7 @@ public class AccountDAO extends AbstractDAO<AccountModel> implements IAccountDAO
 
 	@Override
 	public void delete(Long id) {
-		String sql = "DELETE * FROM account WHERE id = ?";
+		String sql = "DELETE FROM account WHERE id = ?";
 		this.update(sql, id);
 	}
 

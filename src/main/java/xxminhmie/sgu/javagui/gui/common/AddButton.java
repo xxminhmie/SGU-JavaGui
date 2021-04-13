@@ -11,4 +11,10 @@ public class AddButton extends AbstractButton {
 		super(x, y);
 		setNameBtn("Add");	
 	}
+	public AddButton(int x, int y, int w, int h) {
+		super(x, y, w, h);
+		setNameBtn("Add");	
+		init();
+
+	}
 }

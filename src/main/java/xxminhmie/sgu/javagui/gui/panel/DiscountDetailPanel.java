@@ -1,7 +1,0 @@
-package xxminhmie.sgu.javagui.gui.panel;
-
-import javax.swing.JPanel;
-
-public class DiscountDetailPanel extends JPanel{
-
-}

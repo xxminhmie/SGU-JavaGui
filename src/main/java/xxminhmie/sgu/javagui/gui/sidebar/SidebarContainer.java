@@ -42,9 +42,18 @@ public class SidebarContainer extends JPanel {
 	class ItemListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			JButton button = (JButton) e.getSource();
+			JButton src = (JButton) e.getSource();
 //			System.out.println(button.getText());
-			ItemListenerHandle(button.getText());
+//			ItemListenerHandle(button.getText());
+			for(int i=0; i< listItem.length; i++) {
+				if(src==listItem[i]) {
+//					System.out.print(src.getText());
+//					System.out.print(src.getName());
+//					src.setBackground(bg);
+
+
+				}
+			}
 		}
 
 	}

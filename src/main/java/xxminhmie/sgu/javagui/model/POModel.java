@@ -1,25 +1,39 @@
 package xxminhmie.sgu.javagui.model;
+
+import java.sql.Date;
+
 //DONE
 public class POModel extends AbstractModel{
 	Long staffId;
-	Long supplierId;
 	java.sql.Date createdDate;
 	String total;
 	String status;
 	
+	public POModel() {
+		
+	}
+	public POModel(Long id, Long staffId, Date createdDate, String status) {
+		super(id);
+		this.staffId = staffId;
+		this.createdDate = createdDate;
+		this.status = status;
+		this.total = "";
+	}
 	
+	public POModel(Long staffId, Date createdDate) {
+		super();
+		this.staffId = staffId;
+		this.createdDate = createdDate;
+		this.status = "Pending";
+		this.total = "";
+	}
 	public Long getStaffId() {
 		return staffId;
 	}
 	public void setStaffId(Long staffId) {
 		this.staffId = staffId;
 	}
-	public Long getSupplierId() {
-		return supplierId;
-	}
-	public void setSupplierId(Long supplierId) {
-		this.supplierId = supplierId;
-	}
+	
 	public java.sql.Date getCreatedDate() {
 		return createdDate;
 	}

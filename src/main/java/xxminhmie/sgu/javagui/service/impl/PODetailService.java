@@ -61,6 +61,11 @@ public class PODetailService implements IPODetailService {
 		return resultList;
 	}
 
+	@Override
+	public List<PODetailModel> findListByPOId(Long poId) {
+		return this.dao.findListByPOId(poId);
+	}
+
 //	public List<PODetailModel> search(String poStr, String skuStr) {
 //		List<PODetailModel> list = this.findAll();
 //		List<PODetailModel> resultList = new ArrayList<PODetailModel>();

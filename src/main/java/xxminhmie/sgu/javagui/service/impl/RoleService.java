@@ -28,13 +28,15 @@ public class RoleService implements IRoleService {
 
 	@Override
 	public void update(RoleModel update) {
-		 dao.update(update);;
+		 dao.update(update);
 	}
 
 	@Override
 	public void delete(Long[] ids) {
 		// TODO Auto-generated method stub
-		
+		for(Long id: ids) {
+			dao.delete(id);
+		}
 	}
 
 	@Override

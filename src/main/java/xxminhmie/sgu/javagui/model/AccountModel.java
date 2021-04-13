@@ -6,6 +6,26 @@ public class AccountModel extends AbstractModel {
 
 	protected String username;
 	protected String password;
+	
+	public AccountModel() {
+	}
+	
+	public AccountModel(Long roleId, Long staffId, String username, String password) {
+		super();
+		this.roleId = roleId;
+		this.staffId = staffId;
+		this.username = username;
+		this.password = password;
+	}
+	public AccountModel(Long id,Long roleId, Long staffId, String username, String password) {
+		super(id);
+		this.roleId = roleId;
+		this.staffId = staffId;
+		this.username = username;
+		this.password = password;
+	}
+	
+	
 	public Long getRoleId() {
 		return roleId;
 	}
@@ -29,6 +49,12 @@ public class AccountModel extends AbstractModel {
 	}
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	@Override
+	public String toString() {
+		return "AccountModel [roleId=" + roleId + ", staffId=" + staffId + ", username=" + username + ", password="
+				+ password + "]";
 	}
 	
 }

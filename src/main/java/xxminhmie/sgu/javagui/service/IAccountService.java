@@ -9,7 +9,7 @@ public interface IAccountService {
 	AccountModel findOne(Long id);
 	List<AccountModel> findByUsername(String username);
 
-	AccountModel save(AccountModel model);
+	Long save(AccountModel model);
 	AccountModel update(AccountModel update);
 	void delete(Long[] ids);
 

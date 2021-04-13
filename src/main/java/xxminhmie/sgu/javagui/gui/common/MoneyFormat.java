@@ -11,12 +11,12 @@ public class MoneyFormat {
 		return output;
 //		System.out.println(value + "  " + pattern + "  " + output);
 	}
-
-
+	
 	static public void main(String[] args) {
 
-		String value = "100000";
+		String value = "100,000";
 
 		customFormat(Double.parseDouble(value));
+
 	}
 }
