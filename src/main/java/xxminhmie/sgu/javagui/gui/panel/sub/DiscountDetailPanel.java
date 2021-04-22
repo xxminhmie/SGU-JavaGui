@@ -18,21 +18,25 @@ import javax.swing.event.DocumentListener;
 import xxminhmie.sgu.javagui.gui.common.AddButton;
 import xxminhmie.sgu.javagui.gui.common.DeleteButton;
 import xxminhmie.sgu.javagui.gui.common.ResetButton;
+import xxminhmie.sgu.javagui.gui.modeltable.DiscountDetailModelData;
 import xxminhmie.sgu.javagui.gui.modeltable.PODetailModelData;
 import xxminhmie.sgu.javagui.gui.panel.AbstractPanel;
 import xxminhmie.sgu.javagui.gui.panel.Renderer;
+import xxminhmie.sgu.javagui.model.DiscountDetailModel;
 import xxminhmie.sgu.javagui.model.PODetailModel;
+import xxminhmie.sgu.javagui.service.impl.DiscountDetailService;
 import xxminhmie.sgu.javagui.service.impl.PODetailService;
 
 public class DiscountDetailPanel extends JPanel {
+	DiscountDetailService service = new DiscountDetailService();
 
-	PODetailService service = new PODetailService();
 	JLabel mainLabel;
 	/*
 	 * Search
 	 */
 	JPanel searchPanel;
 	JTextField search;
+
 	/*
 	 * Text field
 	 */
@@ -45,18 +49,14 @@ public class DiscountDetailPanel extends JPanel {
 	JPanel tbPanel = new JPanel();
 	JScrollPane pane;
 	JTable table;
-	PODetailModelData model;
+	DiscountDetailModelData model;
 
-	PODetailModel selectedRow = new PODetailModel();
+	DiscountDetailModel selectedRow = new DiscountDetailModel();
 	java.util.List<Long> idSelectedRowList = new java.util.ArrayList<Long>();// Contains list of customer's ID to
 																				// delete
 	int selectedRowIndex;
 
-	/*
-	 * POId was being called
-	 */
-	Long poId;
-	Long skuId;
+	Long discountId;
 
 	/*
 	 * Button
@@ -66,12 +66,13 @@ public class DiscountDetailPanel extends JPanel {
 	ResetButton resetBtn;
 	DeleteButton deleteBtn;
 
-	public DiscountDetailPanel(Long poId) {
-		this.poId = poId;
-		this.setBackground(AbstractPanel.PanelBg);
-		this.setPreferredSize(new Dimension(AbstractPanel.PanelWidth, AbstractPanel.PanelHeight));
-		this.setLayout(null);
-		this.init();
+	public DiscountDetailPanel(Long discountId) {
+		this.discountId = discountId;
+
+		setBackground(AbstractPanel.PanelBg);
+		setPreferredSize(new Dimension(AbstractPanel.PanelWidth, AbstractPanel.PanelHeight));
+		setLayout(null);
+		init();
 
 	}
 
@@ -79,7 +80,7 @@ public class DiscountDetailPanel extends JPanel {
 		/*
 		 * Main label
 		 */
-		mainLabel = new JLabel("Purchase Details Manager - PO ID: " + this.poId);
+		mainLabel = new JLabel("Discount Details Manager - Discount ID: " + this.discountId);
 		mainLabel.setFont(new Font("Helvetica", Font.BOLD, 14));
 		mainLabel.setBounds(0, 0, AbstractPanel.PanelWidth, 20);
 		add(mainLabel);
@@ -125,73 +126,67 @@ public class DiscountDetailPanel extends JPanel {
 		/*
 		 * Text field
 		 */
-		this.tfPanel.setLayout(null);
-		this.tfPanel.setBounds(0, 60, AbstractPanel.PanelWidth, 230);
-		this.add(this.tfPanel);
+		tfPanel.setLayout(null);
+		tfPanel.setBounds(0, 60, AbstractPanel.PanelWidth, 230);
+		add(tfPanel);
 
-		String[] infoName = { "PO's ID: ", "SKU's ID: ", "Supplier's ID: ", "Quantity: ", "Unit's Price: ",
-				"Sub-Total: " };
+		String[] infoName = { "Discount ID: ", "SKU ID: ", "Rate:  ", "Status: "};
 
 		int x = 20;
 		int y = 20;
-		// this for loop initialize label and text field, set position for both
+		// this for loop initialize label and text fiel}, set position for both
 		for (int i = 0; i < tfList.length; i++) {
 			JLabel label = new JLabel(infoName[i]);
 			label.setBounds(x, y, 100, 30);
 			label.setAlignmentX(RIGHT_ALIGNMENT);
-			this.tfPanel.add(label);
-			this.tfList[i] = new JTextField();
-			this.tfList[i].setText("");
-			this.tfList[i].setBounds(x + 100, y + 5, 160, 20);
-			this.tfPanel.add(this.tfList[i]);
+			tfPanel.add(label);
+			tfList[i] = new JTextField();
+			tfList[i].setText("");
+			tfList[i].setBounds(x + 100, y + 5, 160, 20);
+			tfPanel.add(this.tfList[i]);
 			y += 30;
 
 		}
 
 		/** set read - only for ID text field **/
-		this.tfList[0].setEditable(false);
-		this.tfList[1].setEditable(false);
-		this.tfList[0].setForeground(new Color(108, 108, 108));
+		tfList[0].setEditable(false);
+		tfList[1].setEditable(false);
+		
+		tfList[0].setForeground(new Color(108, 108, 108));
 
 		/*
 		 * Table
 		 */
-		this.model = new PODetailModelData();
-		this.table = new JTable(model);
-		this.table.setDefaultRenderer(Object.class, new Renderer());
-
+		model = new DiscountDetailModelData();
+		table = new JTable(model);
+		
+		table.setDefaultRenderer(Object.class, new Renderer());
 		model.setColumnWidth(table);
 
-		/** GET SELECTED VALUE TO DISPLAY ON TEXT FIELD **/
 		this.table.addMouseListener(new java.awt.event.MouseAdapter() {
 			@Override
 			public void mouseClicked(java.awt.event.MouseEvent evt) {
-
 				int row = table.rowAtPoint(evt.getPoint());
 				int col = table.columnAtPoint(evt.getPoint());
 				if (row >= 0 && col >= 0) {
-					selectedRowIndex = table.getSelectedRow();// get index of selected rowIndex
-					/** GET MANUALLY ALL ROW **/
-					setSelectedDetailModel();
-					/** **/
-					poId = selectedRow.getPoId();
+					selectedRowIndex = table.getSelectedRow();
+					discountId = selectedRow.getDiscountId();
 				}
-				/** DISPLAY TO TEXT FIELD **/
 				displayDetailToTextField();
-
 				getAllSelectedRow(table);
-
-//				loadProductInfo();
 			}
 		});
-		/********************** INITIALIZE SCROLL PANE **************************/
+
 		add(tbPanel);
 		tbPanel.setBounds(0, 290, SubFrame.SUBFRAME_W, 500);
 		tbPanel.setLayout(null);
 
+		/*
+		 * Scroll pane
+		 */
 		pane = new JScrollPane(table);
 		pane.setBounds(20, 20, SubFrame.SUBFRAME_W - 70, 240);
-		/** ADD SCROLL PANE TO MAIN PANEL **/
+
 		tbPanel.add(pane);
 
 		/*
@@ -216,7 +211,6 @@ public class DiscountDetailPanel extends JPanel {
 	 * Table listener handle
 	 */
 	public void getAllSelectedRow(JTable entryTable) {
-//		AbstractTableModel model = (AbstractTableModel) entryTable.getModel();
 		if (entryTable.getRowCount() > 0) {
 			if (entryTable.getSelectedRowCount() > 0) {
 				int selectedRow[] = entryTable.getSelectedRows();
@@ -237,14 +231,6 @@ public class DiscountDetailPanel extends JPanel {
 	 * Reset button handle
 	 */
 	public void resetButtonHandle() {
-		int click = JOptionPane.showConfirmDialog(null, "Are you sure to reset?");
-		if (click == JOptionPane.YES_OPTION) {
-			resetSku();
-		}
-
-	}
-
-	public void resetSku() {
 		for (int i = 0; i < this.tfList.length; i++) {
 			this.tfList[i].setText("");
 		}
@@ -253,69 +239,42 @@ public class DiscountDetailPanel extends JPanel {
 	/*
 	 * Save button handle
 	 */
-	public int saveButtonHandle(Long productId) {
-//		Long id = null;
-//		if (this.tfList[0].getText().isBlank() == false) {
-//			try {
-//				id = Long.parseLong(tfList[0].getText());
-//			} catch (NumberFormatException e) {
-//
-//			}
-//		}
-//
-//		String color = null;
-//		if (this.tfList[2].getText().isBlank() == false) {
-//			color = this.tfList[2].getText();
-//		} else {
-//			JOptionPane.showMessageDialog(null, "Product's color must be not null!");
-//			tfList[2].requestFocus();
-//			return -1;
-//		}
-//
-//		String size = null;
-//		if (comboSize.getSelectedItem() != null) {
-//			size = comboSize.getSelectedItem().toString();
-//		} else {
-//			JOptionPane.showMessageDialog(null, "Product's size must be not null!");
-//			comboSize.requestFocus();
-//			return -1;
-//		}
-//		int qty = 0;
-//		if (this.tfList[5].getText().isBlank() == false) {
-//			try {
-//				qty = Integer.parseInt(tfList[4].getText());
-//			} catch (NumberFormatException e) {
-//				JOptionPane.showMessageDialog(null, "Product's quantity is invalid!");
-//				tfList[4].requestFocus();
-//				return -1;
-//			}
-//		}
-//
-//		String price = null;
-//		if (this.tfList[5].getText().isBlank() == false) {
-//			try {
-//				int temp = Integer.parseInt(tfList[4].getText());
-//				if (temp != 0 && temp <= 1000) {
-//					price = tfList[4].getText() + "000";
-//				}
-//			} catch (NumberFormatException e) {
-//				JOptionPane.showMessageDialog(null, "Product's price is invalid!");
-//				tfList[5].requestFocus();
-//				return -1;
-//			}
-//		}
-//
-//		String status = null;
-//		if (comboStatus.getSelectedItem() != null) {
-//			status = comboStatus.getSelectedItem().toString();
-//			if (status.equals("Actived") == false) {
-//				JOptionPane.showMessageDialog(null, "Product's status must be 'actived' while adding!");
-//				tfList[5].requestFocus();
-//				return -1;
-//			}
-//		}
+	public void saveButtonHandle() {
+		Long discountId = -1L;
+		if (!tfList[0].getText().isBlank()) {
+			discountId = Long.parseLong(tfList[0].getText());
+		}
 
-		return 0;
+		Long skuId = -1L;
+		if (!tfList[1].getText().isBlank()) {
+			discountId = Long.parseLong(tfList[1].getText());
+		}
+
+		int rate = 0;
+		if (!tfList[2].getText().isBlank()) {
+			try {
+				rate = Integer.parseInt(tfList[2].getText());
+			}catch(NumberFormatException e) {
+				
+			}
+		} else {
+			JOptionPane.showMessageDialog(null, "Product's color must be not null!");
+			tfList[2].requestFocus();
+			return;
+		}
+
+		String status = "";
+		if (!tfList[3].getText().isBlank()) {
+			status = tfList[3].getText();
+		} else {
+			JOptionPane.showMessageDialog(null, "Product's size must be not null!");
+			tfList[3].requestFocus();
+			return;
+		}
+		
+
+		
+
 
 	}
 
@@ -334,10 +293,10 @@ public class DiscountDetailPanel extends JPanel {
 	/*
 	 * This method will be called by openPoDetailFrame method from PO Panel
 	 */
-	public void loadDataByPOId(Long poId) {
-		if (this.service.findListByPOId(poId) != null) {
-			this.model.loadData(this.table, poId);
-			this.poId = poId;
+	public void loadDataByDiscountId(Long discountId) {
+		if (this.service.findListByDiscountId(discountId) != null) {
+			this.model.loadData(this.table, discountId);
+			this.discountId = discountId;
 			this.selectedRowIndex = 0;
 			this.setSelectedDetailModel();
 			this.displayDetailToTextField();

@@ -3,6 +3,7 @@ package xxminhmie.sgu.javagui.gui.sidebar;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.ScrollPane;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -19,8 +20,8 @@ public class SidebarContainer extends JPanel {
 	protected static final Color SidebarBgHover = new Color(53, 53, 53);
 	protected static final Color SidebarFg = Color.WHITE;
 
-	protected JButton[] listItem;
-	protected JPanel accountPanel;
+	JButton[] listItem;
+	AccountPanel accountPanel;
 	ActionListener itemListener = new ItemListener();
 
 	public SidebarContainer(String[] nameList, String[] namePanel, JPanel content) {
@@ -30,6 +31,8 @@ public class SidebarContainer extends JPanel {
 
 		this.accountPanel = new AccountPanel();
 		add(accountPanel);
+		
+		
 		this.listItem = new SidebarItem[nameList.length];
 		for (int i = 0; i < nameList.length; i++) {
 			this.listItem[i] = new SidebarItem(nameList[i], namePanel[i], content);
@@ -66,6 +69,10 @@ public class SidebarContainer extends JPanel {
 				this.listItem[i].setBackground(Color.BLACK);
 			}
 		}
+	}
+	
+	public AccountPanel getAccountPanel() {
+		return this.accountPanel;
 	}
 
 }

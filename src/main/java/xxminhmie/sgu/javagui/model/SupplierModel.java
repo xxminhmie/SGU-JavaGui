@@ -7,6 +7,27 @@ public class SupplierModel extends AbstractModel {
 	String address;
 
 
+	public SupplierModel(String name, String email, String phone, String address) {
+		super();
+		this.name = name;
+		this.email = email;
+		this.phone = phone;
+		this.address = address;
+	}
+	
+
+	public SupplierModel(Long id, String name, String email, String phone, String address) {
+		super(id);
+		this.name = name;
+		this.email = email;
+		this.phone = phone;
+		this.address = address;
+	}
+
+	public SupplierModel() {
+		super();
+	}
+
 	public String getName() {
 		return name;
 	}

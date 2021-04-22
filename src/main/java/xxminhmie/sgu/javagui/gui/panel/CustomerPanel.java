@@ -431,14 +431,7 @@ public class CustomerPanel extends JPanel {
 				table.setRowSelectionInterval(selectedRowIndex, selectedRowIndex);
 			}
 		}
-		if (click == JOptionPane.NO_OPTION) {
-
-		}
-		if (click == JOptionPane.CANCEL_OPTION) {
-
-		}
-		if (click == JOptionPane.CLOSED_OPTION) {
-		}
+		
 		return 0;
 
 	}

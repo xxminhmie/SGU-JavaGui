@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -16,10 +17,13 @@ import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
+import xxminhmie.sgu.javagui.model.AccountModel;
 import xxminhmie.sgu.javagui.service.impl.AccountService;
 
 public class LogInGUI extends JFrame {
-
+	
+	public static AccountModel ACCOUNT_LOGIN = new AccountModel();
+	AccountService service = new AccountService();
 	Color h1Color;
 	Color fieldBColor;
 	Color fieldFColor;
@@ -43,6 +47,8 @@ public class LogInGUI extends JFrame {
 		this.buttonFColor = new Color(237, 240, 255);
 		this.createPanel();
 	}
+	
+
 
 	public void createPanel() {
 //		this.setSize(1200, 700);
@@ -177,19 +183,27 @@ public class LogInGUI extends JFrame {
 			this.passwordText.requestFocus();
 			return;
 		}
-
-		AccountService accService = new AccountService();
-		if (accService.findByUsername(user) != null) {
-			this.dispose();//destroy login frame
-			
-			//Remember me 2021.03.15
-			if(this.checkBox.isSelected()==true) {
+		List<AccountModel> list = service.findByUsername(user);
+		if ( list.isEmpty() == false) {
+			if(list.get(0).getPassword().equals(pass)) {
+				this.dispose();//destroy login frame
 				
+				//Remember me 2021.03.15
+				if(this.checkBox.isSelected()==true) {
+					
+				}
+				ACCOUNT_LOGIN = list.get(0);
+				ApplicationGUI app = new ApplicationGUI();
+				app.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				app.setVisible(true);
+			}else {
+				JOptionPane.showMessageDialog(null, "Password is incorrect!");
 			}
-			ApplicationGUI app = new ApplicationGUI();
-			app.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			app.setVisible(true);
+		}else {
+			JOptionPane.showMessageDialog(null, "Username is incorrect!");
+
 		}
 
 	}
+	
 }

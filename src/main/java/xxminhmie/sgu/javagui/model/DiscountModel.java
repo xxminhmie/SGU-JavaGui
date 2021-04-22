@@ -10,6 +10,27 @@ public class DiscountModel extends AbstractModel {
 	String status;
 
 	
+	public DiscountModel(String name, Date startDate, Date endDate, String description, String status) {
+		super();
+		this.name = name;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.description = description;
+		this.status = status;
+	}
+	public DiscountModel(Long id, String name, Date startDate, Date endDate, String description, String status) {
+		super(id);
+		this.name = name;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.description = description;
+		this.status = status;
+	}
+	
+	
+	public DiscountModel() {
+		super();
+	}
 	public String getName() {
 		return name;
 	}

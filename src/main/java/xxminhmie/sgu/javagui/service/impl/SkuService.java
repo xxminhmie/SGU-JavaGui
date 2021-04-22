@@ -11,7 +11,7 @@ import xxminhmie.sgu.javagui.service.ISkuService;
 
 public class SkuService implements ISkuService {
 	SkuDAO skuDao = new SkuDAO();
-	
+
 	@Override
 	public List<SkuModel> findAll() {
 		return skuDao.findAll();
@@ -61,7 +61,7 @@ public class SkuService implements ISkuService {
 			String id = String.valueOf(e.getId());
 			String color = e.getColor();
 			if (id.contains(str) || color.toLowerCase().contains(str.toLowerCase())) {
-				if(e.getProductId() == productId) {
+				if (e.getProductId() == productId) {
 					resultList.add(e);
 				}
 			}
@@ -70,7 +70,30 @@ public class SkuService implements ISkuService {
 	}
 
 	@Override
+	public List<SkuModel> search(Long from, Long to, Long productId) {
+		List<SkuModel> list = this.findByProductId(productId);
+		List<SkuModel> resultList = new ArrayList<SkuModel>();
+		
+
+		if(list.isEmpty() == false) {
+			for (SkuModel e : list) {
+				Long price = Long.parseLong(e.getPrice());
+				if(price >= from && price <= to) {
+					resultList.add(e);
+				}
+			}
+		}
+		
+		return resultList;
+	}
+
+	@Override
 	public SkuModel findOneByColorSize(Long productId, String color, String size) {
 		return skuDao.findOneByColorSize(productId, color, size);
+	}
+
+	@Override
+	public void deleteByProductId(Long id) {
+		skuDao.delete(id);
 	}
 }

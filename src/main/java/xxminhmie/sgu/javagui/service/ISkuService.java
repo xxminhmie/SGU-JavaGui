@@ -15,8 +15,12 @@ public interface ISkuService {
 	SkuModel save(SkuModel skuModel);
 	SkuModel update(SkuModel updateSku);
 	void delete(Long[] ids);
+	void deleteByProductId(Long id);
 
 	List<SkuModel> search(String str, Long productId);
+	List<SkuModel> search(Long from, Long to, Long productId);
+
+	
 
 	int getTotalItem();
 	

@@ -7,6 +7,8 @@ import xxminhmie.sgu.javagui.model.DiscountDetailModel;
 
 public interface IDiscountDetailService {
 	List<DiscountDetailModel> findAll();
+	List<DiscountDetailModel> findListByDiscountId(Long discountId);
+
 	List<DiscountDetailModel> findOne(Long discountId, Long skuId);
 
 	void save(DiscountDetailModel model);

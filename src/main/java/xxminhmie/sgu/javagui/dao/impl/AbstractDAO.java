@@ -129,7 +129,7 @@ public class AbstractDAO<T> implements GenericDAO<T> {
 			connection.setAutoCommit(false);
 			statement = connection.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
 			this.setParameter(statement, parameters);
-			System.out.println(sql);
+//			System.out.println(sql);
 			statement.executeUpdate();
 			//https://stackoverflow.com/questions/7162989/sqlexception-generated-keys-not-requested-mysql
 			resultSet = statement.getGeneratedKeys();

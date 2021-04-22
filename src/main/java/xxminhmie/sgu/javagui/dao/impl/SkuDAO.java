@@ -43,7 +43,7 @@ public class SkuDAO extends AbstractDAO<SkuModel> implements ISkuDAO {
 	@Override
 	public void update(SkuModel updateSku) {
 		StringBuilder sql = new StringBuilder("UPDATE sku SET productid = ?, color = ?, size = ?,");
-		sql.append(" quantity = ?, price = ?, importprice = ?, status = ?, image = ?,");
+		sql.append(" quantity = ?, price = ?, importprice = ?, status = ?, image = ?");
 		sql.append(" WHERE id = ?");
 		this.update(sql.toString(), updateSku.getProductId(), updateSku.getColor(), updateSku.getSize(),
 				updateSku.getQuantity(), updateSku.getPrice(), updateSku.getImportPrice(), updateSku.getStatus(),
@@ -69,6 +69,12 @@ public class SkuDAO extends AbstractDAO<SkuModel> implements ISkuDAO {
 		String sql = "SELECT * FROM sku WHERE productid = ? and color = ? and size = ?;";
 		List<SkuModel> sku = this.query(sql, new SkuMapper(), productId, color, size);
 		return sku.isEmpty() ? null : sku.get(0);
+	}
+
+	@Override
+	public void deleteByProductId(Long id) {
+		String sql = "UPDATE sku SET status = 'Deleted' WHERE productid = ?";
+		this.update(sql, id);
 	}
 
 //	public static void main(String[] args) {

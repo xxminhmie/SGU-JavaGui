@@ -60,6 +60,11 @@ public class PODetailModel{
 	public void setSubTotal(String subTotal) {
 		this.subTotal = subTotal;
 	}
+	@Override
+	public String toString() {
+		return "PODetailModel [poId=" + poId + ", skuId=" + skuId + ", supplierId=" + supplierId + ", quantity="
+				+ quantity + ", unitPrice=" + unitPrice + ", subTotal=" + subTotal + "]";
+	}
 
 	
 	

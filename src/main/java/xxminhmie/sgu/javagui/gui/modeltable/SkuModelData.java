@@ -7,6 +7,7 @@ import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumnModel;
 
+import xxminhmie.sgu.javagui.gui.common.MoneyFormat;
 import xxminhmie.sgu.javagui.model.CustomerModel;
 import xxminhmie.sgu.javagui.model.SkuModel;
 import xxminhmie.sgu.javagui.service.impl.SkuService;
@@ -51,9 +52,14 @@ public class SkuModelData extends AbstractTableModel {
 		}
 		if (columnIndex == 5) {
 			return data.get(rowIndex).getPrice();
+//			double price = Double.parseDouble(data.get(rowIndex).getPrice());
+//			return MoneyFormat.customFormat(price);
+
 		}
 		if (columnIndex == 6) {
 			return data.get(rowIndex).getImportPrice();
+//			double price = Double.parseDouble(data.get(rowIndex).getImportPrice());
+//			return MoneyFormat.customFormat(price);
 		}
 		if (columnIndex == 7) {
 			return data.get(rowIndex).getStatus();
@@ -82,6 +88,7 @@ public class SkuModelData extends AbstractTableModel {
 		}
 		if (columnIndex == 5) {
 			data.get(rowIndex).setPrice((String) aValue);
+			
 		}
 		if (columnIndex == 6) {
 			data.get(rowIndex).setImportPrice((String) aValue);
@@ -122,6 +129,16 @@ public class SkuModelData extends AbstractTableModel {
 
 	}
 
+	/*
+	 * Price search
+	 */
+	public void loadData(JTable table, Long from, Long to, Long productId) {
+		this.data = this.service.search(from, to, productId);
+		fireTableChanged(null);
+		setColumnWidth(table);
+
+	}
+
 	// refresh data from row selected product after adding
 	public void loadData(JTable table, Long productId) {
 		data = service.findByProductId(productId);
@@ -131,6 +148,7 @@ public class SkuModelData extends AbstractTableModel {
 		}
 
 	}
+
 	public void setData(List<SkuModel> data) {
 		if (data == null) {
 			this.data = new ArrayList<SkuModel>();
@@ -138,7 +156,7 @@ public class SkuModelData extends AbstractTableModel {
 			this.data = data;
 		}
 	}
-	
+
 	public void setColumnWidth(JTable table) {
 		TableColumnModel columnModel = table.getColumnModel();
 		columnModel.getColumn(0).setPreferredWidth(80);

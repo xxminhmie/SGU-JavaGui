@@ -12,20 +12,20 @@ public class POModel extends AbstractModel{
 	public POModel() {
 		
 	}
-	public POModel(Long id, Long staffId, Date createdDate, String status) {
+	public POModel(Long id, Long staffId, Date createdDate, String total, String status) {
 		super(id);
 		this.staffId = staffId;
 		this.createdDate = createdDate;
 		this.status = status;
-		this.total = "";
+		this.total = total;
 	}
 	
-	public POModel(Long staffId, Date createdDate) {
+	public POModel(Long staffId, Date createdDate, String total, String status) {
 		super();
 		this.staffId = staffId;
 		this.createdDate = createdDate;
-		this.status = "Pending";
-		this.total = "";
+		this.status = status;
+		this.total = total;
 	}
 	public Long getStaffId() {
 		return staffId;
@@ -51,6 +51,11 @@ public class POModel extends AbstractModel{
 	}
 	public void setStatus(String status) {
 		this.status = status;
+	}
+	@Override
+	public String toString() {
+		return "POModel [staffId=" + staffId + ", createdDate=" + createdDate + ", total=" + total + ", status="
+				+ status + "]";
 	}
 
 	

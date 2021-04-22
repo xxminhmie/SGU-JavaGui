@@ -43,7 +43,7 @@ public class PODAO extends AbstractDAO<POModel> implements IPODAO {
 	public void update(POModel poModel) {
 		StringBuilder sql = new StringBuilder("UPDATE po SET ");
 		sql.append("staffid = ?, createddate = ?, total = ?, status = ? ");
-		sql.append("WHERE id = ");
+		sql.append("WHERE id = ?");
 		this.update(sql.toString(),
 				poModel.getStaffId(), 
 				poModel.getCreatedDate(), poModel.getTotal(),

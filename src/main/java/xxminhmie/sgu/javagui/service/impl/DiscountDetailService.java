@@ -51,4 +51,10 @@ public class DiscountDetailService implements IDiscountDetailService {
 		return 0;
 	}
 
+	@Override
+	public List<DiscountDetailModel> findListByDiscountId(Long discountId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

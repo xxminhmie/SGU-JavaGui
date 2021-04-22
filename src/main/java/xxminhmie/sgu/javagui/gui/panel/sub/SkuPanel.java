@@ -5,11 +5,14 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -43,6 +46,10 @@ public class SkuPanel extends JPanel {
 	 */
 	JPanel searchPanel;
 	JTextField search;
+
+	JTextField from;
+	JTextField to;
+	JButton priceBtn;
 	/*
 	 * Text field
 	 */
@@ -77,17 +84,12 @@ public class SkuPanel extends JPanel {
 	ResetButton resetBtn;
 	DeleteButton deleteBtn;
 	SaveButton saveBtn;
-
 	public SkuPanel(Long productId) {
 		this.productId = productId;// main label
 		this.setBackground(AbstractPanel.PanelBg);
 		this.setPreferredSize(new Dimension(AbstractPanel.PanelWidth, AbstractPanel.PanelHeight));
 		this.setLayout(null);
-		this.init();
-
-	}
-
-	public void init() {
+		
 		/*
 		 * Main label
 		 */
@@ -95,6 +97,31 @@ public class SkuPanel extends JPanel {
 		mainLabel.setFont(new Font("Helvetica", Font.BOLD, 14));
 		mainLabel.setBounds(0, 0, AbstractPanel.PanelWidth, 20);
 		add(mainLabel);
+		
+		this.init();
+		
+	}
+	public SkuPanel() {
+		
+		
+		this.setBackground(AbstractPanel.PanelBg);
+		this.setPreferredSize(new Dimension(AbstractPanel.PanelWidth, AbstractPanel.PanelHeight));
+		this.setLayout(null);
+		
+		/*
+		 * Main label
+		 */
+		mainLabel = new JLabel("SKU Manager");
+		mainLabel.setFont(new Font("Helvetica", Font.BOLD, 14));
+		mainLabel.setBounds(0, 0, AbstractPanel.PanelWidth, 20);
+		add(mainLabel);
+		
+		this.init();
+
+	}
+
+	public void init() {
+		
 
 		/*
 		 * Search
@@ -108,6 +135,61 @@ public class SkuPanel extends JPanel {
 		search.setForeground(new Color(144, 144, 144));
 		search.setBounds(10, 10, 300, 30);
 		searchPanel.add(search);
+
+		/*
+		 * Advanced Search
+		 * 
+		 * @Price
+		 */
+		JLabel fromLabel = new JLabel("Price: From: ");
+		fromLabel.setBounds(320, 10, 80, 30);
+		searchPanel.add(fromLabel);
+
+		from = new JTextField();
+		from.setBounds(400, 10, 100, 30);
+		searchPanel.add(from);
+
+		JLabel toLabel = new JLabel("To: ");
+		toLabel.setBounds(520, 10, 30, 30);
+		searchPanel.add(toLabel);
+
+		to = new JTextField();
+		to.setBounds(540, 10, 100, 30);
+		searchPanel.add(to);
+
+		/*
+		 * Listener
+		 */
+		from.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					to.requestFocus();
+				}
+
+			}
+		});
+
+		to.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					priceBtn.doClick();
+				}
+
+			}
+		});
+
+		priceBtn = new JButton("Go");
+		priceBtn.setBounds(650, 16, 40, 20);
+		searchPanel.add(priceBtn);
+		priceBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				priceSearch();
+			}
+
+		});
 
 		/*
 		 * Search's listener
@@ -142,8 +224,8 @@ public class SkuPanel extends JPanel {
 		this.tfPanel.setBounds(0, 60, 520, 230);
 		this.add(this.tfPanel);
 
-		String[] infoName = { "SKU's ID: ", "Product's ID: ", "Color: ", "Size: ", "Quantity: ", "Price: ", "Import Price: ",
-				"Status: ", "Image: " };
+		String[] infoName = { "SKU's ID: ", "Product's ID: ", "Color: ", "Size: ", "Quantity: ", "Price: ",
+				"Import Price: ", "Status: ", "Image: " };
 
 		String[] comboxSizeSelection = new String[11];
 		for (int i = 35; i <= 45; i++) {
@@ -215,7 +297,7 @@ public class SkuPanel extends JPanel {
 
 				try {
 					Runtime rt = Runtime.getRuntime();
-					Process proc = rt.exec("cp /Users/lehokimminh/Downloads/Image/" + imagePath + " "
+					Process proc = rt.exec("cp /Users/lehokimminh/Downloads/" + imagePath + " "
 							+ "/Users/lehokimminh/workspace/SGU-JavaGui/src/main/java/xxminhmie/sgu/javagui/image");
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
@@ -366,6 +448,13 @@ public class SkuPanel extends JPanel {
 		}
 		this.image.setVisible(false);
 		this.imagePath = null;
+		this.from.setText("");
+		this.to.setText("");
+		if(this.productId!=null) {
+			this.model.loadData(this.table, this.productId);
+		}else {
+			this.model.loadData(this.table);
+		}
 	}
 
 	/*
@@ -381,9 +470,12 @@ public class SkuPanel extends JPanel {
 	public void deleteButtonHandle() {
 		int click = JOptionPane.showConfirmDialog(null, "Are you sure to delete this product?");
 		if (click == JOptionPane.YES_OPTION) {
-			Long[] ids = new Long[1];
-			ids[0] = Long.parseLong(this.tfList[0].getText());
-			this.skuService.delete(ids);
+			skuService.delete(this.idSelectedRowList.toArray(new Long[this.idSelectedRowList.size()]));
+			model.loadData(this.table, this.productId);
+
+//			Long[] ids = new Long[1];
+//			ids[0] = Long.parseLong(this.tfList[0].getText());
+//			this.skuService.delete(ids);
 		}
 	}
 
@@ -461,29 +553,45 @@ public class SkuPanel extends JPanel {
 		String status = "";
 		if (comboStatus.getSelectedItem() != null) {
 			status = comboStatus.getSelectedItem().toString();
-			if (status.equals("Actived") == false) {
-				JOptionPane.showMessageDialog(null, "Product's status must be 'actived' while adding!");
-				tfList[7].requestFocus();
-				return -1;
-			}
+//			if (status.equals("Actived") == false) {
+//				JOptionPane.showMessageDialog(null, "Product's status must be 'actived' while adding!");
+//				tfList[7].requestFocus();
+//				return -1;
+//			}
 		}
 
-		if (this.skuService.findOneByColorSize(this.productId, color, size) != null) {
-			JOptionPane.showMessageDialog(null, "This product is available!");
-			return -1;
+		String image = "";
+		if (this.imagePath.isBlank() == false) {
+			image = this.imagePath;
 		}
+
 		// Create new SKU
 		Long savedId;
 		if (id == null) {
+			if (this.skuService.findOneByColorSize(this.productId, color, size) != null) {
+				JOptionPane.showMessageDialog(null, "This product is available!");
+				return -1;
+			}
 			SkuModel model = skuService
-					.save(new SkuModel(color, size, qty, price, importPrice, this.imagePath, status, this.productId));
+					.save(new SkuModel(color, size, qty, price, importPrice, image, status, this.productId));
 //			SkuModel model = new SkuModel(color, size, qty, price, importPrice, this.imagePath, status, this.productId);
 //			System.out.print(model.toString());
-//			savedId = model.getId();
+			savedId = model.getId();
+			if (image.isBlank() == false) {
+				try {
+					Runtime rt = Runtime.getRuntime();
+					Process proc = rt.exec("cp /Users/lehokimminh/Downloads/" + image + " "
+							+ "/Users/lehokimminh/workspace/SGU-JavaGui/src/main/java/xxminhmie/sgu/javagui/image");
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
 		} else {
 			// Update product
-			SkuModel model = skuService.update(
-					new SkuModel(id, color, size, qty, price, importPrice, this.imagePath, status, this.productId));
+			SkuModel model = skuService
+					.update(new SkuModel(id, color, size, qty, price, importPrice, image, status, this.productId));
 			savedId = model.getId();
 		}
 		this.model.loadData(this.table, this.productId);
@@ -491,14 +599,6 @@ public class SkuPanel extends JPanel {
 
 //		table.setRowSelectionInterval(selectedRowIndex, selectedRowIndex);
 
-		try {
-			Runtime rt = Runtime.getRuntime();
-			Process proc = rt.exec("cp /Users/lehokimminh/Downloads/Image/" + this.imagePath + " "
-					+ "/Users/lehokimminh/workspace/SGU-JavaGui/src/main/java/xxminhmie/sgu/javagui/image");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		return 0;
 
 	}
@@ -567,17 +667,18 @@ public class SkuPanel extends JPanel {
 		tfList[6].setText(selectedRow.getImportPrice());
 
 		// Status combo
-		for (int i = 0; i < 3; i++) {
-			if (comboSize.getItemAt(i) != null && selectedRow.getStatus() != null) {
-				if (selectedRow.getStatus().equals(comboSize.getItemAt(i).toString())) {
-					comboSize.setSelectedIndex(i);
+		for (int i = 0; i < 4; i++) {
+			if (comboStatus.getItemAt(i) != null && selectedRow.getStatus() != null) {
+				if (selectedRow.getStatus().equals(comboStatus.getItemAt(i).toString())) {
+					comboStatus.setSelectedIndex(i);
 					break;
 				}
 			}
 
 		} // Status combo
-			// image
-		if (selectedRow.getImage() != null) {
+
+		// image
+		if (selectedRow.getImage().isBlank() == false) {
 			image.loadAndShowImage(selectedRow.getImage());
 			image.setBounds(280 + 80, 30 + 20, 160, 160);
 			tfPanel.add(image);
@@ -588,6 +689,30 @@ public class SkuPanel extends JPanel {
 		tfPanel.repaint();
 
 //		loadProductInfo();
+	}
+
+	public void priceSearch() {
+		Long fromL = Long.MIN_VALUE;
+		Long toL = Long.MAX_VALUE;
+		if (this.from.getText().isBlank() == false) {
+			try {
+				fromL = Long.parseLong(from.getText());
+			} catch (NumberFormatException e) {
+				System.out.println("SkuPanel-spriceSearch()-" + e.getMessage());
+			}
+
+		}
+		if (this.to.getText().isBlank() == false) {
+			try {
+				toL = Long.parseLong(to.getText());
+
+			} catch (NumberFormatException e) {
+				System.out.println("SkuPanel-spriceSearch()-" + e.getMessage());
+			}
+
+		}
+//		System.out.println("From " + fromL + "  To " + toL);
+		model.loadData(table, fromL, toL, this.productId);
 	}
 
 }

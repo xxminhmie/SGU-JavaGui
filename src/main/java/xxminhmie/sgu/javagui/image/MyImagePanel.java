@@ -14,11 +14,24 @@ import javax.swing.JPanel;
 public class MyImagePanel extends JPanel{
 	private BufferedImage image;
 	
+	int width;
+	int height;
+	
 	public MyImagePanel() {
+		this.width = 160;
+		this.height = 160;
+	}
+	/*
+	 * This constructor for account panel class
+	 */
+	public MyImagePanel(int width, int height) {
+		this.width = width;
+		this.height = height;
+				
 	}
 
 	void setImage(BufferedImage image) {
-		this.image = resize(image,160,160);
+		this.image = resize(image,this.width,this.height);
 		repaint();
 	}
 	

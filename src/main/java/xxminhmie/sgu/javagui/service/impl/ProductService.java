@@ -4,11 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import xxminhmie.sgu.javagui.dao.impl.ProductDAO;
+import xxminhmie.sgu.javagui.dao.impl.SkuDAO;
 import xxminhmie.sgu.javagui.model.ProductModel;
+import xxminhmie.sgu.javagui.model.SkuModel;
 import xxminhmie.sgu.javagui.service.IProductService;
 
 public class ProductService implements IProductService {
 	ProductDAO dao = new ProductDAO();
+	
+	/*
+	 * delete product either to delete sku 
+	 */
+	SkuService skuService = new SkuService();
 
 	@Override
 	public List<ProductModel> findAll() {
@@ -28,8 +35,13 @@ public class ProductService implements IProductService {
 
 	@Override
 	public void delete(Long[] ids) {
-		// TODO Auto-generated method stub
+		for(Long id : ids) {
+			dao.delete(id);
+			skuService.deleteByProductId(id);
 
+			
+		}
+		
 	}
 
 	@Override

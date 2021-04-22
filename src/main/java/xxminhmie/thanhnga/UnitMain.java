@@ -10,6 +10,9 @@ import xxminhmie.sgu.javagui.model.ProductModel;
 
 public class UnitMain extends JFrame {
 	ArrayList<ProductModel> list;
+	/*
+	 * TODO: THANH NGA
+	 */
 	String path = "";
 	
 	/*
@@ -47,7 +50,7 @@ public class UnitMain extends JFrame {
 		});
 	}
 	/*
-	 * Thanh Nga
+	 * TODO: THANH NGA
 	 */
 	public void run(ArrayList<ProductModel> list, String path) {
 

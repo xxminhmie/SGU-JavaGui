@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -30,6 +31,7 @@ import xxminhmie.sgu.javagui.gui.common.DeleteButton;
 import xxminhmie.sgu.javagui.gui.common.ResetButton;
 import xxminhmie.sgu.javagui.gui.common.SaveButton;
 import xxminhmie.sgu.javagui.gui.modeltable.ProductModelData;
+import xxminhmie.sgu.javagui.gui.modeltable.SkuModelData;
 import xxminhmie.sgu.javagui.gui.panel.sub.SkuPanel;
 import xxminhmie.sgu.javagui.gui.panel.sub.SubFrame;
 import xxminhmie.sgu.javagui.gui.validator.WhiteSpaceValidator;
@@ -77,6 +79,11 @@ public class ProductPanel extends JPanel {
 	ProductModel selectedRow = new ProductModel();// Product is being selected from Table
 	java.util.List<Long> idSelectedRowList = new java.util.ArrayList<Long>();// Contains list of product's ID to
 	int selectedRowIndex = -1;
+
+	/*
+	 * 
+	 */
+	SkuModelData skuModel;
 
 	/*
 	 * Constructor
@@ -151,7 +158,7 @@ public class ProductPanel extends JPanel {
 		this.panel.add(this.tfPanel);
 
 		String[] infoName = { "ID: ", "Name: ", "Brand: ", "Description: ", "Status: " };
-		String[] comboStatusSelection = { "Actived", "Locked" };
+		String[] comboStatusSelection = { "Actived", "Locked", "Deleted" };
 		this.tfList = new JTextField[5];
 		int x = 10;
 		int y = 20;
@@ -299,34 +306,43 @@ public class ProductPanel extends JPanel {
 				getAllSelectedRow(table);
 //				findAllSkuByProductId(selectedRow.getId());
 			}
+			@Override
+			public void mousePressed(MouseEvent mouseEvent) {
+		        JTable table =(JTable) mouseEvent.getSource();
+		        Point point = mouseEvent.getPoint();
+		        int row = table.rowAtPoint(point);
+		        if (mouseEvent.getClickCount() == 2 && table.getSelectedRow() != -1) {
+		        	tableDoubleClickedHandle();
+		        }
+		    }
 		});
 
 		/*
 		 * Right click on table's row
 		 */
-		JPopupMenu popupMenu = new JPopupMenu();
-		JMenuItem menuItemDetail = new JMenuItem("Detail");
-		JMenuItem menuItemLock = new JMenuItem("Lock");
-
-		popupMenu.add(menuItemDetail);
-		popupMenu.add(menuItemLock);
-
-		table.setComponentPopupMenu(popupMenu);
-
-		menuItemLock.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				menuItemLockHandle();
-			}
-
-		});
-		menuItemDetail.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				menuItemDetailHandle();
-			}
-
-		});
+//		JPopupMenu popupMenu = new JPopupMenu();
+//		JMenuItem menuItemDetail = new JMenuItem("Detail");
+//		JMenuItem menuItemLock = new JMenuItem("Lock");
+//
+//		popupMenu.add(menuItemDetail);
+//		popupMenu.add(menuItemLock);
+//
+//		table.setComponentPopupMenu(popupMenu);
+//
+//		menuItemLock.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				menuItemLockHandle();
+//			}
+//
+//		});
+//		menuItemDetail.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				menuItemDetailHandle();
+//			}
+//
+//		});
 
 		/*
 		 * scroll pane
@@ -338,10 +354,10 @@ public class ProductPanel extends JPanel {
 		panel.add(tbPanel);
 
 	}// END CONSTRUCTOR////////////////////////////////////
-
 	/*
 	 * Reset button handle
 	 */
+
 	public void resetButtonHandle() {
 		for (int i = 0; i < this.tfList.length; i++) {
 			if (i == 4) {
@@ -399,11 +415,11 @@ public class ProductPanel extends JPanel {
 		String status = null;
 		if (comboStatus.getSelectedItem() != null) {
 			status = comboStatus.getSelectedItem().toString();
-			if (status.equals("Locked")) {
-				JOptionPane.showMessageDialog(null, "Product's status must be not locked while adding!");
-				comboStatus.requestFocus();
-				return -1;
-			}
+//			if (status.equals("Locked")) {
+//				JOptionPane.showMessageDialog(null, "Product's status must be not locked while adding!");
+//				comboStatus.requestFocus();
+//				return -1;
+//			}
 		}
 		// Create new product
 		Long savedId;
@@ -416,10 +432,10 @@ public class ProductPanel extends JPanel {
 		} else {
 			// Update product
 			if (des != null) {
-				ProductModel pro = service.update(new ProductModel(id, name, brand, des));
+				ProductModel pro = service.update(new ProductModel(id, name, brand, des, status));
 				savedId = pro.getId();
 			} else {
-				ProductModel pro = service.update(new ProductModel(id, name, brand));
+				ProductModel pro = service.update(new ProductModel(id, name, brand, status));
 				savedId = pro.getId();
 
 			}
@@ -435,8 +451,13 @@ public class ProductPanel extends JPanel {
 	 * add new SKUs button handle
 	 */
 	public void addSkuButtonHandle() {
+		if(this.selectedRow.getStatus().equals("Actived") == false) {
+			JOptionPane.showMessageDialog(null, "This product was locked or deleted! Cannot to open this product's details!");
+			return;
+		}
 		if (this.selectedRowIndex < 0) {
 			JOptionPane.showMessageDialog(null, "Please select one product row on table to view details!");
+			return;
 		} else {
 //			SkuService service = new SkuService();
 //			if(service.findByProductId(this.selectedRow.getId())==null) {
@@ -525,12 +546,17 @@ public class ProductPanel extends JPanel {
 		}
 	}
 
-	public void menuItemDetailHandle() {
-		openSkuFrame(this.selectedRow.getId());
+	public void tableDoubleClickedHandle() {
+		if(this.selectedRow.getStatus().equals("Actived")) {
+			openSkuFrame(this.selectedRow.getId());
+		}else {
+			JOptionPane.showMessageDialog(null, "This product was locked or deleted! Cannot to open this product's details!");
+
+		}
 	}
 
 	/*
-	 * Open SKU sub jframe
+	 * Open SKU 
 	 */
 	public void openSkuFrame(Long productId) {
 		SkuPanel skuPanel = new SkuPanel(productId);
@@ -569,7 +595,11 @@ public class ProductPanel extends JPanel {
 		if (selectedRow.getStatus().equals(comboStatus.getItemAt(0))) {
 			comboStatus.setSelectedIndex(0);
 		} else {
-			comboStatus.setSelectedIndex(1);
+			if(selectedRow.getStatus().equals(comboStatus.getItemAt(1))){
+				comboStatus.setSelectedIndex(1);
+			}else {
+				comboStatus.setSelectedIndex(2);
+			}
 		}
 
 	}

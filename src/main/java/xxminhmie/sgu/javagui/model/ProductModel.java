@@ -8,21 +8,21 @@ public class ProductModel extends AbstractModel{
 	public ProductModel() {
 		
 	}
-	public ProductModel(Long id,String name, String brand, String description) {
+	public ProductModel(Long id,String name, String brand, String description, String status) {
 		super(id);
 		this.name = name;
 		this.brand = brand;
 		this.description = description;
-		this.status = "Actived";
+		this.status = status;
 
 	}
 	
-	public ProductModel(Long id,String name, String brand) {
+	public ProductModel(Long id,String name, String brand, String status) {
 		super(id);
 		this.name = name;
 		this.brand = brand;
 		this.description = "";
-		this.status = "Actived";
+		this.status = status;
 
 	}
 	
@@ -34,6 +34,7 @@ public class ProductModel extends AbstractModel{
 		this.status = "Actived";
 
 	}
+	
 	public ProductModel(String name, String brand) {
 		super();
 		this.name = name;

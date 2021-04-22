@@ -5,12 +5,15 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.ScrollPane;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
 import xxminhmie.sgu.javagui.gui.panel.AccountPanel;
@@ -38,12 +41,34 @@ public class ApplicationGUI extends JFrame {
 	public static final int FrameWidth = 1200;
 
 	protected JPanel mainContent;
-	JPanel sidebar;
+	SidebarContainer sidebar;
+
 
 	SidebarService service = new SidebarService();
 
 	public ApplicationGUI() {
 		this.displayGUI();
+		
+		/*
+		 * Logout listener
+		 */
+		sidebar.getAccountPanel().getLogoutLabel().addMouseListener(new MouseAdapter() {
+			public void mouseEntered(java.awt.event.MouseEvent evt) {
+				sidebar.getAccountPanel().getLogoutLabel().setText("<HTML><U>Logout</U></HTML>");
+			}
+
+			public void mouseExited(java.awt.event.MouseEvent evt) {
+				sidebar.getAccountPanel().getLogoutLabel().setText("Logout");
+			}
+
+			public void mouseClicked(java.awt.event.MouseEvent evt) {
+				int click = JOptionPane.showConfirmDialog(null, "Are you sure to logout?");
+                if(click==JOptionPane.YES_OPTION) {
+                	logoutHandle();
+                }
+               
+			}
+		});
 	}
 
 	protected void displayGUI() {
@@ -86,10 +111,12 @@ public class ApplicationGUI extends JFrame {
 
 		};
 
-		String[] namePanel = { "link1", "link2", "link3", "link4", "link5","link6","link7","link8","link9" };
+		String[] namePanel = { "link1", "link2", "link3", "link4", "link5", "link6", "link7", "link8", "link9" };
 
 		this.sidebar = new SidebarContainer(nameList, namePanel, this.mainContent);
-		this.add(sidebar, BorderLayout.WEST);
+		
+		this.add(sidebar,BorderLayout.WEST);
+		
 		this.add(this.mainContent, BorderLayout.CENTER);
 
 		panel1.addMouseListener(new MouseAdapter() {
@@ -98,5 +125,13 @@ public class ApplicationGUI extends JFrame {
 			}
 		});
 	}
+	public void logoutHandle() {
+		this.dispose();//destroy login frame
+//		LogInGUI login = new LogInGUI();
+//		login.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//		login.setVisible(true);
+	}
+
+	
 
 }

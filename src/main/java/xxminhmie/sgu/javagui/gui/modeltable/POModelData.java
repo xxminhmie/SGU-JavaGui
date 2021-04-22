@@ -2,17 +2,21 @@ package xxminhmie.sgu.javagui.gui.modeltable;
 
 import java.util.List;
 
+import javax.swing.JButton;
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumnModel;
 
+import xxminhmie.sgu.javagui.gui.common.AddButton;
 import xxminhmie.sgu.javagui.model.POModel;
 import xxminhmie.sgu.javagui.service.impl.POService;
 
 public class POModelData extends AbstractTableModel {
 	POService service = new POService();
 	List<POModel> data = service.findAll();
-	String columnNames[] = { "ID", "StaffID", "SupplierID", "Created Date", "Total", "Status" };
+	String columnNames[] = { "ID", "StaffID", "Created Date", "Total", "Status" };
+
+	JButton confirmBtn = new AddButton(0, 0);
 
 	@Override
 	public int getRowCount() {
@@ -25,6 +29,7 @@ public class POModelData extends AbstractTableModel {
 		// TODO Auto-generated method stub
 		return columnNames.length;
 	}
+
 	public POService getService() {
 		return this.service;
 	}
@@ -42,12 +47,13 @@ public class POModelData extends AbstractTableModel {
 		}
 		if (columnIndex == 3) {
 			return data.get(rowIndex).getTotal();
-		}	
+		}
 		if (columnIndex == 4) {
 			return data.get(rowIndex).getStatus();
-		}	
+		}
 		return null;
 	}
+
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 		if (columnIndex == 0) {
 			data.get(rowIndex).setId((Long) aValue);
@@ -66,6 +72,7 @@ public class POModelData extends AbstractTableModel {
 		}
 		fireTableCellUpdated(rowIndex, columnIndex);
 	}
+
 	public String getColumnName(int columnIndex) {
 		return columnNames[columnIndex];
 	}
@@ -73,22 +80,26 @@ public class POModelData extends AbstractTableModel {
 	public boolean isCellEditable(int rowIndex, int columnIndex) {
 		return false;
 	}
+
 	public POModel getProductModel(int rowIndex) {
 		return data.get(rowIndex);
 	}
-	//refresh data from database
+
+	// refresh data from database
 	public void loadData(JTable table) {
 		this.data = this.service.findAll();
-	    fireTableChanged(null);
-	    this.setColumnWidth(table);
+		fireTableChanged(null);
+		this.setColumnWidth(table);
 	}
-	//refresh data from list
+
+	// refresh data from list
 	public void loadData(JTable table, String str) {
 		this.data = this.service.search(str);
-	    fireTableChanged(null);
-	    this.setColumnWidth(table);
+		fireTableChanged(null);
+		this.setColumnWidth(table);
 
 	}
+
 	public void setColumnWidth(JTable table) {
 		TableColumnModel columnModel = table.getColumnModel();
 		columnModel.getColumn(0).setPreferredWidth(40);

@@ -15,6 +15,7 @@ public interface ISkuDAO extends GenericDAO<SkuModel> {
 	Long save(SkuModel skuModel);
 	void update(SkuModel updateSku);
 	void delete(Long id);
-
+	void deleteByProductId(Long id);
+	
 	int getTotalItem();
 }

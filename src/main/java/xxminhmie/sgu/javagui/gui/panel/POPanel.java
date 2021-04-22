@@ -4,12 +4,15 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 
@@ -52,8 +55,7 @@ public class POPanel extends JPanel {
 	 */
 	JPanel tfPanel;
 	JTextField[] tfList = new JTextField[5];
-	JComboBox comboStatus;
-	JButton[] more = new JButton[3];
+	JButton[] more = new JButton[1];
 	/*
 	 * Search
 	 */
@@ -68,6 +70,7 @@ public class POPanel extends JPanel {
 	AddButton addDetailBtn;
 	DeleteButton deleteBtn;
 	AddButton addBtn;
+	public AddButton confirmBtn;
 
 	/*
 	 * Table
@@ -85,52 +88,60 @@ public class POPanel extends JPanel {
 	int selectedRowIndex;
 
 	/*
+	 * 
+	 */
+	static Long STAFF_CURRENT;
+	JFrame staffFrame;
+	PODetailPanel detail;
+
+	/*
 	 * Constructor
 	 */
 	public POPanel() {
-		this.setBackground(AbstractPanel.PanelBg);
-		this.setPreferredSize(new Dimension(AbstractPanel.PanelWidth, AbstractPanel.PanelHeight));
-		this.setLayout(new BorderLayout());
+		setBackground(AbstractPanel.PanelBg);
+		setPreferredSize(new Dimension(AbstractPanel.PanelWidth, AbstractPanel.PanelHeight));
+		setLayout(new BorderLayout());
 
-		this.mainLabel.setFont(new Font("Helvetica", Font.BOLD, 24));
-		this.add(this.mainLabel, BorderLayout.NORTH);
+		mainLabel.setFont(new Font("Helvetica", Font.BOLD, 24));
+		add(mainLabel, BorderLayout.NORTH);
 
 		/*
 		 * Main Panel
 		 */
-		this.mainPanel.setLayout(null);
-		this.add(this.mainPanel, BorderLayout.CENTER);
+		mainPanel.setLayout(null);
+		add(mainPanel, BorderLayout.CENTER);
 
 		/*
 		 * PO Panel
 		 */
-		this.panel.setBounds(0, 0, AbstractPanel.PanelWidth, 700);
-		this.panel.setLayout(null);
-		this.mainPanel.add(this.panel);
+		panel.setBounds(0, 0, AbstractPanel.PanelWidth, 700);
+		panel.setLayout(null);
+		mainPanel.add(panel);
 
 		/*
 		 * Search
 		 */
-		this.searchPanel = new JPanel();
-		this.searchPanel.setBounds(0, 0, 300, 40);
-		this.searchPanel.setLayout(null);
-		this.panel.add(this.searchPanel);
+		searchPanel = new JPanel();
+		searchPanel.setBounds(0, 0, 300, 40);
+		searchPanel.setLayout(null);
+		panel.add(searchPanel);
 
-		this.search = new JTextField("Search...");
-		this.search.setForeground(new Color(144, 144, 144));
-		this.search.setBounds(10, 10, 300, 30);
+		search = new JTextField("Search...");
+		search.setForeground(new Color(144, 144, 144));
+		search.setBounds(10, 10, 300, 30);
 
 		/*
 		 * Search's listener
 		 */
-		this.search.addMouseListener(new MouseAdapter() {
+		search.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				search.selectAll();
 				search.setForeground(Color.BLACK);
 			}
 		});
-		this.searchPanel.add(this.search);
-		this.search.getDocument().addDocumentListener(new DocumentListener() {
+		searchPanel.add(search);
+
+		search.getDocument().addDocumentListener(new DocumentListener() {
 			@Override
 			public void insertUpdate(DocumentEvent e) {
 				model.loadData(table, search.getText());
@@ -150,65 +161,78 @@ public class POPanel extends JPanel {
 		/*
 		 * Text field
 		 */
-		this.tfPanel = new JPanel();
-		this.tfPanel.setBounds(0, 30, 350, 240);
-		this.tfPanel.setOpaque(true);
-		this.tfPanel.setLayout(null);
-		this.panel.add(this.tfPanel);
+		tfPanel = new JPanel();
+		tfPanel.setBounds(0, 30, 350, 240);
+		tfPanel.setOpaque(true);
+		tfPanel.setLayout(null);
+		panel.add(tfPanel);
 
 		String[] infoName = { "ID: ", "StaffID: ", "Created Date: ", "Total", "Status: " };
-		String[] comboStatusSelection = { "Pending ", "Confirmed", "Sending", "Canceled" };
 		int x = 10;
 		int y = 20;
 		// this for loop initialize label and text field, set position for both
 		for (int i = 0; i < this.tfList.length; i++) {
 			JLabel label = new JLabel(infoName[i]);
 			this.tfPanel.add(label);
-			if (i == 4) {
-				label.setBounds(x, y, 100, 30);
-				comboStatus = new JComboBox(comboStatusSelection);
-				comboStatus.setSelectedItem(null);
-				comboStatus.setBounds(x + 90, y + 5, 190, 20);
-				this.tfPanel.add(comboStatus);
-			} else {
-				label.setBounds(x, y, 100, 30);
-				tfList[i] = new JTextField();
-				this.tfList[i].setBounds(x + 90, y + 5, 190, 20);
-				this.tfPanel.add(this.tfList[i]);
-			}
+			label.setBounds(x, y, 100, 30);
+			tfList[i] = new JTextField();
+			tfList[i].setBounds(x + 90, y + 5, 190, 20);
+			tfPanel.add(tfList[i]);
 			y += 30;
 		}
+		/*
+		 * more staff button
+		 */
 		int moreX = 10 + 80 + 200;
 		int moreY = 20 + 30 + 5 + 30;
-		for (int i = 0; i < 3; i++) {
-			more[i] = new JButton("...");
-			more[i].setBounds(moreX, moreY, 40, 20);
-			this.panel.add(more[i]);
-			moreY += 30;
-		}
+		more[0] = new JButton("...");
+		more[0].setBounds(moreX, moreY, 40, 20);
+		panel.add(more[0]);
+
 		/*
 		 * set read - only for ID text field
 		 */
 		tfList[0].setEditable(false);
-		tfList[0].setForeground(new Color(108, 108, 108));
+		tfList[1].setEditable(false);
+		tfList[2].setEditable(false);
+		tfList[3].setEditable(false);
+		tfList[4].setEditable(false);
+
+
+		Color color = new Color(108, 108, 108);
+		tfList[0].setForeground(color);
+		tfList[1].setForeground(color);
+		tfList[2].setForeground(color);
+		tfList[3].setForeground(color);
+
 		panel.add(this.tfPanel);
+
+		/*
+		 * more button add listener
+		 */
+		more[0].addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				moreBtnStaffHandle();
+			}
+		});
 
 		/*
 		 * Button panel
 		 */
-		btnPanel.setBounds(450, 60, 200, 200);
+		btnPanel.setBounds(350, 60, 200, 200);
 		btnPanel.setLayout(null);
 		panel.add(btnPanel);
 
 		addBtn = new AddButton(0, 0, 120, 20);
+		addBtn.setNameBtn("Create New");
+
 		btnPanel.add(addBtn);
 		addBtn.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				addButtonHandle();
 			}
-
 		});
 
 		saveBtn = new SaveButton(0, 30, 120, 20);
@@ -218,7 +242,6 @@ public class POPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				saveButtonHandle();
 			}
-
 		});
 		resetBtn = new ResetButton(0, 60, 120, 20);
 		btnPanel.add(resetBtn);
@@ -227,7 +250,6 @@ public class POPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				resetButtonHandle();
 			}
-
 		});
 
 		addDetailBtn = new AddButton(0, 90, 120, 20);
@@ -238,21 +260,29 @@ public class POPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				addDetailButtonHandle();
 			}
-
 		});
 
-		deleteBtn = new DeleteButton(0, 120, 120, 20);
+		deleteBtn = new DeleteButton(0, 130, 120, 20);
+		deleteBtn.setNameBtn("Cancel");
 		btnPanel.add(deleteBtn);
 		deleteBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				deleteButtonHandle();
 			}
+		});
+		confirmBtn = new AddButton(0, 160, 120, 20);
+		btnPanel.add(confirmBtn);
+		confirmBtn.setNameBtn("Confirm");
+		confirmBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				confirmButtonHandle();// po panel class
+				detail.updateQtySkuAfterConfirm();
+			}
 
 		});
-
-		/******************************************************************
-		 * 
+		/*
 		 * Table panel
 		 */
 		tbPanel = new JPanel();
@@ -270,51 +300,30 @@ public class POPanel extends JPanel {
 		/*
 		 * Table adding listener
 		 */
-		this.table.addMouseListener(new java.awt.event.MouseAdapter() {
-			/** GET SELECTED VALUE TO DISPLAY ON TEXT FIELD **/
+		table.addMouseListener(new java.awt.event.MouseAdapter() {
+			/* GET SELECTED VALUE TO DISPLAY ON TEXT FIELD **/
 			@Override
 			public void mouseClicked(java.awt.event.MouseEvent evt) {
 				int rowIndex = table.rowAtPoint(evt.getPoint());
 				int col = table.columnAtPoint(evt.getPoint());
 				if (rowIndex >= 0 && col >= 0) {
 					selectedRowIndex = rowIndex;
-					/** GET MANUALLY ALL ROW **/
 					setSelectedPOModel();
 				}
-				/** DISPLAY TO TEXT FIELD **/
 				displayPOToTextField();
-
-				/**  **/
 				getAllSelectedRow(table);
 //				findAllDetailByProductId(selectedRow.getId());
 			}
-		});
 
-		/*
-		 * Right click on table's row
-		 */
-		JPopupMenu popupMenu = new JPopupMenu();
-		JMenuItem menuItemDetail = new JMenuItem("Detail");
-//		JMenuItem menuItemLock = new JMenuItem("Confirm");
-
-		popupMenu.add(menuItemDetail);
-//		popupMenu.add(menuItemLock);
-
-		table.setComponentPopupMenu(popupMenu);
-
-//		menuItemLock.addActionListener(new ActionListener() {
-//			@Override
-//			public void actionPerformed(ActionEvent e) {
-//				menuItemLockHandle();
-//			}
-//
-//		});
-		menuItemDetail.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				menuItemDetailHandle();
+			public void mousePressed(MouseEvent mouseEvent) {
+				JTable table = (JTable) mouseEvent.getSource();
+				Point point = mouseEvent.getPoint();
+				int row = table.rowAtPoint(point);
+				if (mouseEvent.getClickCount() == 2 && table.getSelectedRow() != -1) {
+					menuItemDetailHandle();
+				}
 			}
-
 		});
 
 		/*
@@ -322,27 +331,9 @@ public class POPanel extends JPanel {
 		 */
 		pane = new JScrollPane(table);
 		pane.setBounds(0, 20, 700, 360);
-		/** ADD SCROLL PANE TO MAIN PANEL **/
+
 		tbPanel.add(pane);
 		panel.add(tbPanel);
-
-		/*
-		 * more button add listener
-		 */
-		this.more[0].addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				JFrame f = new JFrame();
-				CustomerPanel p = new CustomerPanel();
-				f.getContentPane().add(p);
-				f.setSize(new Dimension(1000, 500));
-				f.setVisible(true);
-				f.setLocationRelativeTo(null); // this will center your application
-
-			}
-
-		});
 	}// END CONSTRUCTOR////////////////////////////////////
 
 	/*
@@ -350,11 +341,7 @@ public class POPanel extends JPanel {
 	 */
 	public void resetButtonHandle() {
 		for (int i = 0; i < this.tfList.length; i++) {
-			if (i == 5) {
-				comboStatus.setSelectedItem(null);
-			} else {
-				this.tfList[i].setText("");
-			}
+			this.tfList[i].setText("");
 		}
 
 	}
@@ -362,68 +349,40 @@ public class POPanel extends JPanel {
 	/*
 	 * Save button handle
 	 */
-	public int saveButtonHandle() {
-		Long id = null;
-		if (this.tfList[0].getText().equals("") == false) {
-			try {
-				id = Long.parseLong(tfList[0].getText());
-			} catch (java.lang.NumberFormatException e) {
-
-			}
+	public void saveButtonHandle() {
+		Long id = -1L;
+		if (!tfList[0].getText().isBlank()) {
+			id = Long.parseLong(tfList[0].getText());
 		}
-		
 
-		Long staffId = null;
-		if (tfList[1].getText().equals("") == false) {
+		Long staffId = -1L;
+		if (!tfList[1].getText().isBlank()) {
 			staffId = Long.valueOf(tfList[1].getText());
 		} else {
 			tfList[1].requestFocus();
-			return -1;
+			return;
 		}
 
-		Long supplierId = null;
-		if (tfList[2].getText().equals("") == false) {
-			supplierId = Long.valueOf(tfList[2].getText());
-		} else {
-			tfList[1].requestFocus();
-			return -1;
-		}
+		String total = tfList[3].getText();
 
 		java.sql.Date createdDate = GetCurrentDate.getDate();
-		System.out.print(createdDate);
 
-//		String status = null;
-//		if (comboStatus.getSelectedItem() != null) {
-//			status = comboStatus.getSelectedItem().toString();
-//			if (status.equals("Locked")) {
-//				JOptionPane.showMessageDialog(null, "Product's status must be not locked while adding!");
-//				comboStatus.requestFocus();
-//				return -1;
-//			}
-//			if (status.equals("Locked")) {
-//				JOptionPane.showMessageDialog(null, "Product's status must be not locked while adding!");
-//				comboStatus.requestFocus();
-//				return -1;
-//			}
-//		}
-		// Create new purchase order
-		// String[] infoName = { "ID: ", "StaffID: ", "SupplierID: ", "Created Date: ",
-				// "Total", "Status: " };
+		String status = null;
+		if (!tfList[4].getText().isBlank()) {
+			status = tfList[4].getText();
+		}
+
 		Long savedId;
-		if (id == null) {
-			savedId = poService.save(new POModel(staffId, createdDate));
-
+		if (id < 0) {
+			savedId = poService.save(new POModel(staffId, createdDate, total, status));
 		} else {
-			// Update product
-			POModel model = poService.update(new POModel(id, staffId, createdDate, "Pending"));
+			POModel model = poService.update(new POModel(id, staffId, createdDate, total, status));
 			savedId = model.getId();
 		}
 
-		this.model.loadData(this.table);
+		model.loadData(table);
 		getGeneratedKeys(savedId);
 		table.setRowSelectionInterval(selectedRowIndex, selectedRowIndex);
-//		this.detailPanel.addButtonHandle(savedId);
-		return 0;
 	}
 
 	/*
@@ -431,13 +390,13 @@ public class POPanel extends JPanel {
 	 */
 	public void addDetailButtonHandle() {
 		openDetailFrame(this.selectedRow.getId());
-
 	}
 
 	/*
 	 * Add button handle
 	 */
 	public void addButtonHandle() {
+		tfList[2].setText(this.getCurrentDate());
 		tfList[0].setText("");
 		// TODO: nhan vien hien hanh id
 //		tfList[1].setText();
@@ -447,7 +406,18 @@ public class POPanel extends JPanel {
 	 * Delete button handle
 	 */
 	public void deleteButtonHandle() {
-
+		if (selectedRowIndex > 0) {
+			int click = JOptionPane.showConfirmDialog(null,
+					"Are you sure for cancel this purchase order?");
+			if (click == JOptionPane.YES_OPTION) {
+				POModel model = this.selectedRow;
+				model.setStatus("Canceled");
+				poService.update(model);
+				this.model.loadData(table);
+			}
+		} else {
+			JOptionPane.showMessageDialog(null, "You have not selected a value to cancel!");
+		}
 	}
 
 	/*
@@ -520,31 +490,6 @@ public class POPanel extends JPanel {
 //		this.detailPanel.tfList[0].setText(String.valueOf());
 	}
 
-	public void menuItemLockHandle() {
-//		List<SkuModel> list = PODetailService.findByProductId(this.proSelectedRow.getId());
-//		StringBuilder str = new StringBuilder(
-//				"Are you sure to lock this product?\nThis means list of stock keeping unit will be locked.\n");
-//		if (list.isEmpty() == false) {
-//			for (SkuModel e : list) {
-//				str.append("{SKUID: " + e.getId() + "}\n");
-//			}
-//		}
-//
-//		int click = JOptionPane.showConfirmDialog(null, str);
-//		if (click == JOptionPane.YES_OPTION) {
-//			JOptionPane.showMessageDialog(null, "Click Yes");
-//		}
-//		if (click == JOptionPane.NO_OPTION) {
-//			JOptionPane.showMessageDialog(null, "Click No");
-//		}
-//		if (click == JOptionPane.CANCEL_OPTION) {
-//			JOptionPane.showMessageDialog(null, "Click Cancel");
-//		}
-//		if (click == JOptionPane.CLOSED_OPTION) {
-//			JOptionPane.showMessageDialog(null, "Click Close");
-//		}
-	}
-
 	public void setSelectedPOModel() {
 		selectedRow.setId((Long) table.getModel().getValueAt(selectedRowIndex, 0));
 		selectedRow.setStaffId((Long) table.getModel().getValueAt(selectedRowIndex, 1));
@@ -558,16 +503,9 @@ public class POPanel extends JPanel {
 		tfList[1].setText(selectedRow.getStaffId().toString());
 		tfList[2].setText(selectedRow.getCreatedDate().toString());
 		tfList[3].setText(selectedRow.getTotal());
-		for (int i = 0; i < 4; i++) {
-			if (selectedRow.getStatus().toString().toLowerCase().equals(comboStatus.getItemAt(i).toString().toLowerCase())) {
-				
-//				comboStatus.setSelectedIndex(i);
-				break;
-			}
-			System.out.print(selectedRow.getStatus().toString().toLowerCase().equals(comboStatus.getItemAt(i).toString().toLowerCase()));
+		tfList[4].setText(selectedRow.getStatus());
 
-//			System.out.println(comboStatus.getItemAt(i));
-		}
+		
 	}
 
 	public void menuItemDetailHandle() {
@@ -578,16 +516,98 @@ public class POPanel extends JPanel {
 	 * Open SKU sub jframe
 	 */
 	public void openDetailFrame(Long poId) {
-		PODetailPanel detail = new PODetailPanel(poId);
+		detail = new PODetailPanel(poId);
+		if (this.selectedRow.getStatus().equals("Confirmed")) {
+			detail.tfList[3].setEditable(false);
+			detail.btnPanel.setVisible(false);
+		} else {
+
+			detail.saveBtn.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					detail.saveButtonHandle();
+					model.loadData(table);
+				}
+			});
+			detail.deleteBtn.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					detail.deleteButtonHandle();
+					model.loadData(table);
+				}
+			});
+//			detail.confirmBtn.addActionListener(new ActionListener() {
+//				@Override
+//				public void actionPerformed(ActionEvent e) {
+//					confirmButtonHandle();// po panel class
+//					detail.updateQtySkuAfterConfirm();
+//				}
+//			});
+		}
 		JFrame subFrame = new SubFrame(detail);
 		/*
 		 * If poId > 0 --> detail else add new PO --> null
 		 */
 		if (poId > 0) {
 			detail.loadDataByPOId(poId);
+			detail.tfList[0].setText(String.valueOf(poId));
 		}
 		subFrame.setVisible(true);
+	}
 
+	/*
+	 * More staff button handle
+	 */
+	public void moreBtnStaffHandle() {
+		Long staffId = -1L;
+		if (this.tfList[1].getText().isBlank() == false) {
+			staffId = Long.parseLong(tfList[1].getText());
+		}
+
+		StaffPanel staff = new StaffPanel();
+		staff.setSelectedStaffModel();
+		staff.displayStaffToTextField();
+		staff.table.addMouseListener(new java.awt.event.MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent mouseEvent) {
+				JTable table = (JTable) mouseEvent.getSource();
+				Point point = mouseEvent.getPoint();
+				int row = table.rowAtPoint(point);
+				if (mouseEvent.getClickCount() == 2 && table.getSelectedRow() != -1) {
+					doubleClickStaffHandle(table.getValueAt(row, 0));
+				}
+			}
+		});
+
+		staffFrame = new SubFrame(staff);
+		staffFrame.setVisible(true);
+	}
+
+	public void doubleClickStaffHandle(Object id) {
+		STAFF_CURRENT = (Long) id;
+		tfList[1].setText((String.valueOf(id)));
+		staffFrame.dispose();
+	}
+
+	public String getCurrentDate() {
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		LocalDateTime now = LocalDateTime.now();
+		return dtf.format(now);
+
+	}
+
+	public void confirmButtonHandle() {
+		if (selectedRowIndex > 0) {
+			int click = JOptionPane.showConfirmDialog(null, "Are you sure to confirm this purchase order?");
+			if (click == JOptionPane.YES_OPTION) {
+				POModel updateModel = this.selectedRow;
+				updateModel.setStatus("Confirmed");
+				this.poService.update(updateModel);
+				this.model.loadData(table);
+			}
+		} else {
+			JOptionPane.showMessageDialog(null, "You have not selected a value to confirm!");
+		}
 	}
 
 }
