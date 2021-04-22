@@ -2,7 +2,7 @@ package xxminhmie.sgu.javagui.model;
 
 public class AbstractModel {
 	
-	protected Long id;
+	private Long id;
 //	protected Long[] ids;
 //	protected List<T> listResult = new ArrayList<>();
 	
