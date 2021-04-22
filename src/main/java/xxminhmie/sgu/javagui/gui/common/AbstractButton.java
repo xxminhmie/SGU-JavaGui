@@ -44,4 +44,6 @@ public class AbstractButton extends JButton{
 		this.nameBtn = nameBtn;
 		setText(this.nameBtn);
 	}
+	
+	
 }
