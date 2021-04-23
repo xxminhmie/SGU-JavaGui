@@ -3,9 +3,15 @@ package xxminhmie.sgu.javagui.gui.panel.sub;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.HashMap;
 
+import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -18,14 +24,16 @@ import javax.swing.event.DocumentListener;
 import xxminhmie.sgu.javagui.gui.common.AddButton;
 import xxminhmie.sgu.javagui.gui.common.DeleteButton;
 import xxminhmie.sgu.javagui.gui.common.ResetButton;
+import xxminhmie.sgu.javagui.gui.common.SaveButton;
 import xxminhmie.sgu.javagui.gui.modeltable.DiscountDetailModelData;
-import xxminhmie.sgu.javagui.gui.modeltable.PODetailModelData;
 import xxminhmie.sgu.javagui.gui.panel.AbstractPanel;
 import xxminhmie.sgu.javagui.gui.panel.Renderer;
 import xxminhmie.sgu.javagui.model.DiscountDetailModel;
+import xxminhmie.sgu.javagui.model.DiscountModel;
 import xxminhmie.sgu.javagui.model.PODetailModel;
+import xxminhmie.sgu.javagui.model.SkuModel;
 import xxminhmie.sgu.javagui.service.impl.DiscountDetailService;
-import xxminhmie.sgu.javagui.service.impl.PODetailService;
+import xxminhmie.sgu.javagui.service.impl.SkuService;
 
 public class DiscountDetailPanel extends JPanel {
 	DiscountDetailService service = new DiscountDetailService();
@@ -41,7 +49,8 @@ public class DiscountDetailPanel extends JPanel {
 	 * Text field
 	 */
 	JPanel tfPanel = new JPanel();
-	public JTextField[] tfList = new JTextField[6];
+	public JTextField[] tfList = new JTextField[4];
+	public JButton[] more = new JButton[1];
 
 	/*
 	 * Table
@@ -52,8 +61,7 @@ public class DiscountDetailPanel extends JPanel {
 	DiscountDetailModelData model;
 
 	DiscountDetailModel selectedRow = new DiscountDetailModel();
-	java.util.List<Long> idSelectedRowList = new java.util.ArrayList<Long>();// Contains list of customer's ID to
-																				// delete
+	java.util.Map<Long, Long> idSelectedRowList = new HashMap<Long, Long>();// (oiid, skuid)
 	int selectedRowIndex;
 
 	Long discountId;
@@ -61,10 +69,16 @@ public class DiscountDetailPanel extends JPanel {
 	/*
 	 * Button
 	 */
-	JPanel btnPanel = new JPanel();
+	public JPanel btnPanel = new JPanel();
 	AddButton addBtn;
+	SaveButton saveBtn;
 	ResetButton resetBtn;
 	DeleteButton deleteBtn;
+
+	/*
+	 * 
+	 */
+	JFrame skuFrame;
 
 	public DiscountDetailPanel(Long discountId) {
 		this.discountId = discountId;
@@ -130,7 +144,7 @@ public class DiscountDetailPanel extends JPanel {
 		tfPanel.setBounds(0, 60, AbstractPanel.PanelWidth, 230);
 		add(tfPanel);
 
-		String[] infoName = { "Discount ID: ", "SKU ID: ", "Rate:  ", "Status: "};
+		String[] infoName = { "Discount ID: ", "SKU ID: ", "Rate (%):  ", "Status: " };
 
 		int x = 20;
 		int y = 20;
@@ -148,18 +162,32 @@ public class DiscountDetailPanel extends JPanel {
 
 		}
 
+		more[0] = new JButton("...");
+		more[0].setBounds(20 + 100 + 160, 20 + 30 + 6, 40, 20);
+		more[0].addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				moreSkuHandle();
+			}
+		});
+		tfPanel.add(more[0]);
+
 		/** set read - only for ID text field **/
 		tfList[0].setEditable(false);
 		tfList[1].setEditable(false);
-		
-		tfList[0].setForeground(new Color(108, 108, 108));
+		tfList[3].setEditable(false);
+
+		Color color = new Color(108, 108, 108);
+		tfList[0].setForeground(color);
+		tfList[1].setForeground(color);
+		tfList[3].setForeground(color);
 
 		/*
 		 * Table
 		 */
 		model = new DiscountDetailModelData();
 		table = new JTable(model);
-		
+
 		table.setDefaultRenderer(Object.class, new Renderer());
 		model.setColumnWidth(table);
 
@@ -192,18 +220,46 @@ public class DiscountDetailPanel extends JPanel {
 		/*
 		 * Button
 		 */
-		btnPanel.setBounds(290, 80, 500, 230);
+		btnPanel.setBounds(320, 60 + 6, 500, 230);
 		btnPanel.setLayout(null);
 		add(btnPanel);
 
-		addBtn = new AddButton(20, 20);
+		addBtn = new AddButton(20, 20, 120, 20);
+		addBtn.setNameBtn("Create");
 		btnPanel.add(addBtn);
+		addBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				addButtonHandle();
+			}
+		});
 
-		resetBtn = new ResetButton(20, 50);
+		saveBtn = new SaveButton(20, 50, 120, 20);
+		btnPanel.add(saveBtn);
+		saveBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				saveButtonHandle();
+			}
+		});
+
+		resetBtn = new ResetButton(20, 80, 120, 20);
 		btnPanel.add(resetBtn);
+		resetBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				resetButtonHandle();
+			}
+		});
 
-		deleteBtn = new DeleteButton(20, 80);
+		deleteBtn = new DeleteButton(20, 110, 120, 20);
 		btnPanel.add(deleteBtn);
+		deleteBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				deleteButtonHandle();
+			}
+		});
 
 	}
 
@@ -216,24 +272,46 @@ public class DiscountDetailPanel extends JPanel {
 				int selectedRow[] = entryTable.getSelectedRows();
 				idSelectedRowList.clear();
 				for (int i : selectedRow) {
-					Long id = (Long) entryTable.getValueAt(i, 0);
-					idSelectedRowList.add(id);
+					Long discountid = (Long) entryTable.getValueAt(i, 0);
+					Long skuid = (Long) entryTable.getValueAt(i, 1);
+					idSelectedRowList.put(discountid, skuid);
 				}
 			}
 		}
 	}
 
-//	public void loadData(String str) {
-//		this.model.loadData(table, str);
-//
-//	}
 	/*
 	 * Reset button handle
 	 */
 	public void resetButtonHandle() {
-		for (int i = 0; i < this.tfList.length; i++) {
+		for (int i = 1; i < this.tfList.length; i++) {
 			this.tfList[i].setText("");
 		}
+	}
+
+	/*
+	 * 
+	 */
+	public void addButtonHandle() {
+		this.resetButtonHandle();
+		tfList[3].setText("Active");
+	}
+
+	/*
+	 * 
+	 */
+	public void deleteButtonHandle() {
+		if (selectedRowIndex >= 0) {
+			int click = JOptionPane.showConfirmDialog(null, "Are you sure to delete this discount?");
+			if (click == JOptionPane.YES_OPTION) {
+				service.delete(idSelectedRowList);
+//				model.loadData(this.table,this.discountId);
+				loadDataByDiscountId(this.selectedRow.getDiscountId());
+			}
+		} else {
+			JOptionPane.showMessageDialog(null, "You have not selected a value to delete!");
+		}
+
 	}
 
 	/*
@@ -247,33 +325,46 @@ public class DiscountDetailPanel extends JPanel {
 
 		Long skuId = -1L;
 		if (!tfList[1].getText().isBlank()) {
-			discountId = Long.parseLong(tfList[1].getText());
+			skuId = Long.parseLong(tfList[1].getText());
 		}
 
 		int rate = 0;
 		if (!tfList[2].getText().isBlank()) {
 			try {
 				rate = Integer.parseInt(tfList[2].getText());
-			}catch(NumberFormatException e) {
-				
+			} catch (NumberFormatException e) {
+				JOptionPane.showMessageDialog(null, e.getMessage());
+				tfList[2].requestFocus();
+				return;
 			}
 		} else {
-			JOptionPane.showMessageDialog(null, "Product's color must be not null!");
+			JOptionPane.showMessageDialog(null, "Rate must be not null!");
 			tfList[2].requestFocus();
 			return;
 		}
 
-		String status = "";
-		if (!tfList[3].getText().isBlank()) {
-			status = tfList[3].getText();
-		} else {
-			JOptionPane.showMessageDialog(null, "Product's size must be not null!");
-			tfList[3].requestFocus();
+		if (rate > 100 || rate < 0) {
+			JOptionPane.showMessageDialog(null, "Rate must be less than 100 and large than 0!");
+			tfList[2].requestFocus();
 			return;
 		}
-		
 
-		
+		String status = "Active";
+
+		if (this.service.findOne(discountId, skuId) == null) {
+			service.save(new DiscountDetailModel(discountId, skuId, rate, status));
+		} else {
+			service.update(new DiscountDetailModel(discountId, skuId, rate, status));
+
+		}
+
+		this.model.loadData(this.table, this.discountId);
+		getGeneratedKeys(skuId);
+
+		table.setRowSelectionInterval(selectedRowIndex, selectedRowIndex);
+		setSelectedDetailModel();
+		displayDetailToTextField();
+		JOptionPane.showMessageDialog(null, "Save successfully");
 
 
 	}
@@ -283,7 +374,7 @@ public class DiscountDetailPanel extends JPanel {
 	 */
 	public void getGeneratedKeys(Long id) {
 		for (int i = 0; i < this.model.getRowCount(); i++) {
-			if (id == (Long) this.model.getValueAt(i, 0)) {
+			if (id == (Long) this.model.getValueAt(i, 1)) {
 				this.selectedRowIndex = i;
 				return;
 			}
@@ -294,8 +385,8 @@ public class DiscountDetailPanel extends JPanel {
 	 * This method will be called by openPoDetailFrame method from PO Panel
 	 */
 	public void loadDataByDiscountId(Long discountId) {
-		if (this.service.findListByDiscountId(discountId) != null) {
-			this.model.loadData(this.table, discountId);
+		if (service.findListByDiscountId(discountId) != null) {
+			model.loadData(this.table, discountId);
 			this.discountId = discountId;
 			this.selectedRowIndex = 0;
 			this.setSelectedDetailModel();
@@ -308,21 +399,46 @@ public class DiscountDetailPanel extends JPanel {
 	}
 
 	public void setSelectedDetailModel() {
-		selectedRow.setPoId((Long) table.getModel().getValueAt(selectedRowIndex, 0));
+		selectedRow.setDiscountId((Long) table.getModel().getValueAt(selectedRowIndex, 0));
 		selectedRow.setSkuId((Long) table.getModel().getValueAt(selectedRowIndex, 1));
-		selectedRow.setSupplierId((Long) table.getModel().getValueAt(selectedRowIndex, 2));
-		selectedRow.setQuantity((Integer) table.getModel().getValueAt(selectedRowIndex, 3));
-		selectedRow.setUnitPrice((String) table.getModel().getValueAt(selectedRowIndex, 4));
-		selectedRow.setSubTotal((String) table.getModel().getValueAt(selectedRowIndex, 5));
+		selectedRow.setRate((Integer) table.getModel().getValueAt(selectedRowIndex, 2));
+		selectedRow.setStatus((String) table.getModel().getValueAt(selectedRowIndex, 3));
 	}
 
 	public void displayDetailToTextField() {
-		tfList[0].setText(selectedRow.getPoId().toString());
+		tfList[0].setText(selectedRow.getDiscountId().toString());
 		tfList[1].setText(selectedRow.getSkuId().toString());
-		tfList[2].setText(selectedRow.getSupplierId().toString());
-		tfList[3].setText(String.valueOf(selectedRow.getQuantity()));
-		tfList[4].setText(selectedRow.getUnitPrice());
-		tfList[5].setText(selectedRow.getSubTotal());
+		tfList[2].setText(String.valueOf(selectedRow.getRate()));
+		tfList[3].setText(selectedRow.getStatus());
+	}
+
+	public void moreSkuHandle() {
+		SkuPanel sku = new SkuPanel();
+		sku.loadDataByStatus("Active");
+		sku.setSelectedSkuModel();
+		sku.displaySkuToTextField();
+		sku.table.addMouseListener(new java.awt.event.MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent mouseEvent) {
+				JTable table = (JTable) mouseEvent.getSource();
+				Point point = mouseEvent.getPoint();
+				int row = table.rowAtPoint(point);
+				if (mouseEvent.getClickCount() == 2 && table.getSelectedRow() != -1) {
+					doubleClickSkuHandle(table.getValueAt(row, 0));
+
+				}
+			}
+		});
+		skuFrame = new SubFrame(sku);
+		skuFrame.setVisible(true);
+	}
+
+	public void doubleClickSkuHandle(Object id) {
+		SkuService service = new SkuService();
+		SkuModel model = service.findOne((Long) id);
+		tfList[1].setText(model.getId().toString());
+
+		skuFrame.dispose();
 	}
 
 }

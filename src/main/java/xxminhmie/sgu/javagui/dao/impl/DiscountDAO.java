@@ -46,8 +46,10 @@ public class DiscountDAO extends AbstractDAO<DiscountModel> implements IDiscount
 
 	@Override
 	public void delete(Long id) {
-		String sql = "DELETE * FROM discount WHERE id = ?";
-		this.update(sql.toString(), id);
+//		String sql = "DELETE * FROM discount WHERE id = ?";
+//		this.update(sql.toString(), id);
+		String sql = "UPDATE discount SET status = 'Deleted' WHERE id = ?";
+		this.update(sql, id);
 	}
 
 	@Override

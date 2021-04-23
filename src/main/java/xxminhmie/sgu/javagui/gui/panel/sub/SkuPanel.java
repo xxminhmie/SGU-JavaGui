@@ -257,7 +257,7 @@ public class SkuPanel extends JPanel {
 
 		x = 280;
 		y = 20;
-		String[] comboStatusSelection = { "Actived", "Locked", "Out of stock", "Deleted" };
+		String[] comboStatusSelection = { "Active", "Locked", "Out of stock", "Deleted" };
 		for (int i = 7; i < this.tfList.length; i++) {
 			JLabel label = new JLabel(infoName[i]);
 			label.setBounds(x, y, 100, 30);
@@ -715,4 +715,8 @@ public class SkuPanel extends JPanel {
 		model.loadData(table, fromL, toL, this.productId);
 	}
 
+	
+	public void loadDataByStatus(String status) {
+		this.model.loadData(table, status);
+	}
 }

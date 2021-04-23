@@ -148,6 +148,14 @@ public class SkuModelData extends AbstractTableModel {
 		}
 
 	}
+	public void loadData(JTable table, String status) {
+		data = service.findByStatus(status);
+		if (data != null) {
+			fireTableChanged(null);
+			setColumnWidth(table);
+		}
+
+	}
 
 	public void setData(List<SkuModel> data) {
 		if (data == null) {

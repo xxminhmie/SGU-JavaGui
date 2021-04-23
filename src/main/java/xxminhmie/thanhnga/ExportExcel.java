@@ -1,12 +1,16 @@
 package xxminhmie.thanhnga;
 
+import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
+
+import javax.swing.JOptionPane;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.BorderStyle;
@@ -33,12 +37,10 @@ public class ExportExcel  extends AbstractButton{
 		super(x, y);
 		setNameBtn("Export Excel");
 		this.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				run();
 			}
-			
 		});
 	}
 
@@ -46,12 +48,10 @@ public class ExportExcel  extends AbstractButton{
 		super(x, y, w, h);
 		setNameBtn("Export Excel");
 		this.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				run();
 			}
-			
 		});
 		init();
 
@@ -66,13 +66,15 @@ public class ExportExcel  extends AbstractButton{
     public static final int COLUMN_INDEX_NAME         = 1;
     public static final int COLUMN_INDEX_BRAND        = 2;
     public static final int COLUMN_INDEX_DESCRIPTION  = 3;
-    public static final int COLUMN_INDEX_COLOR  	  = 4;
-    public static final int COLUMN_INDEX_SIZE  		  = 5;
-    public static final int COLUMN_INDEX_QUANTITY  	  = 6;
-    public static final int COLUMN_INDEX_PRICE  	  = 7;
-    public static final int COLUMN_INDEX_IMPORTPRICE  = 8;
-    public static final int COLUMN_INDEX_IMAGE  	  = 9;
-    public static final int COLUMN_INDEX_STATUS  	  = 10;
+    
+    public static final int COLUMN_INDEX_SKUID		  = 4;
+    public static final int COLUMN_INDEX_COLOR  	  = 5;
+    public static final int COLUMN_INDEX_SIZE  		  = 6;
+    public static final int COLUMN_INDEX_QUANTITY  	  = 7;
+    public static final int COLUMN_INDEX_PRICE  	  = 8;
+    public static final int COLUMN_INDEX_IMPORTPRICE  = 9;
+    public static final int COLUMN_INDEX_IMAGE  	  = 10;
+    public static final int COLUMN_INDEX_STATUS  	  = 11;
     
     private static CellStyle cellStyleFormatNumber = null;
     
@@ -81,9 +83,14 @@ public class ExportExcel  extends AbstractButton{
 //    list = list_pro + list_sku;
     
     //Write data into Excel
-    public static void writeExcel(List<ProductModel> pro, List<SkuModel> sku, String excelFilePath) throws IOException {
+    public static void writeExcel(List<ProductModel> pro, List<SkuModel> sku, String excelFilePath){
         // Create Workbook
-        Workbook workbook = getWorkbook(excelFilePath);
+        Workbook workbook = null;
+		try {
+			workbook = getWorkbook(excelFilePath);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
  
         // Create sheet
         Sheet sheet = workbook.createSheet("Books"); // Create sheet with sheet name
@@ -97,11 +104,13 @@ public class ExportExcel  extends AbstractButton{
         rowIndex++;
         for (ProductModel product : pro) {
             for(SkuModel Sku: sku) {
-            	// Create row
-                Row row = sheet.createRow(rowIndex);
-                // Write data on row
-                write(product, Sku, row);
-                rowIndex++;
+            	if(product.getId() == Sku.getProductId()) {
+            		// Create row
+                    Row row = sheet.createRow(rowIndex);
+                    // Write data on row
+                    write(product, Sku, row);
+                    rowIndex++;
+            	}
             }
         }
          
@@ -110,9 +119,21 @@ public class ExportExcel  extends AbstractButton{
         autosizeColumn(sheet, numberOfColumn);
  
         // Create file excel
-        createOutputFile(workbook, excelFilePath);
-        System.out.println("Done!!!");
-    }
+        try {
+			createOutputFile(workbook, excelFilePath);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+        JOptionPane.showMessageDialog(null, "Export excel file successfully!");
+		File file = new File(excelFilePath);
+		Desktop desktop = Desktop.getDesktop();
+		if (file.exists()) {
+			try {
+				desktop.open(file);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}    }
     
 	// Write data
     private static void write(ProductModel pro, SkuModel sku, Row row) {
@@ -126,7 +147,6 @@ public class ExportExcel  extends AbstractButton{
             cellStyleFormatNumber = workbook.createCellStyle();
             cellStyleFormatNumber.setDataFormat(format);
         }
-         
         Cell cell = row.createCell(COLUMN_INDEX_ID);
         cell.setCellValue(pro.getId());
         cell.setCellStyle(cellStyleFormatNumber);
@@ -139,6 +159,9 @@ public class ExportExcel  extends AbstractButton{
         
         cell = row.createCell(COLUMN_INDEX_DESCRIPTION);
         cell.setCellValue(pro.getDescription());
+        
+        cell = row.createCell(COLUMN_INDEX_SKUID);
+        cell.setCellValue(sku.getId());
         
         cell = row.createCell(COLUMN_INDEX_COLOR);
         cell.setCellValue(sku.getColor());
@@ -201,6 +224,10 @@ public class ExportExcel  extends AbstractButton{
         cell = row.createCell(COLUMN_INDEX_DESCRIPTION);
         cell.setCellStyle(cellStyle);
         cell.setCellValue("Description");
+        
+        cell = row.createCell(COLUMN_INDEX_SKUID);
+        cell.setCellStyle(cellStyle);
+        cell.setCellValue("SKUID");
         
         cell = row.createCell(COLUMN_INDEX_COLOR);
         cell.setCellStyle(cellStyle);

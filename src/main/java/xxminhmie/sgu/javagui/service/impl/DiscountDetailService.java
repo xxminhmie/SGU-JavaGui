@@ -17,18 +17,18 @@ public class DiscountDetailService implements IDiscountDetailService {
 	}
 
 	@Override
-	public List<DiscountDetailModel> findOne(Long discountId, Long skuId) {
+	public DiscountDetailModel findOne(Long discountId, Long skuId) {
 		return dao.findOne(discountId, skuId);
 	}
 
 	@Override
-	public void save(DiscountDetailModel model) {
-		dao.save(model);
+	public Long save(DiscountDetailModel model) {
+		return dao.save(model);
 	}
 
 	@Override
-	public void update(DiscountDetailModel update) {
-		dao.update(update);;
+	public DiscountDetailModel update(DiscountDetailModel update) {
+		return dao.update(update);
 	}
 
 	@Override
@@ -53,8 +53,12 @@ public class DiscountDetailService implements IDiscountDetailService {
 
 	@Override
 	public List<DiscountDetailModel> findListByDiscountId(Long discountId) {
-		// TODO Auto-generated method stub
-		return null;
+		return dao.findListByDiscountId(discountId);
+	}
+
+	@Override
+	public void updateStatus(Long discountId, String status) {
+		dao.updateStatus(discountId, status);
 	}
 
 }

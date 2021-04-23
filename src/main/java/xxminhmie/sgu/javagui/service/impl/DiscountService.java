@@ -15,7 +15,6 @@ public class DiscountService implements IDiscountService {
 
 	@Override
 	public DiscountModel findOne(Long id) {
-		// TODO Auto-generated method stub
 		return dao.findOne(id);
 	}
 
@@ -35,18 +34,19 @@ public class DiscountService implements IDiscountService {
 	public void delete(Long[] ids) {
 		for(Long id : ids) {
 			dao.delete(id);
+			DiscountDetailService detailService = new DiscountDetailService();
+			detailService.updateStatus(id, "Deleted");
+
 		}
 	}
 
 	@Override
 	public List<DiscountModel> search(String str) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public int getTotalItem() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 

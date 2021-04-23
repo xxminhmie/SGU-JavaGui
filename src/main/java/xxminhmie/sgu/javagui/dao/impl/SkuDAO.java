@@ -77,6 +77,13 @@ public class SkuDAO extends AbstractDAO<SkuModel> implements ISkuDAO {
 		this.update(sql, id);
 	}
 
+	@Override
+	public List<SkuModel> findByStatus(String status) {
+		// TODO Auto-generated method stub
+		String sql = "SELECT * FROM sku WHERE status = ?";
+		List<SkuModel> list = this.query(sql, new SkuMapper(), status);
+		return list.isEmpty() ? null : list;	}
+
 //	public static void main(String[] args) {
 //		SkuDAO dao = new SkuDAO();
 //		String color = "1";

@@ -9,6 +9,8 @@ public interface ISkuDAO extends GenericDAO<SkuModel> {
 
 	SkuModel findOne(Long skuId);
 	List<SkuModel> findByProductId(Long productId);
+	List<SkuModel> findByStatus(String status);
+
 	SkuModel findOneByColorSize(Long productId, String color, String size);
 
 	

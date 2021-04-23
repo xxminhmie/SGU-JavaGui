@@ -9,11 +9,14 @@ public interface IDiscountDetailService {
 	List<DiscountDetailModel> findAll();
 	List<DiscountDetailModel> findListByDiscountId(Long discountId);
 
-	List<DiscountDetailModel> findOne(Long discountId, Long skuId);
+	DiscountDetailModel findOne(Long discountId, Long skuId);
 
-	void save(DiscountDetailModel model);
-	void update(DiscountDetailModel update);
+	Long save(DiscountDetailModel model);
+	DiscountDetailModel update(DiscountDetailModel update);
 	void delete(Map<Long,Long> map);
+	
+	void updateStatus(Long discountId, String status);
+
 
 	List<DiscountDetailModel> search(String str);
 

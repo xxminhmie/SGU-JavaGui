@@ -21,6 +21,9 @@ public class AccountPanel extends JPanel {
 	MyImagePanel image;
 	JLabel logout;
 	
+	JLabel profile;
+
+	
 	public AccountPanel() {
 		this.setPreferredSize(new Dimension(SidebarContainer.SidebarWidth, 160));
 		this.setBackground(Color.BLACK);
@@ -43,6 +46,12 @@ public class AccountPanel extends JPanel {
 		logout.setFont(new Font(Font.SANS_SERIF,Font.PLAIN,12));
 		logout.setBounds(100, 130, 50, 20);
 		add(this.logout);
+		
+		profile = new JLabel("Profile");
+		profile.setForeground(Color.WHITE);
+		profile.setFont(new Font(Font.SANS_SERIF,Font.PLAIN,12));
+		profile.setBounds(20, 130, 50, 20);
+		add(this.profile);
 		/*
 		 * This listener was written on ApplicationGUI frame
 		 */
@@ -61,6 +70,9 @@ public class AccountPanel extends JPanel {
 
 	public JLabel getLogoutLabel() {
 		return this.logout;
+	}
+	public JLabel getProfileLabel() {
+		return this.profile;
 	}
 	
 	

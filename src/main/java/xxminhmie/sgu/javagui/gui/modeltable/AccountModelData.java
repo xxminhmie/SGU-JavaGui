@@ -13,7 +13,7 @@ import xxminhmie.sgu.javagui.service.impl.AccountService;
 public class AccountModelData extends AbstractTableModel{
 	AccountService service = new AccountService();
 	List<AccountModel> data = service.findAll();
-	String columnNames[] = { "ID", "RoleID","StaffID","Username", "Password" };
+	String columnNames[] = { "ID", "RoleID","StaffID","Username" };
 	@Override
 	public int getRowCount() {
 		// TODO Auto-generated method stub
@@ -43,9 +43,7 @@ public class AccountModelData extends AbstractTableModel{
 		if (columnIndex == 3) {
 			return data.get(rowIndex).getUsername();
 		}
-		if (columnIndex == 4) {
-			return data.get(rowIndex).getPassword();
-		}
+		
 		return null;
 	}
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
@@ -60,9 +58,6 @@ public class AccountModelData extends AbstractTableModel{
 		}
 		if (columnIndex == 3) {
 			data.get(rowIndex).setUsername((String) aValue);
-		}
-		if (columnIndex == 4) {
-			data.get(rowIndex).setPassword((String) aValue);
 		}
 		fireTableCellUpdated(rowIndex, columnIndex);
 

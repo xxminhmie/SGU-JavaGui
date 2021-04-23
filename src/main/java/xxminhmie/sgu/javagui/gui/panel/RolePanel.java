@@ -305,7 +305,7 @@ public class RolePanel extends JPanel {
 	 * Delete button handle
 	 */
 	protected void deleteButtonHandle() {
-		if (selectedRowIndex > 0) {
+		if (selectedRowIndex >= 0) {
 			int click = JOptionPane.showConfirmDialog(null, "Are you sure for delete this customer?");
 			if (click == JOptionPane.YES_OPTION) {
 				// https://stackoverflow.com/questions/2016654/classcastexception-when-casting-object-array-to-long-array

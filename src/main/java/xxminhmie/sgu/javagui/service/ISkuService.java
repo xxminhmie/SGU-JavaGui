@@ -9,7 +9,10 @@ public interface ISkuService {
 	
 	SkuModel findOne(Long id);
 	List<SkuModel> findByProductId(Long productId);
+	List<SkuModel> findByStatus(String status);
+
 	SkuModel findOneByColorSize(Long productId, String color, String size);
+	
 
 	
 	SkuModel save(SkuModel skuModel);

@@ -11,9 +11,11 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -25,6 +27,8 @@ import xxminhmie.sgu.javagui.gui.common.DeleteButton;
 import xxminhmie.sgu.javagui.gui.common.ResetButton;
 import xxminhmie.sgu.javagui.gui.common.SaveButton;
 import xxminhmie.sgu.javagui.gui.modeltable.AccountModelData;
+import xxminhmie.sgu.javagui.gui.panel.sub.ChangePassword;
+import xxminhmie.sgu.javagui.gui.panel.sub.SubFrame;
 import xxminhmie.sgu.javagui.model.AccountModel;
 import xxminhmie.sgu.javagui.model.ProductModel;
 import xxminhmie.sgu.javagui.service.impl.AccountService;
@@ -41,6 +45,7 @@ public class AccountPanel extends JPanel {
 	 */
 	JPanel tfPanel;
 	JTextField[] tfList;
+	JButton[] more = new JButton[2];
 	/*
 	 * Search
 	 */
@@ -54,6 +59,8 @@ public class AccountPanel extends JPanel {
 	SaveButton saveBtn;
 	DeleteButton deleteBtn;
 	ResetButton resetBtn;
+	AddButton changePasswordBtn;
+
 	/*
 	 * Table
 	 */
@@ -64,7 +71,9 @@ public class AccountPanel extends JPanel {
 
 	AccountModel selectedRow = new AccountModel();// Customer is being selected from Table
 	java.util.List<Long> idSelectedRowList = new java.util.ArrayList<Long>();// Contains list of customer's ID to delete
-	int selectedRowIndex;
+	int selectedRowIndex = -1;
+
+	SubFrame changeFrame;
 
 	/*
 	 * Constructor
@@ -130,13 +139,13 @@ public class AccountPanel extends JPanel {
 		 * Text field
 		 */
 		tfPanel = new JPanel();
-		tfPanel.setBounds(0, 40, 330 - 40, 220);
+		tfPanel.setBounds(0, 40, 330, 220);
 		tfPanel.setOpaque(true);
 		tfPanel.setLayout(null);
 		mainPanel.add(this.tfPanel, BorderLayout.WEST);
 
-		String[] infoName = { "Account ID: ", "Role ID: ", "StaffID: ", "Username: ", "Password: " };
-		tfList = new JTextField[5];
+		String[] infoName = { "Account ID: ", "Role ID: ", "StaffID: ", "Username: " };
+		tfList = new JTextField[4];
 
 		int x = 10;
 		int y = 20;
@@ -150,19 +159,30 @@ public class AccountPanel extends JPanel {
 			y += 30;
 		}
 
+		more[0] = new JButton("...");
+		more[0].setBounds(100 + 190, 20 + 30, 40, 20);
+		tfPanel.add(more[0]);
+
+		more[1] = new JButton("...");
+		more[1].setBounds(100 + 190, 20 + 30 + 30, 40, 20);
+		tfPanel.add(more[1]);
+
 		/** set read - only for ID text field **/
 		tfList[0].setEditable(false);
+		tfList[1].setEditable(false);
+		tfList[2].setEditable(false);
+
 		tfList[0].setForeground(new Color(108, 108, 108));
 
 		/*
 		 * Button panel
 		 */
 		btnPanel = new JPanel();
-		btnPanel.setBounds(300, 62, 200, 160);
+		btnPanel.setBounds(330, 62, 200, 160);
 		btnPanel.setLayout(null);
 		mainPanel.add(btnPanel);
 
-		addBtn = new AddButton(20, 0);
+		addBtn = new AddButton(20, 0, 120, 20);
 		btnPanel.add(addBtn);
 		addBtn.addActionListener(new ActionListener() {
 			@Override
@@ -171,7 +191,7 @@ public class AccountPanel extends JPanel {
 			}
 		});
 
-		saveBtn = new SaveButton(20, 30);
+		saveBtn = new SaveButton(20, 30, 120, 20);
 		btnPanel.add(this.saveBtn);
 		saveBtn.addActionListener(new ActionListener() {
 			@Override
@@ -180,7 +200,7 @@ public class AccountPanel extends JPanel {
 			}
 		});
 
-		deleteBtn = new DeleteButton(20, 60);
+		deleteBtn = new DeleteButton(20, 60, 120, 20);
 		btnPanel.add(deleteBtn);
 		deleteBtn.addActionListener(new ActionListener() {
 			@Override
@@ -189,12 +209,23 @@ public class AccountPanel extends JPanel {
 			}
 		});
 
-		resetBtn = new ResetButton(20, 90);
+		resetBtn = new ResetButton(20, 90, 120, 20);
 		btnPanel.add(this.resetBtn);
 		resetBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				resetButtonHandle();
+			}
+		});
+
+		changePasswordBtn = new AddButton(20, 120, 120, 20);
+		changePasswordBtn.setNameBtn("Set password");
+		changePasswordBtn.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 11));
+		btnPanel.add(this.changePasswordBtn);
+		changePasswordBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				changePasswordButtonHandle();
 			}
 		});
 
@@ -341,7 +372,7 @@ public class AccountPanel extends JPanel {
 	 * Delete button handle
 	 */
 	protected void deleteButtonHandle() {
-		if (selectedRowIndex > 0) {
+		if (selectedRowIndex >= 0) {
 			int click = JOptionPane.showConfirmDialog(null, "Are you sure for delete this account?");
 			if (click == JOptionPane.YES_OPTION) {
 				// https://stackoverflow.com/questions/2016654/classcastexception-when-casting-object-array-to-long-array
@@ -364,6 +395,78 @@ public class AccountPanel extends JPanel {
 
 	}
 
+	/*
+	 * 
+	 */
+	public void changePasswordButtonHandle() {
+		if (selectedRowIndex >= 0) {
+			ChangePassword panel = new ChangePassword();
+			changeFrame = new SubFrame(panel);
+
+			panel.loginButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+//					panel.checkLogin();
+					String cur = "";
+					if (!String.valueOf(panel.current.getPassword()).isBlank()) {
+						cur = String.valueOf(panel.current.getPassword());
+					} else {
+						JOptionPane.showMessageDialog(null, "This field must not be null or empty!");
+						panel.current.requestFocus();
+						return;
+					}
+
+					String newPass = "";
+					if (!String.valueOf(panel.passwordText.getPassword()).isBlank()) {
+						newPass = String.valueOf(panel.passwordText.getPassword());
+					} else {
+						JOptionPane.showMessageDialog(null, "This field must not be null or empty!");
+						panel.passwordText.requestFocus();
+						return;
+					}
+
+					String confirm = "";
+					if (!String.valueOf(panel.confirm.getPassword()).isBlank()) {
+						confirm = String.valueOf(panel.confirm.getPassword());
+					} else {
+						JOptionPane.showMessageDialog(null, "This field must not be null or empty!");
+						panel.confirm.requestFocus();
+						return;
+					}
+					AccountModel model = service.findOne(selectedRow.getId());
+					if (model != null) {
+						if (cur.equals(model.getPassword()) == false) {
+							JOptionPane.showMessageDialog(null, "Current password not match!");
+							panel.current.requestFocus();
+							return;
+						}
+						if (newPass.equals(confirm) == false) {
+							JOptionPane.showMessageDialog(null, "Confirm password failed!");
+							panel.passwordText.requestFocus();
+							return;
+						}
+
+						model.setPassword(newPass);
+						AccountModel ac = service.update(model);
+						if (ac != null) {
+							JOptionPane.showMessageDialog(null, "Save successfully!");
+							changeFrame.dispose();
+						}
+					}
+				}
+			});
+
+			changeFrame.setSize(new Dimension(400, 450));
+			changeFrame.setLocationRelativeTo(null); // this will center your application
+
+			changeFrame.setVisible(true);
+
+		} else {
+			JOptionPane.showMessageDialog(null, "You have not selected a value to handle!");
+		}
+
+	}
+
 	public void getAllSelectedRow(JTable entryTable) {
 		if (entryTable.getRowCount() > 0) {
 			if (entryTable.getSelectedRowCount() > 0) {
@@ -382,7 +485,6 @@ public class AccountPanel extends JPanel {
 		selectedRow.setRoleId((Long) table.getModel().getValueAt(selectedRowIndex, 1));
 		selectedRow.setStaffId((Long) table.getModel().getValueAt(selectedRowIndex, 2));
 		selectedRow.setUsername((String) table.getModel().getValueAt(selectedRowIndex, 3));
-		selectedRow.setPassword((String) table.getModel().getValueAt(selectedRowIndex, 4));
 
 	}
 
@@ -391,6 +493,5 @@ public class AccountPanel extends JPanel {
 		tfList[1].setText(selectedRow.getRoleId().toString());
 		tfList[2].setText(selectedRow.getStaffId().toString());
 		tfList[3].setText(selectedRow.getUsername());
-		tfList[4].setText(selectedRow.getPassword());
 	}
 }

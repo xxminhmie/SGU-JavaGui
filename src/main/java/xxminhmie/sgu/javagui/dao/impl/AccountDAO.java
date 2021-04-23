@@ -46,7 +46,7 @@ public class AccountDAO extends AbstractDAO<AccountModel> implements IAccountDAO
 
 	@Override
 	public AccountModel findOne(Long id) {
-		String sql = "SELECT * FROM account WHERE id = ";
+		String sql = "SELECT * FROM account WHERE id = ?";
 		List<AccountModel> list = this.query(sql, new AccountMapper(), id);
 		return list.isEmpty() ? null : list.get(0);
 	}

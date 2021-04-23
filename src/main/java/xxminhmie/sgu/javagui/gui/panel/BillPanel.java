@@ -429,11 +429,14 @@ public class BillPanel extends JPanel {
 	 * delete button handle
 	 */
 	public void deleteButtonHandle() {
-		int click = JOptionPane.showConfirmDialog(null, "Are you sure to delete this product?");
-		if (click == JOptionPane.YES_OPTION) {
-//			this.service.delete(this.selectedRowList.toArray(a));
-			service.delete(this.idSelectedRowList.toArray(new Long[this.idSelectedRowList.size()]));
-			model.loadData(this.table);
+		if (selectedRowIndex >= 0) {
+			int click = JOptionPane.showConfirmDialog(null, "Are you sure to delete this discount?");
+			if (click == JOptionPane.YES_OPTION) {
+				service.delete(this.idSelectedRowList.toArray(new Long[this.idSelectedRowList.size()]));
+				model.loadData(this.table);
+			}
+		} else {
+			JOptionPane.showMessageDialog(null, "You have not selected a value to delete!");
 		}
 	}
 

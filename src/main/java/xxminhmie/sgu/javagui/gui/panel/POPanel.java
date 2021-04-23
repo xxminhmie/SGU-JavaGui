@@ -406,7 +406,7 @@ public class POPanel extends JPanel {
 	 * Delete button handle
 	 */
 	public void deleteButtonHandle() {
-		if (selectedRowIndex > 0) {
+		if (selectedRowIndex >= 0) {
 			int click = JOptionPane.showConfirmDialog(null,
 					"Are you sure for cancel this purchase order?");
 			if (click == JOptionPane.YES_OPTION) {

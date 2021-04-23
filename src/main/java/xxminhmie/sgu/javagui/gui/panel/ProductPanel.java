@@ -10,7 +10,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -30,6 +34,8 @@ import xxminhmie.sgu.javagui.gui.common.AddButton;
 import xxminhmie.sgu.javagui.gui.common.DeleteButton;
 import xxminhmie.sgu.javagui.gui.common.ResetButton;
 import xxminhmie.sgu.javagui.gui.common.SaveButton;
+import xxminhmie.sgu.javagui.gui.excel.ExportExcel;
+import xxminhmie.sgu.javagui.gui.excel.ImportExcel;
 import xxminhmie.sgu.javagui.gui.modeltable.ProductModelData;
 import xxminhmie.sgu.javagui.gui.modeltable.SkuModelData;
 import xxminhmie.sgu.javagui.gui.panel.sub.SkuPanel;
@@ -66,6 +72,9 @@ public class ProductPanel extends JPanel {
 	AddButton addSkuBtn;
 	AddButton addBtn;
 	DeleteButton deleteBtn;
+
+	ImportExcel importExcel;
+	ExportExcel exportExcel;
 	/*
 	 * Table
 	 */
@@ -205,7 +214,7 @@ public class ProductPanel extends JPanel {
 		/*
 		 * Button panel
 		 */
-		btnPanel.setBounds(320, 60, 200, 200);
+		btnPanel.setBounds(320, 60, 400, 200);
 		btnPanel.setLayout(null);
 		panel.add(btnPanel);
 
@@ -261,14 +270,39 @@ public class ProductPanel extends JPanel {
 		deleteBtn = new DeleteButton(0, 130, 120, 20);
 		btnPanel.add(deleteBtn);
 		deleteBtn.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				deleteButtonHandle();
 			}
-
 		});
+
+		importExcel = new ImportExcel(130, 10, 140, 20);
+		btnPanel.add(importExcel);
+		importExcel.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				ArrayList<ProductModel> productList = (ArrayList<ProductModel>) service.findAll();
+				SkuService skuService = new SkuService();
+				ArrayList<SkuModel> skuList = (ArrayList<SkuModel>) skuService.findAll();
+
+				runImportExcel("./src/main/java/xxminhmie/sgu/javagui/gui/excel/mie.xlsx");
+			}
+		});
+		
+		exportExcel = new ExportExcel(130, 40, 140, 20);
+		btnPanel.add(exportExcel);
+		exportExcel.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				ArrayList<ProductModel> productList = (ArrayList<ProductModel>) service.findAll();
+				SkuService skuService = new SkuService();
+				ArrayList<SkuModel> skuList = (ArrayList<SkuModel>) skuService.findAll();
+
+				runExportExcel(productList,skuList,"./src/main/java/xxminhmie/sgu/javagui/gui/excel/mie.xlsx");
+			}
+		});
+
 		/******************************************************************
 		 * 
 		 * Table panel
@@ -306,15 +340,16 @@ public class ProductPanel extends JPanel {
 				getAllSelectedRow(table);
 //				findAllSkuByProductId(selectedRow.getId());
 			}
+
 			@Override
 			public void mousePressed(MouseEvent mouseEvent) {
-		        JTable table =(JTable) mouseEvent.getSource();
-		        Point point = mouseEvent.getPoint();
-		        int row = table.rowAtPoint(point);
-		        if (mouseEvent.getClickCount() == 2 && table.getSelectedRow() != -1) {
-		        	tableDoubleClickedHandle();
-		        }
-		    }
+				JTable table = (JTable) mouseEvent.getSource();
+				Point point = mouseEvent.getPoint();
+				int row = table.rowAtPoint(point);
+				if (mouseEvent.getClickCount() == 2 && table.getSelectedRow() != -1) {
+					tableDoubleClickedHandle();
+				}
+			}
 		});
 
 		/*
@@ -451,8 +486,9 @@ public class ProductPanel extends JPanel {
 	 * add new SKUs button handle
 	 */
 	public void addSkuButtonHandle() {
-		if(this.selectedRow.getStatus().equals("Actived") == false) {
-			JOptionPane.showMessageDialog(null, "This product was locked or deleted! Cannot to open this product's details!");
+		if (this.selectedRow.getStatus().equals("Actived") == false) {
+			JOptionPane.showMessageDialog(null,
+					"This product was locked or deleted! Cannot to open this product's details!");
 			return;
 		}
 		if (this.selectedRowIndex < 0) {
@@ -479,7 +515,7 @@ public class ProductPanel extends JPanel {
 	 * delete button handle
 	 */
 	public void deleteButtonHandle() {
-		if (selectedRowIndex > 0) {
+		if (selectedRowIndex >= 0) {
 			int click = JOptionPane.showConfirmDialog(null, "Are you sure to delete this product?");
 			if (click == JOptionPane.YES_OPTION) {
 //				this.service.delete(this.selectedRowList.toArray(a));
@@ -547,16 +583,17 @@ public class ProductPanel extends JPanel {
 	}
 
 	public void tableDoubleClickedHandle() {
-		if(this.selectedRow.getStatus().equals("Actived")) {
+		if (this.selectedRow.getStatus().equals("Actived")) {
 			openSkuFrame(this.selectedRow.getId());
-		}else {
-			JOptionPane.showMessageDialog(null, "This product was locked or deleted! Cannot to open this product's details!");
+		} else {
+			JOptionPane.showMessageDialog(null,
+					"This product was locked or deleted! Cannot to open this product's details!");
 
 		}
 	}
 
 	/*
-	 * Open SKU 
+	 * Open SKU
 	 */
 	public void openSkuFrame(Long productId) {
 		SkuPanel skuPanel = new SkuPanel(productId);
@@ -595,12 +632,35 @@ public class ProductPanel extends JPanel {
 		if (selectedRow.getStatus().equals(comboStatus.getItemAt(0))) {
 			comboStatus.setSelectedIndex(0);
 		} else {
-			if(selectedRow.getStatus().equals(comboStatus.getItemAt(1))){
+			if (selectedRow.getStatus().equals(comboStatus.getItemAt(1))) {
 				comboStatus.setSelectedIndex(1);
-			}else {
+			} else {
 				comboStatus.setSelectedIndex(2);
 			}
 		}
+	}
+	/*
+	 * 
+	 */
+	public void runImportExcel(String path) {
+		try {
+			Map<ProductModel, SkuModel> map = ImportExcel.readExcel(path);
+			Set<ProductModel> set = map.keySet();
+			for (ProductModel p : set) {
+				System.out.println(p.getId() + "	" + p.getBrand() + "	" + p.getName() + "	" + p.getDescription()
+						+ "		" + map.get(p).getColor() + "	 " + map.get(p).getSize() + "	 "
+						+ map.get(p).getImportPrice() + "	" + map.get(p).getPrice() + "	" + map.get(p).getStatus());
+
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void runExportExcel(ArrayList<ProductModel> list, ArrayList<SkuModel> list_sku, String path) {
+		final List<ProductModel> product = list;
+		final List<SkuModel> Sku = list_sku;
+		ExportExcel.writeExcel(product, Sku, path);
 
 	}
 

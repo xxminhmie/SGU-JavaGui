@@ -6,7 +6,18 @@ public class DiscountDetailModel {
 	int rate;
 	String status;
 	
+	public DiscountDetailModel(Long discountId, Long skuId, int rate, String status) {
+		super();
+		this.discountId = discountId;
+		this.skuId = skuId;
+		this.rate = rate;
+		this.status = status;
+	}
 	
+	public DiscountDetailModel() {
+		super();
+	}
+
 	public Long getDiscountId() {
 		return discountId;
 	}

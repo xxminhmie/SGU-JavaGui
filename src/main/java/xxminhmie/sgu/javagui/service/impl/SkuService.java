@@ -96,4 +96,10 @@ public class SkuService implements ISkuService {
 	public void deleteByProductId(Long id) {
 		skuDao.delete(id);
 	}
+
+	@Override
+	public List<SkuModel> findByStatus(String status) {
+		// TODO Auto-generated method stub
+		return skuDao.findByStatus(status);
+	}
 }

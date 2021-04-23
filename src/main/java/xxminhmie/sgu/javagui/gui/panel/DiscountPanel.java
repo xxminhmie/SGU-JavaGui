@@ -29,14 +29,18 @@ import javax.swing.event.DocumentListener;
 import com.toedter.calendar.JDateChooser;
 
 import xxminhmie.sgu.javagui.gui.common.AddButton;
+import xxminhmie.sgu.javagui.gui.common.BetweenTwoDate;
 import xxminhmie.sgu.javagui.gui.common.DeleteButton;
+import xxminhmie.sgu.javagui.gui.common.GetCurrentDate;
 import xxminhmie.sgu.javagui.gui.common.ResetButton;
 import xxminhmie.sgu.javagui.gui.common.SaveButton;
 import xxminhmie.sgu.javagui.gui.modeltable.DiscountModelData;
 import xxminhmie.sgu.javagui.gui.panel.sub.DiscountDetailPanel;
 import xxminhmie.sgu.javagui.gui.panel.sub.SubFrame;
 import xxminhmie.sgu.javagui.gui.validator.WhiteSpaceValidator;
+import xxminhmie.sgu.javagui.model.DiscountDetailModel;
 import xxminhmie.sgu.javagui.model.DiscountModel;
+import xxminhmie.sgu.javagui.service.impl.DiscountDetailService;
 import xxminhmie.sgu.javagui.service.impl.DiscountService;
 
 public class DiscountPanel extends JPanel {
@@ -99,6 +103,11 @@ public class DiscountPanel extends JPanel {
 		add(mainLabel, BorderLayout.NORTH);
 
 		/*
+		 * Check date discount out
+		 */
+		this.checkDateDiscount();
+
+		/*
 		 * Main Panel
 		 */
 		mainPanel.setLayout(null);
@@ -154,13 +163,12 @@ public class DiscountPanel extends JPanel {
 		 * Text field
 		 */
 		tfPanel = new JPanel();
-		tfPanel.setBounds(0, 30, 310, 240);
+		tfPanel.setBounds(0, 30, 310, 260);
 		tfPanel.setOpaque(true);
 		tfPanel.setLayout(null);
 		panel.add(tfPanel);
 
 		String[] infoName = { "ID: ", "Name: ", "Start Date: ", "End Date:", "Description: ", "Status: " };
-		String[] comboStatusSelection = { "Actived", "Locked" };
 		this.tfList = new JTextField[6];
 		int x = 10;
 		int y = 20;
@@ -172,20 +180,25 @@ public class DiscountPanel extends JPanel {
 
 			switch (i) {
 			case 2: {
+				label.setBounds(x, y, 100, 30);
 				startDate = new JDateChooser();
-				startDate.setBounds(x + 100, y, 200, 30);
+				startDate.setBounds(x + 80, 80, 200, 30);
 				startDate.getJCalendar().setBounds(0, 0, 600, 200);
 				startDate.setDateFormatString("yyyy-MM-dd");
+				tfPanel.add(startDate);
 				break;
 			}
 			case 3: {
+				label.setBounds(x, y, 100, 30);
 				endDate = new JDateChooser();
-				endDate.setBounds(x + 80, y, 200, 30);
+				endDate.setBounds(x + 80, 110, 200, 30);
 				endDate.getJCalendar().setBounds(0, 0, 600, 200);
 				endDate.setDateFormatString("yyyy-MM-dd");
+				tfPanel.add(endDate);
 				break;
 			}
 			case 4: {
+				label.setBounds(x, y, 100, 30);
 				text = new JTextArea();
 				text.setBounds(x + 80 + 4, y + 5, 190, 70);
 				text.setColumns(20);
@@ -193,6 +206,13 @@ public class DiscountPanel extends JPanel {
 				text.setRows(5);
 				text.setWrapStyleWord(true);
 				tfPanel.add(text);
+				break;
+			}
+			case 5: {
+				label.setBounds(x, y + 50, 100, 30);
+				tfList[i] = new JTextField();
+				tfList[i].setBounds(x + 80, y + 5 + 50, 200, 20);
+				tfPanel.add(tfList[i]);
 				break;
 			}
 			default: {
@@ -211,6 +231,7 @@ public class DiscountPanel extends JPanel {
 		tfList[5].setEditable(false);
 
 		tfList[0].setForeground(new Color(108, 108, 108));
+		tfList[5].setForeground(new Color(108, 108, 108));
 
 		panel.add(tfPanel);
 
@@ -222,13 +243,13 @@ public class DiscountPanel extends JPanel {
 		panel.add(btnPanel);
 
 		addBtn = new AddButton(0, 10, 120, 20);
-		addBtn.setNameBtn("New Product");
+		addBtn.setNameBtn("New Discount");
 		addBtn.setBorder(null);
 		btnPanel.add(addBtn);
 		addBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-//				addButtonHandle();
+				addButtonHandle();
 			}
 		});
 
@@ -250,13 +271,12 @@ public class DiscountPanel extends JPanel {
 		});
 
 		addSkuBtn = new AddButton(0, 100, 120, 20);
-		addSkuBtn.setNameBtn("New SKUs");
+		addSkuBtn.setNameBtn("Details");
 		btnPanel.add(addSkuBtn);
 		addSkuBtn.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
-//				addSkuButtonHandle();
+				detailsButtonHandle();
 			}
 		});
 
@@ -265,7 +285,7 @@ public class DiscountPanel extends JPanel {
 		deleteBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-//				deleteButtonHandle();
+				deleteButtonHandle();
 			}
 		});
 
@@ -273,7 +293,7 @@ public class DiscountPanel extends JPanel {
 		 * Table panel
 		 */
 		tbPanel = new JPanel();
-		tbPanel.setBounds(10, 260, 1000, 360);
+		tbPanel.setBounds(10, 280, 1000, 360);
 		tbPanel.setLayout(null);
 
 		/*
@@ -300,7 +320,7 @@ public class DiscountPanel extends JPanel {
 					setSelectedProductModel();
 				}
 				/** DISPLAY TO TEXT FIELD **/
-				displayProductToTextField();
+				displayDiscountToTextField();
 				/** **/
 				getAllSelectedRow(table);
 			}
@@ -359,13 +379,6 @@ public class DiscountPanel extends JPanel {
 	 * Save button handle
 	 */
 	public void saveButtonHandle() {
-		int click = JOptionPane.showConfirmDialog(null, "Are you sure to save this changes?");
-		if (click == JOptionPane.YES_OPTION) {
-			this.saveAction();
-		}
-	}
-
-	public void saveAction() {
 		Long id = -1L;
 		if (!tfList[0].getText().isBlank()) {
 			id = Long.parseLong(tfList[0].getText());
@@ -401,6 +414,17 @@ public class DiscountPanel extends JPanel {
 			}
 		}
 
+		/*
+		 * check data
+		 */
+
+		long between = BetweenTwoDate.betweenTwoDate(startDate.toString(), endDate.toString());
+		if (between < 0) {
+			JOptionPane.showMessageDialog(null, "Invalid date! End date must be after start date!");
+			this.endDate.requestFocus();
+			return;
+		}
+
 		String des = "";
 		if (!text.getText().isBlank()) {
 			des = WhiteSpaceValidator.validate(text.getText());
@@ -411,19 +435,34 @@ public class DiscountPanel extends JPanel {
 			status = tfList[5].getText();
 			WhiteSpaceValidator.validate(status);
 		}
+		int click = JOptionPane.showConfirmDialog(null, "Are you sure to save this changes?");
+		if (click == JOptionPane.YES_OPTION) {
 
-		Long savedId;
-		if (id < 0) {
-			DiscountModel model = service.save(new DiscountModel(name, startDate, endDate, des, status));
-			savedId = model.getId();
-		} else {
-			DiscountModel model = service.update(new DiscountModel(id, name, startDate, endDate, des, status));
-			savedId = model.getId();
+			Long savedId;
+			if (id < 0) {
+				DiscountModel model = service.save(new DiscountModel(name, startDate, endDate, des, status));
+				savedId = model.getId();
+			} else {
+				DiscountModel model = service.update(new DiscountModel(id, name, startDate, endDate, des, status));
+				savedId = model.getId();
+			}
+
+			this.model.loadData(this.table);
+			getGeneratedKeys(savedId);
+
+			table.setRowSelectionInterval(selectedRowIndex, selectedRowIndex);
+			setSelectedProductModel();
+			displayDiscountToTextField();
 		}
+	}
 
-		this.model.loadData(this.table);
-		getGeneratedKeys(savedId);
-		table.setRowSelectionInterval(selectedRowIndex, selectedRowIndex);
+	public void addButtonHandle() {
+		tfList[0].setText("");
+		tfList[1].setText("");
+		startDate.setDate(GetCurrentDate.getDate());
+		endDate.setDate(null);
+		tfList[5].setText("Active");
+		tfList[1].requestFocus();
 	}
 
 	/*
@@ -450,13 +489,13 @@ public class DiscountPanel extends JPanel {
 		selectedRow.setStatus((String) table.getModel().getValueAt(selectedRowIndex, 5));
 	}
 
-	public void displayProductToTextField() {
+	public void displayDiscountToTextField() {
 		tfList[0].setText(selectedRow.getId().toString());
 		tfList[1].setText(selectedRow.getName());
 		startDate.setDate(selectedRow.getStartDate());
 		endDate.setDate(selectedRow.getEndDate());
 		text.setText(selectedRow.getDescription());
-		tfList[4].setText(selectedRow.getStatus());
+		tfList[5].setText(selectedRow.getStatus());
 	}
 
 	public void getAllSelectedRow(JTable entryTable) {
@@ -483,12 +522,52 @@ public class DiscountPanel extends JPanel {
 			detail.loadDataByDiscountId(discountId);
 			detail.tfList[0].setText(String.valueOf(discountId));
 		}
+
+		if (this.selectedRow.getStatus().equals("Active") == false) {
+			detail.btnPanel.setVisible(false);
+			detail.more[0].setVisible(false);
+		}
 		subFrame.setVisible(true);
 
 	}
 
 	public void tableDoubleClickedHandle() {
-
+		openDetailFrame(selectedRow.getId());
 	}
 
+	public void checkDateDiscount() {
+		List<DiscountModel> list = service.findAll();
+		for (DiscountModel e : list) {
+			String currentDate = GetCurrentDate.getCurrentDate();
+			long between = BetweenTwoDate.betweenTwoDate(currentDate, e.getEndDate().toString());
+			if (between < 0) {
+				DiscountDetailService detailService = new DiscountDetailService();
+				detailService.updateStatus(e.getId(), "Expired");
+
+				DiscountModel newModel = this.service.findOne(e.getId());
+				newModel.setStatus("Expired");
+				this.service.update(newModel);
+			}
+		}
+	}
+
+	public void detailsButtonHandle() {
+		if (this.selectedRowIndex < 0) {
+			JOptionPane.showMessageDialog(null, "You have not selected a row to handle!");
+		} else {
+			openDetailFrame(this.selectedRow.getId());
+		}
+	}
+
+	public void deleteButtonHandle() {
+		if (selectedRowIndex >= 0) {
+			int click = JOptionPane.showConfirmDialog(null, "Are you sure to delete this discount?");
+			if (click == JOptionPane.YES_OPTION) {
+				service.delete(this.idSelectedRowList.toArray(new Long[this.idSelectedRowList.size()]));
+				model.loadData(this.table);
+			}
+		} else {
+			JOptionPane.showMessageDialog(null, "You have not selected a value to delete!");
+		}
+	}
 }

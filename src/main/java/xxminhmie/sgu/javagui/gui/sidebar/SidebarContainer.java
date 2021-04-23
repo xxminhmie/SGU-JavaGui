@@ -3,12 +3,12 @@ package xxminhmie.sgu.javagui.gui.sidebar;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.ScrollPane;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import xxminhmie.sgu.javagui.gui.ApplicationGUI;
 
@@ -23,6 +23,8 @@ public class SidebarContainer extends JPanel {
 	JButton[] listItem;
 	AccountPanel accountPanel;
 	ActionListener itemListener = new ItemListener();
+	JPanel panel = new JPanel();
+	JScrollPane pane;
 
 	public SidebarContainer(String[] nameList, String[] namePanel, JPanel content) {
 		this.setBackground(SidebarBg);
@@ -31,14 +33,24 @@ public class SidebarContainer extends JPanel {
 
 		this.accountPanel = new AccountPanel();
 		add(accountPanel);
+	
+		panel.setLayout(new FlowLayout());
+		panel.setPreferredSize(new Dimension(200,700));
+		panel.setBackground(Color.BLACK);
 		
 		
 		this.listItem = new SidebarItem[nameList.length];
 		for (int i = 0; i < nameList.length; i++) {
 			this.listItem[i] = new SidebarItem(nameList[i], namePanel[i], content);
 			listItem[i].addActionListener(itemListener);
-			this.add(this.listItem[i]);
+			panel.add(this.listItem[i]);
 		}
+		
+		pane = new JScrollPane(panel,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		pane.setPreferredSize(new Dimension(200,700-160));
+		pane.setBackground(Color.BLACK);
+		pane.getVerticalScrollBar().setBackground(Color.black);
+		add(pane);
 
 	}
 

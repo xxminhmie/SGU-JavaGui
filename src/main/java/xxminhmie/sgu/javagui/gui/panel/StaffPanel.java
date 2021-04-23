@@ -185,7 +185,7 @@ public class StaffPanel extends JPanel {
 		deleteBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				deleteButtonClicked();
+				deleteButtonHandle();
 			}
 		});
 
@@ -409,8 +409,8 @@ public class StaffPanel extends JPanel {
 	/*
 	 * delete button handle
 	 */
-	protected void deleteButtonClicked() {
-		if (selectedRowIndex > 0) {
+	protected void deleteButtonHandle() {
+		if (selectedRowIndex >= 0) {
 			int click = JOptionPane.showConfirmDialog(null, "Are you sure for delete this staff?");
 			if (click == JOptionPane.YES_OPTION) {
 				// https://stackoverflow.com/questions/2016654/classcastexception-when-casting-object-array-to-long-array

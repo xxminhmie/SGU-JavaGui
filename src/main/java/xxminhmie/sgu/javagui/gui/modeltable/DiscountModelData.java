@@ -12,7 +12,7 @@ import xxminhmie.sgu.javagui.service.impl.DiscountService;
 public class DiscountModelData extends AbstractTableModel {
 	DiscountService service = new DiscountService();
 	List<DiscountModel> data = service.findAll();
-	String columnNames[] = { "ID", "Name", "Start Date", "End Date", "Des.", "Status"};
+	String columnNames[] = { "ID", "Name", "Start Date", "End Date", "Description", "Status"};
 
 	@Override
 	public int getRowCount() {
@@ -106,10 +106,11 @@ public class DiscountModelData extends AbstractTableModel {
 		TableColumnModel columnModel = table.getColumnModel();
 		columnModel.getColumn(0).setPreferredWidth(40);
 		columnModel.getColumn(1).setPreferredWidth(220);
-		columnModel.getColumn(2).setPreferredWidth(80);
-		columnModel.getColumn(3).setPreferredWidth(60);
-		columnModel.getColumn(4).setPreferredWidth(160);
+		columnModel.getColumn(2).setPreferredWidth(100);
+		columnModel.getColumn(3).setPreferredWidth(100);
+		columnModel.getColumn(4).setPreferredWidth(80);
+		columnModel.getColumn(5).setPreferredWidth(80);
+
 
 	}
-
 }

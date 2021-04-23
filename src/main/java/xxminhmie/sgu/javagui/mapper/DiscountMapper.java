@@ -12,6 +12,7 @@ public class DiscountMapper implements RowMapper<DiscountModel>{
 		try {
 			DiscountModel model = new DiscountModel();
 			model.setId(rs.getLong("id"));
+			model.setName(rs.getNString("name"));
 			model.setStartDate(rs.getDate("startdate"));
 			model.setEndDate(rs.getDate("enddate"));
 			model.setDescription(rs.getNString("description"));
