@@ -1,9 +1,11 @@
 package xxminhmie.sgu.javagui.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import xxminhmie.sgu.javagui.dao.impl.DiscountDAO;
 import xxminhmie.sgu.javagui.model.DiscountModel;
+import xxminhmie.sgu.javagui.model.PODetailModel;
 import xxminhmie.sgu.javagui.service.IDiscountService;
 
 public class DiscountService implements IDiscountService {
@@ -42,7 +44,20 @@ public class DiscountService implements IDiscountService {
 
 	@Override
 	public List<DiscountModel> search(String str) {
-		return null;
+		List<DiscountModel> list = this.findAll();
+		List<DiscountModel> resultList = new ArrayList<DiscountModel>();
+
+		for (DiscountModel e : list) {
+			String id = String.valueOf(e.getId());
+			String startDate = e.getStartDate().toString();
+			String endDate = e.getEndDate().toString();
+			String status = e.getStatus();
+
+			if (id.contains(str) || startDate.contains(str) || endDate.contains(str) || status.contains(str)) {
+				resultList.add(e);
+			}
+		}
+		return resultList;
 	}
 
 	@Override

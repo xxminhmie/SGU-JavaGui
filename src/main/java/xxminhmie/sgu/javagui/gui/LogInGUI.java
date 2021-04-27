@@ -164,46 +164,46 @@ public class LogInGUI extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 //                JOptionPane.showMessageDialog(null, "Clicked");
+//				System.out.println(checkLogin());
 				checkLogin();
 			}
 
 		});
 	}
 
-	protected void checkLogin() {
-		String user = this.userText.getText();
-		String pass = String.valueOf(passwordText.getPassword());
-		if (user.isBlank()) {
-			JOptionPane.showMessageDialog(null, "Username must not be null or empty!");
-			this.userText.requestFocus();
+	public void checkLogin() {
+		String username = userText.getText();
+		String password = String.valueOf(passwordText.getPassword());
+		
+		if(username.isBlank()) {
 			return;
 		}
-		if (pass.isBlank()) {
-			JOptionPane.showMessageDialog(null, "Password must not be null or empty!");
-			this.passwordText.requestFocus();
+		if(password.isBlank()) {
 			return;
 		}
-		List<AccountModel> list = service.findByUsername(user);
-		if ( list.isEmpty() == false) {
-			if(list.get(0).getPassword().equals(pass)) {
-				this.dispose();//destroy login frame
-				
-				//Remember me 2021.03.15
-				if(this.checkBox.isSelected()==true) {
-					
-				}
-				ACCOUNT_LOGIN = list.get(0);
-				ApplicationGUI app = new ApplicationGUI();
-				app.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				app.setVisible(true);
+		
+		List<AccountModel> list = service.findAll();		
+		
+		for(AccountModel e : list) {
+			if(!username.equals(e.getUsername())) {
+				System.out.println("Username is invalid");
+				return;
 			}else {
-				JOptionPane.showMessageDialog(null, "Password is incorrect!");
+				if(!password.equals(e.getPassword())){
+					System.out.println("Password is invalid");
+					return;
+				}else {
+					ACCOUNT_LOGIN = e;
+					ApplicationGUI app = new ApplicationGUI();
+					app.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+					app.setVisible(true);
+					this.dispose();
+				}
 			}
-		}else {
-			JOptionPane.showMessageDialog(null, "Username is incorrect!");
-
+			
 		}
-
 	}
+	
+	
 	
 }

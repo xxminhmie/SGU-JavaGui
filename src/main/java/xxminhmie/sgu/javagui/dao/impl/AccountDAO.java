@@ -11,9 +11,9 @@ public class AccountDAO extends AbstractDAO<AccountModel> implements IAccountDAO
 	@Override
 	public Long save(AccountModel model) {
 		StringBuilder sql = new StringBuilder("INSERT INTO account ");
-		sql.append("(staffid, roleid, 'username', password) ");
-		sql.append(" VALUES (?,?,?,?)");
-		return this.insert(sql.toString(), new AccountMapper(), model.getStaffId(), model.getId(), model.getUsername(),
+		sql.append("(staffid, roleid, username, password)");
+		sql.append(" VALUES(?,?,?,?)");
+		return this.insert(sql.toString(), model.getStaffId(), model.getRoleId(), model.getUsername(),
 				model.getPassword());
 	}
 

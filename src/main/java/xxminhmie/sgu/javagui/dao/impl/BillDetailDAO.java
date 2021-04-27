@@ -11,14 +11,15 @@ public class BillDetailDAO extends AbstractDAO<BillDetailModel> implements IBill
 
 	@Override
 	public List<BillDetailModel> findAll() {
-		String sql = "SELECT * FROM billdeatil";
+		String sql = "SELECT * FROM billdetail";
 		return this.query(sql.toString(), new BillDetailMapper());
 	}
 
 	@Override
-	public List<BillDetailModel> findOne(Long billId, Long skuId) {
-		String sql = "SELECT * FROM WHERE billid = ? and sku = ?";
-		return this.query(sql, new BillDetailMapper(), billId, skuId);
+	public BillDetailModel findOne(Long billId, Long skuId) {
+		String sql = "SELECT * FROM billdetail WHERE billid = ? and skuid = ?";
+		List<BillDetailModel> list = this.query(sql, new BillDetailMapper(), billId, skuId);
+		return list.isEmpty() ? null: list.get(0);
 	}
 
 	@Override
@@ -49,6 +50,13 @@ public class BillDetailDAO extends AbstractDAO<BillDetailModel> implements IBill
 	public int getTotalItem() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public List<BillDetailModel> findListByBillId(Long billId) {
+		String sql = "SELECT * FROM billdetail WHERE billid = ?";
+		List<BillDetailModel> list = this.query(sql, new BillDetailMapper(), billId);
+		return list.isEmpty() ? null : list;
 	}
 
 }

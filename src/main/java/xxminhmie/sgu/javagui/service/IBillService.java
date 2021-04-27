@@ -11,7 +11,7 @@ public interface IBillService {
 
 	BillModel save(BillModel model);
 
-	BillModel update(BillModel update);
+	void update(BillModel update);
 
 	void delete(Long[] ids);
 

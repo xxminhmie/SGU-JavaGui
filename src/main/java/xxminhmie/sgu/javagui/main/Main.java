@@ -12,11 +12,10 @@ public class Main {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-//					JFrame login = new LogInGUI();
-					ApplicationGUI app = new ApplicationGUI();
-
-					app.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-					app.setVisible(true);
+					JFrame login = new LogInGUI();
+//					ApplicationGUI app = new ApplicationGUI();
+					login.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+					login.setVisible(true);
 
 				} catch (Exception e) {
 					e.printStackTrace();

@@ -1,23 +1,24 @@
 package xxminhmie.sgu.javagui.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import xxminhmie.sgu.javagui.dao.impl.BillDetailDAO;
 import xxminhmie.sgu.javagui.model.BillDetailModel;
+import xxminhmie.sgu.javagui.model.ProductModel;
 import xxminhmie.sgu.javagui.service.IBillDetailService;
 
 public class BillDetailService implements IBillDetailService{
 	BillDetailDAO dao = new BillDetailDAO();
 	@Override
 	public List<BillDetailModel> findAll() {
-		// TODO Auto-generated method stub
 		return dao.findAll();
 	}
 
 	@Override
-	public List<BillDetailModel> findOne(Long billId, Long skuId) {
+	public BillDetailModel findOne(Long billId, Long skuId) {
 		// TODO Auto-generated method stub
 		return dao.findOne(billId, skuId);
 	}
@@ -28,7 +29,7 @@ public class BillDetailService implements IBillDetailService{
 	}
 
 	@Override
-	public List<BillDetailModel> update(BillDetailModel update) {
+	public BillDetailModel update(BillDetailModel update) {
 		dao.update(update);
 		return dao.findOne(update.getBillId(), update.getSkuId());
 	}
@@ -43,14 +44,34 @@ public class BillDetailService implements IBillDetailService{
 
 	@Override
 	public List<BillDetailModel> search(String str) {
-		// TODO Auto-generated method stub
-		return null;
+		List<BillDetailModel> list = this.findAll();
+		List<BillDetailModel> resultList = new ArrayList<BillDetailModel>();
+		
+		for (BillDetailModel e : list) {
+			String skuId = String.valueOf(e.getSkuId());
+			String discountId = String.valueOf(e.getSkuId());
+			String subTotal = String.valueOf(e.getSubTotal());
+
+
+			if (skuId.contains(str) || discountId.contains(str) || subTotal.contains(str)) {
+				resultList.add(e);
+			}
+		}
+		return resultList;
 	}
 
 	@Override
 	public int getTotalItem() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public List<BillDetailModel> findListByBillId(Long billId) {
+		return dao.findListByBillId(billId);
+	}
+	
+	public static void main(String[] args) {
 	}
 
 }

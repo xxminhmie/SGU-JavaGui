@@ -36,12 +36,12 @@ public class BillDAO extends AbstractDAO<BillModel> implements IBillDAO {
 		sql.append(" customerid = ?, createddate = ?, total = ?");
 		sql.append(" WHERE id = ?;");
 		this.update(sql.toString(), update.getStaffId(), update.getCustomerId(),
-				update.getCreatedDate(), update.getTotal());		
+				update.getCreatedDate(), update.getTotal(), update.getId());		
 	}
 
 	@Override
 	public void delete(Long id) {
-		String sql = "DELETE * FROM bill WHERE id = ?";
+		String sql = "DELETE FROM bill WHERE id = ?";
 		this.update(sql, id);
 	}
 

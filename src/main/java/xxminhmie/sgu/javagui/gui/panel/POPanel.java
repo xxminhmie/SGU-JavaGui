@@ -480,15 +480,6 @@ public class POPanel extends JPanel {
 		}
 	}
 
-	/*
-	 * click on product table, find list of purchase detail of this selected
-	 * purchase
-	 */
-	// TODO
-	public void findAllDetailByProductId(Long id) {
-//		this.detailPanel.loadData(id.toString());
-//		this.detailPanel.tfList[0].setText(String.valueOf());
-	}
 
 	public void setSelectedPOModel() {
 		selectedRow.setId((Long) table.getModel().getValueAt(selectedRowIndex, 0));

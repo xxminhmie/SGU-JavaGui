@@ -28,9 +28,7 @@ public class AccountService implements IAccountService {
 
 	@Override
 	public Long save(AccountModel model) {
-		model.toString();
-//		return dao.save(model);
-		return null;
+		return dao.save(model);
 	}
 
 	@Override

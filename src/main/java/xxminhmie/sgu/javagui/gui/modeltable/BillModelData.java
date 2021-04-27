@@ -82,22 +82,24 @@ public class BillModelData extends AbstractTableModel {
 	// refresh data from database
 	public void loadData(JTable table) {
 		this.data = this.service.findAll();
+		setColumnWidth(table);
 		fireTableChanged(null);
 	}
 
 	// refresh data from list
 	public void loadData(JTable table, String str) {
 		this.data = this.service.search(str);
+		setColumnWidth(table);
 		fireTableChanged(null);
 	}
 
 	public void setColumnWidth(JTable table) {
 		TableColumnModel columnModel = table.getColumnModel();
 		columnModel.getColumn(0).setPreferredWidth(40);
-		columnModel.getColumn(1).setPreferredWidth(220);
-		columnModel.getColumn(2).setPreferredWidth(80);
-		columnModel.getColumn(3).setPreferredWidth(60);
-		columnModel.getColumn(4).setPreferredWidth(160);
+		columnModel.getColumn(1).setPreferredWidth(40);
+		columnModel.getColumn(2).setPreferredWidth(40);
+		columnModel.getColumn(3).setPreferredWidth(80);
+		columnModel.getColumn(4).setPreferredWidth(80);
 
 	}
 

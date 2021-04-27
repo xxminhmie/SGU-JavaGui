@@ -9,6 +9,7 @@ public interface IDiscountDetailService {
 	List<DiscountDetailModel> findAll();
 	List<DiscountDetailModel> findListByDiscountId(Long discountId);
 
+
 	DiscountDetailModel findOne(Long discountId, Long skuId);
 
 	Long save(DiscountDetailModel model);

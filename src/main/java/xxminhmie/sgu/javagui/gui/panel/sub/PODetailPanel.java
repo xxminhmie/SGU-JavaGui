@@ -241,14 +241,12 @@ public class PODetailPanel extends JPanel {
 			/** GET SELECTED VALUE TO DISPLAY ON TEXT FIELD **/
 			@Override
 			public void mouseClicked(java.awt.event.MouseEvent evt) {
-
 				int row = table.rowAtPoint(evt.getPoint());
 				int col = table.columnAtPoint(evt.getPoint());
 				if (row >= 0 && col >= 0) {
 					selectedRowIndex = table.getSelectedRow();// get index of selected rowIndex
 					/** GET MANUALLY ALL ROW **/
 					setSelectedDetailModel();
-
 					poId = selectedRow.getPoId();
 				}
 				/** DISPLAY TO TEXT FIELD **/

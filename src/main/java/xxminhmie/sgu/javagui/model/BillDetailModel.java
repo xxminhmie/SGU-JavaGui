@@ -8,6 +8,17 @@ public class BillDetailModel{
 	protected String subTotal;
 	
 	
+	public BillDetailModel() {
+		super();
+	}
+	public BillDetailModel(Long billId, Long skuId, Long discountId, int quantity, String subTotal) {
+		super();
+		this.billId = billId;
+		this.skuId = skuId;
+		this.discountId = discountId;
+		this.quantity = quantity;
+		this.subTotal = subTotal;
+	}
 	public Long getBillId() {
 		return billId;
 	}
@@ -20,6 +31,7 @@ public class BillDetailModel{
 	public void setSkuId(Long skuId) {
 		this.skuId = skuId;
 	}
+	
 	public Long getDiscountId() {
 		return discountId;
 	}

@@ -52,28 +52,5 @@ public class ChooseFileButton extends JButton {
 		return this.imagePath;
 	}
 
-	public void chooseFileButtonHandle() {
-		JFileChooser fc = new JFileChooser();
-		File file = fc.getSelectedFile();
-		System.out.print(file.getName());
-		imagePath = file.getName();
-
-		int result = fc.showOpenDialog(null);
-		if (result == JFileChooser.APPROVE_OPTION) {
-			Runtime rt = Runtime.getRuntime();
-			try {
-				Process proc = rt.exec("cp /Users/lehokimminh/Downloads/Image/" + file.getName() + " "
-						+ "/Users/lehokimminh/workspace/SGU-JavaGui/src/main/java/xxminhmie/sgu/javagui/image");
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-//			try {
-//				image.setIcon(new ImageIcon(ImageIO.read(file)));
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
-		}
-	}
+	
 }

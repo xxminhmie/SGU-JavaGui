@@ -4,42 +4,35 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.sql.Date;
-import java.util.List;
 
-import javax.swing.JComboBox;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import xxminhmie.sgu.javagui.gui.LogInGUI;
 import xxminhmie.sgu.javagui.gui.common.AddButton;
 import xxminhmie.sgu.javagui.gui.common.DeleteButton;
+import xxminhmie.sgu.javagui.gui.common.GetCurrentDate;
 import xxminhmie.sgu.javagui.gui.common.ResetButton;
 import xxminhmie.sgu.javagui.gui.common.SaveButton;
 import xxminhmie.sgu.javagui.gui.modeltable.BillModelData;
-import xxminhmie.sgu.javagui.gui.modeltable.ProductModelData;
+import xxminhmie.sgu.javagui.gui.panel.sub.BillDetailPanel;
 import xxminhmie.sgu.javagui.gui.panel.sub.SkuPanel;
 import xxminhmie.sgu.javagui.gui.panel.sub.SubFrame;
-import xxminhmie.sgu.javagui.gui.validator.WhiteSpaceValidator;
 import xxminhmie.sgu.javagui.model.BillModel;
-import xxminhmie.sgu.javagui.model.ProductModel;
-import xxminhmie.sgu.javagui.model.SkuModel;
 import xxminhmie.sgu.javagui.service.impl.BillService;
-import xxminhmie.sgu.javagui.service.impl.ProductService;
-import xxminhmie.sgu.javagui.service.impl.SkuService;
 
 public class BillPanel extends JPanel {
 	BillService service = new BillService();
@@ -51,8 +44,7 @@ public class BillPanel extends JPanel {
 	 */
 	JPanel tfPanel;
 	JTextField[] tfList;
-	JTextArea text;
-	JComboBox comboStatus;
+	JButton more;
 	/*
 	 * Search
 	 */
@@ -77,41 +69,43 @@ public class BillPanel extends JPanel {
 	/*
 	 * Handle clicking on table
 	 */
-	BillModel selectedRow = new BillModel();// Product is being selected from Table
-	java.util.List<Long> idSelectedRowList = new java.util.ArrayList<Long>();// Contains list of product's ID to
+	BillModel selectedRow = new BillModel();
+	java.util.List<Long> idSelectedRowList = new java.util.ArrayList<Long>();
+
 	int selectedRowIndex = -1;
+	SubFrame frame;
 
 	/*
 	 * Constructor
 	 */
 	public BillPanel() {
-		this.setBackground(AbstractPanel.PanelBg);
-		this.setPreferredSize(new Dimension(AbstractPanel.PanelWidth, AbstractPanel.PanelHeight));
-		this.setLayout(new BorderLayout());
+		setBackground(AbstractPanel.PanelBg);
+		setPreferredSize(new Dimension(AbstractPanel.PanelWidth, AbstractPanel.PanelHeight));
+		setLayout(new BorderLayout());
 
-		this.mainLabel.setFont(new Font("Helvetica", Font.BOLD, 24));
-		this.add(this.mainLabel, BorderLayout.NORTH);
+		mainLabel.setFont(new Font("Helvetica", Font.BOLD, 24));
+		add(mainLabel, BorderLayout.NORTH);
 
 		/*
 		 * Main Panel
 		 */
-		this.mainPanel.setLayout(null);
-		this.add(this.mainPanel, BorderLayout.CENTER);
+		mainPanel.setLayout(null);
+		add(this.mainPanel, BorderLayout.CENTER);
 
 		/*
 		 * Product Panel
 		 */
-		this.panel.setBounds(0, 0, AbstractPanel.PanelWidth, 700);
-		this.panel.setLayout(null);
-		this.mainPanel.add(this.panel);
+		panel.setBounds(0, 0, AbstractPanel.PanelWidth, 700);
+		panel.setLayout(null);
+		mainPanel.add(this.panel);
 
 		/*
 		 * Search
 		 */
-		this.searchPanel = new JPanel();
-		this.searchPanel.setBounds(0, 0, 300, 40);
-		this.searchPanel.setLayout(null);
-		this.panel.add(this.searchPanel);
+		searchPanel = new JPanel();
+		searchPanel.setBounds(0, 0, 300, 40);
+		searchPanel.setLayout(null);
+		panel.add(searchPanel);
 
 		this.search = new JTextField("Search...");
 		this.search.setForeground(new Color(144, 144, 144));
@@ -148,17 +142,19 @@ public class BillPanel extends JPanel {
 		 * Text field
 		 */
 		tfPanel = new JPanel();
-		tfPanel.setBounds(0, 30, 310, 240);
+		tfPanel.setBounds(0, 30, 330, 240);
 		tfPanel.setOpaque(true);
 		tfPanel.setLayout(null);
 		this.panel.add(this.tfPanel);
 
-		String[] infoName = { "Bill ID: ", "Staff ID: ", "Customer Id: ", "Created Date: ", "Total: " };
+		String[] infoName = { "BillID: ", "StaffID: ", "CustomerID: ", "Created Date: ", "Total: " };
 		this.tfList = new JTextField[5];
 		int x = 10;
 		int y = 20;
+		Color color = new Color(108, 108, 108);
+
 		// this for loop initialize label and text field, set position for both
-		for (int i = 0; i < this.tfList.length; i++) {
+		for (int i = 0; i < tfList.length; i++) {
 			JLabel label = new JLabel(infoName[i]);
 			tfPanel.add(label);
 			label.setBounds(x, y, 100, 30);
@@ -166,83 +162,82 @@ public class BillPanel extends JPanel {
 			tfList[i].setBounds(x + 80, y + 5, 200, 20);
 			tfPanel.add(tfList[i]);
 			y += 30;
+			/*
+			 * set read - only for ID text field
+			 */
+			tfList[i].setEditable(false);
+			tfList[i].setForeground(color);
 		}
-		/*
-		 * set read - only for ID text field
-		 */
-		tfList[0].setEditable(false);
-		tfList[0].setForeground(new Color(108, 108, 108));
+
+		more = new JButton("...");
+		more.setBounds(x + 200 + 80, 20 + 30 + 30 + 6, 40, 20);
+		tfPanel.add(more);
+		more.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				moreCustomerHandle();
+			}
+		});
+
+
 		panel.add(tfPanel);
 
 		/*
 		 * Button panel
 		 */
-		btnPanel.setBounds(320, 60, 200, 200);
+		btnPanel.setBounds(340, 50, 200, 200);
 		btnPanel.setLayout(null);
 		panel.add(btnPanel);
 
 		addBtn = new AddButton(0, 10, 120, 20);
-		addBtn.setNameBtn("New Product");
+		addBtn.setNameBtn("Create");
 		addBtn.setBorder(null);
 		btnPanel.add(addBtn);
 		addBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
 				addButtonHandle();
 			}
-
 		});
 
 		saveBtn = new SaveButton(0, 40, 120, 20);
 		btnPanel.add(saveBtn);
 		saveBtn.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
 				saveButtonHandle();
 			}
-
 		});
+
 		resetBtn = new ResetButton(0, 70, 120, 20);
 		btnPanel.add(resetBtn);
 		resetBtn.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
 				resetButtonHandle();
 			}
-
 		});
 
-		addSkuBtn = new AddButton(0, 100, 120, 20);
-		addSkuBtn.setNameBtn("New SKUs");
-		btnPanel.add(addSkuBtn);
-		addSkuBtn.addActionListener(new ActionListener() {
+//		addSkuBtn = new AddButton(0, 100, 120, 20);
+//		addSkuBtn.setNameBtn("Details");
+//		btnPanel.add(addSkuBtn);
+//		addSkuBtn.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				detailsButtonHandle();
+//			}
+//
+//		});
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				addSkuButtonHandle();
-			}
-
-		});
-
-		deleteBtn = new DeleteButton(0, 130, 120, 20);
-		btnPanel.add(deleteBtn);
-		deleteBtn.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				deleteButtonHandle();
-			}
-
-		});
-		/******************************************************************
-		 * 
+//		deleteBtn = new DeleteButton(0, 130, 120, 20);
+//		btnPanel.add(deleteBtn);
+//		deleteBtn.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				deleteButtonHandle();
+//			}
+//		});
+		/*
 		 * Table panel
 		 */
 		tbPanel = new JPanel();
@@ -262,49 +257,27 @@ public class BillPanel extends JPanel {
 		 * Table's listener
 		 */
 		table.addMouseListener(new java.awt.event.MouseAdapter() {
-			/** GET SELECTED VALUE TO DISPLAY ON TEXT FIELD **/
 			@Override
 			public void mouseClicked(java.awt.event.MouseEvent evt) {
 				int rowIndex = table.rowAtPoint(evt.getPoint());
 				int col = table.columnAtPoint(evt.getPoint());
 				if (rowIndex >= 0 && col >= 0) {
 					selectedRowIndex = rowIndex;
-					/** GET MANUALLY ALL ROW **/
 					setSelectedBillModel();
 				}
-				/** DISPLAY TO TEXT FIELD **/
 				displayBillToTextField();
-				/** **/
 				getAllSelectedRow(table);
-//				findAllSkuByProductId(selectedRow.getId());
 			}
-		});
 
-		/*
-		 * Right click on table's row
-		 */
-		JPopupMenu popupMenu = new JPopupMenu();
-		JMenuItem menuItemDetail = new JMenuItem("Detail");
-		JMenuItem menuItemLock = new JMenuItem("Lock");
-
-		popupMenu.add(menuItemDetail);
-		popupMenu.add(menuItemLock);
-
-		table.setComponentPopupMenu(popupMenu);
-
-		menuItemLock.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				menuItemLockHandle();
+			public void mousePressed(MouseEvent mouseEvent) {
+				JTable table = (JTable) mouseEvent.getSource();
+				Point point = mouseEvent.getPoint();
+				int row = table.rowAtPoint(point);
+				if (mouseEvent.getClickCount() == 2 && table.getSelectedRow() != -1) {
+					doubleClickBillHandle();
+				}
 			}
-
-		});
-		menuItemDetail.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				menuItemDetailHandle();
-			}
-
 		});
 
 		/*
@@ -312,7 +285,7 @@ public class BillPanel extends JPanel {
 		 */
 		pane = new JScrollPane(table);
 		pane.setBounds(0, 20, 700, 360);
-		/** ADD SCROLL PANE TO MAIN PANEL **/
+
 		tbPanel.add(pane);
 		panel.add(tbPanel);
 
@@ -323,17 +296,7 @@ public class BillPanel extends JPanel {
 	 */
 	public void resetButtonHandle() {
 		for (int i = 0; i < this.tfList.length; i++) {
-			if (i == 4) {
-				comboStatus.setSelectedItem(null);
-			} else {
-				if (i == 3) {
-					text.setText("");
-				} else {
-					this.tfList[i].setText("");
-
-				}
-			}
-
+			this.tfList[i].setText("");
 		}
 	}
 
@@ -341,71 +304,38 @@ public class BillPanel extends JPanel {
 	 * Save button handle
 	 */
 	public void saveButtonHandle() {
-		int click = JOptionPane.showConfirmDialog(null, "Are you sure to save this changes?");
-		if (click == JOptionPane.YES_OPTION) {
-			this.saveAction();
+		Long id = -1L;
+		if (!tfList[0].getText().isBlank()) {
+			id = Long.parseLong(tfList[0].getText());
 		}
-	}
 
-	public int saveAction() {
-//		Long id = null;
-//		if (this.tfList[0].getText().equals("") == false) {
-//			try {
-//				id = Long.parseLong(tfList[0].getText());
-//			} catch (java.lang.NumberFormatException e) {
-//				System.out.println("ProductPanel class addButtonHandle method" + e.getMessage());
-//			}
-//		}
-//
-//		Long staffId = null;
-//		if (name.isBlank()) {
-//			JOptionPane.showMessageDialog(null, "Product's name must be not null!");
-//			tfList[1].requestFocus();
-//			return -1;
-//		}
-//		name = WhiteSpaceValidator.validate(name);
-//
-//		String brand = tfList[2].getText();
-//		if (brand.isBlank()) {
-//			JOptionPane.showMessageDialog(null, "Product's brand must be not null!");
-//			tfList[2].requestFocus();
-//			return -1;
-//		}
-//		brand = WhiteSpaceValidator.validate(brand);
-//
-//		String des = WhiteSpaceValidator.validate(text.getText());
-//
-//		String status = null;
-//		if (comboStatus.getSelectedItem() != null) {
-//			status = comboStatus.getSelectedItem().toString();
-//			if (status.equals("Locked")) {
-//				JOptionPane.showMessageDialog(null, "Product's status must be not locked while adding!");
-//				comboStatus.requestFocus();
-//				return -1;
-//			}
-//		}
-//		// Create new product
-//		Long savedId;
-//		if (id == null) {
-////			Long staffId, Long customerId, Date createdDate, String total
-//			savedId = service.save(new BillModel(name, brand, des));
-//
-//		} else {
-//			// Update product
-//			ProductModel pro = service.update(new ProductModel(id, name, brand, des));
-//			savedId = pro.getId();
-//		}
-//
-//		this.model.loadData(this.table);
-//		getGeneratedKeys(savedId);
-//		table.setRowSelectionInterval(selectedRowIndex, selectedRowIndex);
-		return 0;
+		Long staffId = LogInGUI.ACCOUNT_LOGIN.getId();
+
+		Long customerId = -1l;
+		if (!tfList[2].getText().isBlank()) {
+			customerId = Long.parseLong(tfList[2].getText());
+		}
+
+		java.sql.Date createdDate = GetCurrentDate.getDate();
+
+		Long savedId;
+		if (id < 0) {
+			BillModel model = service.save(new BillModel(staffId, customerId, createdDate));
+			savedId = model.getId();
+		} else {
+			service.update(new BillModel(id, staffId, customerId, createdDate));
+			savedId = id;
+		}
+
+		this.model.loadData(this.table);
+		getGeneratedKeys(savedId);
+		table.setRowSelectionInterval(selectedRowIndex, selectedRowIndex);
 	}
 
 	/*
-	 * add new SKUs button handle
+	 * 
 	 */
-	public void addSkuButtonHandle() {
+	public void detailsButtonHandle() {
 		if (this.selectedRowIndex < 0) {
 			JOptionPane.showMessageDialog(null, "Please select one product row on table to view details!");
 		} else {
@@ -413,7 +343,7 @@ public class BillPanel extends JPanel {
 //			if(service.findByProductId(this.selectedRow.getId())==null) {
 //				openSkuFrame(-1L);
 //			}else {
-			openSkuFrame(this.selectedRow.getId());
+			openBillDetailFrame(this.selectedRow.getId());
 //			}
 		}
 	}
@@ -423,6 +353,9 @@ public class BillPanel extends JPanel {
 	 */
 	public void addButtonHandle() {
 		this.tfList[0].setText("");
+		tfList[1].setText(LogInGUI.ACCOUNT_LOGIN.getId().toString());
+
+		tfList[3].setText(GetCurrentDate.getDate().toString());
 	}
 
 	/*
@@ -469,46 +402,13 @@ public class BillPanel extends JPanel {
 		}
 	}
 
-	public void menuItemLockHandle() {
-		SkuService service = new SkuService();
-		List<SkuModel> list = service.findByProductId(this.selectedRow.getId());
-		StringBuilder str = new StringBuilder(
-				"Are you sure to lock this product?\nThis means list of stock keeping unit will be locked.\n");
-		if (list.isEmpty() == false) {
-			for (SkuModel e : list) {
-				str.append("{SKUID: " + e.getId() + "}\n");
-			}
-		}
-
-		int click = JOptionPane.showConfirmDialog(null, str);
-		if (click == JOptionPane.YES_OPTION) {
-			JOptionPane.showMessageDialog(null, "Click Yes");
-		}
-		if (click == JOptionPane.NO_OPTION) {
-			JOptionPane.showMessageDialog(null, "Click No");
-		}
-		if (click == JOptionPane.CANCEL_OPTION) {
-			JOptionPane.showMessageDialog(null, "Click Cancel");
-		}
-		if (click == JOptionPane.CLOSED_OPTION) {
-			JOptionPane.showMessageDialog(null, "Click Close");
-		}
-	}
-
-	public void menuItemDetailHandle() {
-		openSkuFrame(this.selectedRow.getId());
-	}
-
 	/*
-	 * Open SKU sub jframe
+	 * 
 	 */
-	public void openSkuFrame(Long productId) {
+	public void openBillDetailFrame(Long productId) {
 		SkuPanel skuPanel = new SkuPanel(productId);
 		JFrame subFrame = new SubFrame(skuPanel);
 
-		/*
-		 * If productId > 0 -- detail else add new SKU -- null
-		 */
 		if (productId > 0) {
 			skuPanel.loadDataByProductId(productId);
 		}
@@ -520,28 +420,73 @@ public class BillPanel extends JPanel {
 	 * 
 	 */
 	public void setSelectedBillModel() {
-//		selectedRow.setId((Long) table.getModel().getValueAt(selectedRowIndex, 0));
-//		selectedRow.setName((String) table.getModel().getValueAt(selectedRowIndex, 1));
-//		selectedRow.setBrand((String) table.getModel().getValueAt(selectedRowIndex, 2));
-//		selectedRow.setDescription((String) table.getModel().getValueAt(selectedRowIndex, 3));
-//		selectedRow.setStatus((String) table.getModel().getValueAt(selectedRowIndex, 4));
+		selectedRow.setId((Long) table.getModel().getValueAt(selectedRowIndex, 0));
+		selectedRow.setStaffId((Long) table.getModel().getValueAt(selectedRowIndex, 1));
+		selectedRow.setCustomerId((Long) table.getModel().getValueAt(selectedRowIndex, 2));
+		selectedRow.setCreatedDate((java.sql.Date) table.getModel().getValueAt(selectedRowIndex, 3));
+		selectedRow.setTotal((String) table.getModel().getValueAt(selectedRowIndex, 4));
 	}
 
-	/*
-	 * 
-	 */
 	public void displayBillToTextField() {
-//		tfList[0].setText(selectedRow.getId().toString());
-//		tfList[1].setText(selectedRow.getName());
-//		tfList[2].setText(selectedRow.getBrand());
-//		// Description
-//		text.setText(selectedRow.getDescription());
-//		if (selectedRow.getStatus().equals(comboStatus.getItemAt(0))) {
-//			comboStatus.setSelectedIndex(0);
-//		} else {
-//			comboStatus.setSelectedIndex(1);
-//		}
+		tfList[0].setText(String.valueOf(selectedRow.getId()));
+		tfList[1].setText(String.valueOf(selectedRow.getStaffId()));
+		tfList[2].setText(String.valueOf(selectedRow.getCustomerId()));
+		tfList[3].setText(String.valueOf(selectedRow.getCreatedDate()));
+		tfList[4].setText(selectedRow.getTotal());
 
 	}
 
+	public void doubleClickBillHandle() {
+		openDetailFrame(selectedRow.getId());
+	}
+
+	public void openDetailFrame(Long billId) {
+		BillDetailPanel detail = new BillDetailPanel(billId);
+
+		JFrame subFrame = new SubFrame(detail);
+
+		if (billId > 0) {
+			detail.loadDataByBillId(billId);
+			detail.tfList[0].setText(String.valueOf(billId));
+		}
+		detail.saveBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				detail.saveButtonHandle();
+				model.loadData(table);
+			}
+		});
+
+		subFrame.setVisible(true);
+	}
+	public void moreCustomerHandle() {
+		Long customerId = -1L;
+		if (this.tfList[1].getText().isBlank() == false) {
+			customerId = Long.parseLong(tfList[1].getText());
+		}
+
+		CustomerPanel customer = new CustomerPanel();
+		customer.setSelectedCustomerModel();
+		customer.displayCustomerToTextField();
+		customer.table.addMouseListener(new java.awt.event.MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent mouseEvent) {
+				JTable table = (JTable) mouseEvent.getSource();
+				Point point = mouseEvent.getPoint();
+				int row = table.rowAtPoint(point);
+				if (mouseEvent.getClickCount() == 2 && table.getSelectedRow() != -1) {
+					doubleClickStaffHandle(table.getValueAt(row, 0));
+				}
+			}
+		});
+
+		frame = new SubFrame(customer);
+		frame.setVisible(true);
+	}
+
+	public void doubleClickStaffHandle(Object id) {
+//		STAFF_CURRENT = (Long) id;
+		tfList[2].setText((String.valueOf(id)));
+		frame.dispose();
+	}
 }

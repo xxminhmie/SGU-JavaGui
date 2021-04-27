@@ -23,6 +23,7 @@ import javax.swing.event.DocumentListener;
 
 import com.toedter.calendar.JDateChooser;
 
+import xxminhmie.sgu.javagui.gui.common.BirthdayCheck;
 import xxminhmie.sgu.javagui.gui.common.DeleteButton;
 import xxminhmie.sgu.javagui.gui.common.ResetButton;
 import xxminhmie.sgu.javagui.gui.common.SaveButton;
@@ -374,6 +375,11 @@ public class StaffPanel extends JPanel {
 		try {
 			dob = new Date(this.dateChooser.getDate().getTime());
 		} catch (java.lang.NullPointerException e) {
+			JOptionPane.showMessageDialog(null, "Invalid Date of Birth! Please insert or choose again!");
+			return;
+		}
+		int age = BirthdayCheck.checkBirthday(dob);
+		if(age<16 || age>100) {
 			JOptionPane.showMessageDialog(null, "Invalid Date of Birth! Please insert or choose again!");
 			return;
 		}

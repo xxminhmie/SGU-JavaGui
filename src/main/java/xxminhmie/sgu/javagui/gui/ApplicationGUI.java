@@ -22,12 +22,14 @@ import xxminhmie.sgu.javagui.gui.panel.CustomerPanel;
 import xxminhmie.sgu.javagui.gui.panel.DiscountPanel;
 import xxminhmie.sgu.javagui.gui.panel.POPanel;
 import xxminhmie.sgu.javagui.gui.panel.ProductPanel;
+import xxminhmie.sgu.javagui.gui.panel.ReportPanel;
 import xxminhmie.sgu.javagui.gui.panel.RolePanel;
 import xxminhmie.sgu.javagui.gui.panel.StaffPanel;
 import xxminhmie.sgu.javagui.gui.panel.SupplierPanel;
 import xxminhmie.sgu.javagui.gui.panel.sub.Profile;
 import xxminhmie.sgu.javagui.gui.panel.sub.SubFrame;
 import xxminhmie.sgu.javagui.gui.sidebar.SidebarContainer;
+import xxminhmie.sgu.javagui.model.AccountModel;
 import xxminhmie.sgu.javagui.service.impl.SidebarService;
 
 public class ApplicationGUI extends JFrame {
@@ -108,7 +110,7 @@ public class ApplicationGUI extends JFrame {
 		JPanel panel7 = new CustomerPanel();
 		JPanel panel8 = new AccountPanel();
 		JPanel panel9 = new RolePanel();
-		JPanel panel10 = new RolePanel();
+		JPanel panel10 = new ReportPanel();
 
 		mainContent.add(panel1, "link1");
 		mainContent.add(panel2, "link2");
@@ -137,11 +139,11 @@ public class ApplicationGUI extends JFrame {
 
 		this.add(this.mainContent, BorderLayout.CENTER);
 
-		panel1.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
-
-			}
-		});
+//		panel1.addMouseListener(new MouseAdapter() {
+//			public void mouseClicked(MouseEvent e) {
+//
+//			}
+//		});
 	}
 
 	public void logoutHandle() {

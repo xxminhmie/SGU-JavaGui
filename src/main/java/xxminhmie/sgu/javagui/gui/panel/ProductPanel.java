@@ -286,7 +286,7 @@ public class ProductPanel extends JPanel {
 				SkuService skuService = new SkuService();
 				ArrayList<SkuModel> skuList = (ArrayList<SkuModel>) skuService.findAll();
 
-				runImportExcel("./src/main/java/xxminhmie/sgu/javagui/gui/excel/mie.xlsx");
+				runImportExcel("./src/main/java/xxminhmie/sgu/javagui/gui/excel/product.xlsx");
 			}
 		});
 		

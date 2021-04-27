@@ -76,7 +76,7 @@ public class DiscountPanel extends JPanel {
 	 */
 	JPanel tbPanel;
 	JScrollPane pane;
-	JTable table;
+	public JTable table;
 	DiscountModelData model;
 	/*
 	 * Handle clicking on table
@@ -317,7 +317,7 @@ public class DiscountPanel extends JPanel {
 				if (rowIndex >= 0 && col >= 0) {
 					selectedRowIndex = rowIndex;
 					/** GET MANUALLY ALL ROW **/
-					setSelectedProductModel();
+					setSelectedDiscountModel();
 				}
 				/** DISPLAY TO TEXT FIELD **/
 				displayDiscountToTextField();
@@ -451,7 +451,7 @@ public class DiscountPanel extends JPanel {
 			getGeneratedKeys(savedId);
 
 			table.setRowSelectionInterval(selectedRowIndex, selectedRowIndex);
-			setSelectedProductModel();
+			setSelectedDiscountModel();
 			displayDiscountToTextField();
 		}
 	}
@@ -480,7 +480,7 @@ public class DiscountPanel extends JPanel {
 	/*
 	 * 
 	 */
-	public void setSelectedProductModel() {
+	public void setSelectedDiscountModel() {
 		selectedRow.setId((Long) table.getModel().getValueAt(selectedRowIndex, 0));
 		selectedRow.setName((String) table.getModel().getValueAt(selectedRowIndex, 1));
 		selectedRow.setStartDate((java.sql.Date) table.getModel().getValueAt(selectedRowIndex, 2));
@@ -569,5 +569,9 @@ public class DiscountPanel extends JPanel {
 		} else {
 			JOptionPane.showMessageDialog(null, "You have not selected a value to delete!");
 		}
+	}
+	
+	public void loadDataByStatus(String status) {
+		this.model.loadData(table, status);
 	}
 }

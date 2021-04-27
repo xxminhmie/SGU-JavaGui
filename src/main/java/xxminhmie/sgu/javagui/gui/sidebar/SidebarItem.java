@@ -60,7 +60,9 @@ public class SidebarItem extends JButton implements MouseListener{
 	@Override
 	public void mouseEntered(MouseEvent e) {
 	    this.setOpaque(true);
-		this.setBackground(SidebarContainer.SidebarBgHover);
+//		this.setBackground(SidebarContainer.SidebarBgHover);
+		this.setBackground(Color.RED);
+
 	}
 
 	@Override

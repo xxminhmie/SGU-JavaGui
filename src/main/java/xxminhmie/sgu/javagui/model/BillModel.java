@@ -10,20 +10,20 @@ public class BillModel extends AbstractModel {
 	protected java.sql.Date createdDate;
 	protected String total;
 
-	public BillModel(Long id, Long staffId, Long customerId, Date createdDate, String total) {
+	public BillModel(Long id, Long staffId, Long customerId, Date createdDate) {
 		super(id);
 		this.staffId = staffId;
 		this.customerId = customerId;
 		this.createdDate = createdDate;
-		this.total = total;
+//		this.total = total;
 	}
 
-	public BillModel(Long staffId, Long customerId, Date createdDate, String total) {
+	public BillModel(Long staffId, Long customerId, Date createdDate) {
 		super();
 		this.staffId = staffId;
 		this.customerId = customerId;
 		this.createdDate = createdDate;
-		this.total = total;
+//		this.total = total;
 	}
 
 	public BillModel() {

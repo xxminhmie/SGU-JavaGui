@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -59,7 +60,6 @@ public class AccountPanel extends JPanel {
 	SaveButton saveBtn;
 	DeleteButton deleteBtn;
 	ResetButton resetBtn;
-	AddButton changePasswordBtn;
 
 	/*
 	 * Table
@@ -74,6 +74,8 @@ public class AccountPanel extends JPanel {
 	int selectedRowIndex = -1;
 
 	SubFrame changeFrame;
+	SubFrame moreRoleFrame;
+	SubFrame moreStaffFrame;
 
 	/*
 	 * Constructor
@@ -161,10 +163,22 @@ public class AccountPanel extends JPanel {
 
 		more[0] = new JButton("...");
 		more[0].setBounds(100 + 190, 20 + 30, 40, 20);
+		more[0].addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				moreRoleHandle();
+			}
+		});
 		tfPanel.add(more[0]);
 
 		more[1] = new JButton("...");
 		more[1].setBounds(100 + 190, 20 + 30 + 30, 40, 20);
+		more[1].addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				moreStaffHandle();
+			}
+		});
 		tfPanel.add(more[1]);
 
 		/** set read - only for ID text field **/
@@ -183,6 +197,7 @@ public class AccountPanel extends JPanel {
 		mainPanel.add(btnPanel);
 
 		addBtn = new AddButton(20, 0, 120, 20);
+		addBtn.setNameBtn("Create");
 		btnPanel.add(addBtn);
 		addBtn.addActionListener(new ActionListener() {
 			@Override
@@ -218,16 +233,7 @@ public class AccountPanel extends JPanel {
 			}
 		});
 
-		changePasswordBtn = new AddButton(20, 120, 120, 20);
-		changePasswordBtn.setNameBtn("Set password");
-		changePasswordBtn.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 11));
-		btnPanel.add(this.changePasswordBtn);
-		changePasswordBtn.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				changePasswordButtonHandle();
-			}
-		});
+		
 
 		/*
 		 * Table
@@ -267,32 +273,29 @@ public class AccountPanel extends JPanel {
 		/*
 		 * Text field key listener
 		 */
-		this.tfList[1].addKeyListener(new KeyAdapter() {
+		tfList[1].addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					tfList[1 + 1].requestFocus();
 				}
 			}
-
 		});
-		this.tfList[2].addKeyListener(new KeyAdapter() {
+		tfList[2].addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					tfList[2 + 1].requestFocus();
 				}
 			}
-
 		});
-		this.tfList[3].addKeyListener(new KeyAdapter() {
+		tfList[3].addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					tfList[3 + 1].requestFocus();
+					saveBtn.doClick();
 				}
 			}
-
 		});
 	}
 
@@ -330,9 +333,7 @@ public class AccountPanel extends JPanel {
 		}
 
 		String password = "";
-		if (this.tfList[4].getText().equals("") == false) {
-			password = this.tfList[4].getText();
-		}
+		
 		/*
 		 * Confirm to save this changes
 		 */
@@ -340,11 +341,9 @@ public class AccountPanel extends JPanel {
 		if (click == JOptionPane.YES_OPTION) {
 			Long savedId = null;
 			if (id != null) {
-				/* UPDATE */
 				AccountModel model = service.update(new AccountModel(id, roleId, staffId, username, password));
 				savedId = model.getId();
 			} else {
-				/* CREATE */
 				savedId = service.save(new AccountModel(roleId, staffId, username, password));
 			}
 			model.loadData(this.table);
@@ -395,78 +394,7 @@ public class AccountPanel extends JPanel {
 
 	}
 
-	/*
-	 * 
-	 */
-	public void changePasswordButtonHandle() {
-		if (selectedRowIndex >= 0) {
-			ChangePassword panel = new ChangePassword();
-			changeFrame = new SubFrame(panel);
-
-			panel.loginButton.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-//					panel.checkLogin();
-					String cur = "";
-					if (!String.valueOf(panel.current.getPassword()).isBlank()) {
-						cur = String.valueOf(panel.current.getPassword());
-					} else {
-						JOptionPane.showMessageDialog(null, "This field must not be null or empty!");
-						panel.current.requestFocus();
-						return;
-					}
-
-					String newPass = "";
-					if (!String.valueOf(panel.passwordText.getPassword()).isBlank()) {
-						newPass = String.valueOf(panel.passwordText.getPassword());
-					} else {
-						JOptionPane.showMessageDialog(null, "This field must not be null or empty!");
-						panel.passwordText.requestFocus();
-						return;
-					}
-
-					String confirm = "";
-					if (!String.valueOf(panel.confirm.getPassword()).isBlank()) {
-						confirm = String.valueOf(panel.confirm.getPassword());
-					} else {
-						JOptionPane.showMessageDialog(null, "This field must not be null or empty!");
-						panel.confirm.requestFocus();
-						return;
-					}
-					AccountModel model = service.findOne(selectedRow.getId());
-					if (model != null) {
-						if (cur.equals(model.getPassword()) == false) {
-							JOptionPane.showMessageDialog(null, "Current password not match!");
-							panel.current.requestFocus();
-							return;
-						}
-						if (newPass.equals(confirm) == false) {
-							JOptionPane.showMessageDialog(null, "Confirm password failed!");
-							panel.passwordText.requestFocus();
-							return;
-						}
-
-						model.setPassword(newPass);
-						AccountModel ac = service.update(model);
-						if (ac != null) {
-							JOptionPane.showMessageDialog(null, "Save successfully!");
-							changeFrame.dispose();
-						}
-					}
-				}
-			});
-
-			changeFrame.setSize(new Dimension(400, 450));
-			changeFrame.setLocationRelativeTo(null); // this will center your application
-
-			changeFrame.setVisible(true);
-
-		} else {
-			JOptionPane.showMessageDialog(null, "You have not selected a value to handle!");
-		}
-
-	}
-
+	
 	public void getAllSelectedRow(JTable entryTable) {
 		if (entryTable.getRowCount() > 0) {
 			if (entryTable.getSelectedRowCount() > 0) {
@@ -493,5 +421,53 @@ public class AccountPanel extends JPanel {
 		tfList[1].setText(selectedRow.getRoleId().toString());
 		tfList[2].setText(selectedRow.getStaffId().toString());
 		tfList[3].setText(selectedRow.getUsername());
+	}
+
+	public void moreRoleHandle() {
+		RolePanel panel = new RolePanel();
+		this.moreRoleFrame = new SubFrame(panel);
+
+		panel.table.addMouseListener(new java.awt.event.MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent mouseEvent) {
+				JTable table = (JTable) mouseEvent.getSource();
+				Point point = mouseEvent.getPoint();
+				int row = table.rowAtPoint(point);
+				if (mouseEvent.getClickCount() == 2 && table.getSelectedRow() != -1) {
+					doubleClickRoleHandle(table.getValueAt(row, 0));
+				}
+			}
+		});
+
+		moreRoleFrame.setVisible(true);
+
+	}
+
+	public void doubleClickRoleHandle(Object id) {
+		tfList[1].setText((String.valueOf(id)));
+		moreRoleFrame.dispose();
+	}
+
+	public void moreStaffHandle() {
+		StaffPanel panel = new StaffPanel();
+		this.moreStaffFrame = new SubFrame(panel);
+
+		panel.table.addMouseListener(new java.awt.event.MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent mouseEvent) {
+				JTable table = (JTable) mouseEvent.getSource();
+				Point point = mouseEvent.getPoint();
+				int row = table.rowAtPoint(point);
+				if (mouseEvent.getClickCount() == 2 && table.getSelectedRow() != -1) {
+					doubleClickStaffHandle(table.getValueAt(row, 0));
+				}
+			}
+		});
+		moreStaffFrame.setVisible(true);
+	}
+
+	public void doubleClickStaffHandle(Object id) {
+		tfList[2].setText((String.valueOf(id)));
+		moreStaffFrame.dispose();
 	}
 }

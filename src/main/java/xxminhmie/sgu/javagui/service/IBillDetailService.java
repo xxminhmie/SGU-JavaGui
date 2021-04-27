@@ -8,10 +8,12 @@ import xxminhmie.sgu.javagui.model.BillDetailModel;
 
 public interface IBillDetailService {
 	List<BillDetailModel> findAll();
-	List<BillDetailModel> findOne(Long billId, Long skuId);
+	BillDetailModel findOne(Long billId, Long skuId);
+	List<BillDetailModel> findListByBillId(Long billId);
+
 
 	void save(BillDetailModel model);
-	List<BillDetailModel> update(BillDetailModel update);
+	BillDetailModel update(BillDetailModel update);
 	void delete(Map<Long,Long> map);
 
 	List<BillDetailModel> search(String str);
