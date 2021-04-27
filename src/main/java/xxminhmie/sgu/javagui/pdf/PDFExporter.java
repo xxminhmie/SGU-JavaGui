@@ -1,9 +1,6 @@
 package xxminhmie.sgu.javagui.pdf;
 
-import java.awt.Color;
 import java.awt.Desktop;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -24,7 +21,6 @@ import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
-import com.itextpdf.text.pdf.draw.DottedLineSeparator;
 import com.itextpdf.text.pdf.draw.LineSeparator;
 
 import xxminhmie.sgu.javagui.gui.common.MoneyFormat;
@@ -42,15 +38,13 @@ import xxminhmie.sgu.javagui.service.impl.StaffService;
 public class PDFExporter {
 	public static void export(Long id) {
 		Document document = new Document();
-//        ByteArrayOutputStream out = new ByteArrayOutputStream();
 		try {
 			BillService service = new BillService();
 			BillModel billModel = service.findOne(id);
 
 			// title
-			Font font = new Font(FontFamily.HELVETICA, 24.0f, Font.NORMAL, BaseColor.RED);
+			Font font = new Font(FontFamily.HELVETICA, 24.0f, Font.NORMAL, BaseColor.BLACK);
 			Chunk titleChunk = new Chunk("Invoice", font);
-//			titleChunk.setBackground(BaseColor.RED);
 			Paragraph titlePara = new Paragraph();
 			titlePara.add(titleChunk);
 			titlePara.setAlignment(Element.ALIGN_CENTER);

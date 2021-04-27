@@ -21,7 +21,7 @@ import xxminhmie.sgu.javagui.model.AccountModel;
 import xxminhmie.sgu.javagui.service.impl.AccountService;
 
 public class LogInGUI extends JFrame {
-	
+
 	public static AccountModel ACCOUNT_LOGIN = new AccountModel();
 	AccountService service = new AccountService();
 	Color h1Color;
@@ -47,8 +47,6 @@ public class LogInGUI extends JFrame {
 		this.buttonFColor = new Color(237, 240, 255);
 		this.createPanel();
 	}
-	
-
 
 	public void createPanel() {
 //		this.setSize(1200, 700);
@@ -57,7 +55,6 @@ public class LogInGUI extends JFrame {
 		this.setLayout(null);
 		this.setLocationRelativeTo(null); // this will center your application
 		this.setResizable(false);
-
 
 		/*
 		 * LABEL
@@ -174,36 +171,31 @@ public class LogInGUI extends JFrame {
 	public void checkLogin() {
 		String username = userText.getText();
 		String password = String.valueOf(passwordText.getPassword());
-		
-		if(username.isBlank()) {
+
+		if (username.isBlank()) {
 			return;
 		}
-		if(password.isBlank()) {
+		if (password.isBlank()) {
 			return;
 		}
-		
-		List<AccountModel> list = service.findAll();		
-		
-		for(AccountModel e : list) {
-			if(!username.equals(e.getUsername())) {
-				System.out.println("Username is invalid");
-				return;
-			}else {
-				if(!password.equals(e.getPassword())){
-					System.out.println("Password is invalid");
-					return;
-				}else {
-					ACCOUNT_LOGIN = e;
-					ApplicationGUI app = new ApplicationGUI();
-					app.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-					app.setVisible(true);
-					this.dispose();
-				}
+
+		List<AccountModel> list = service.findAll();
+		Boolean flag = false;
+		for (AccountModel e : list) {
+			if (username.equals(e.getUsername()) && password.equals(e.getPassword())) {
+				flag = true;
+				ACCOUNT_LOGIN = e;
+				ApplicationGUI app = new ApplicationGUI();
+				app.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				app.setVisible(true);
+				this.dispose();
 			}
-			
 		}
+		if (flag == false) {
+			JOptionPane.showMessageDialog(null, "Username or password is invalid!");
+
+		}
+
 	}
-	
-	
-	
+
 }
