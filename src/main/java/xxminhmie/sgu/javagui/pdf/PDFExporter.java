@@ -36,6 +36,7 @@ import xxminhmie.sgu.javagui.service.impl.SkuService;
 import xxminhmie.sgu.javagui.service.impl.StaffService;
 
 public class PDFExporter {
+	public static String PDF_PATH = "Bill.pdf";
 	public static void export(Long id) {
 		Document document = new Document();
 		try {
@@ -184,27 +185,6 @@ public class PDFExporter {
 
 			PdfPCell totalCell;
 
-//			totalCell = new PdfPCell(new Phrase("Subtotal: ", headFont));
-//			totalCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-//			totalCell.setBorder(Rectangle.NO_BORDER);
-//			totalCell.setMinimumHeight(24.0f);
-//			totalTable.addCell(totalCell);
-//			totalCell = new PdfPCell(new Phrase(MoneyFormat.customFormat(), headFont));
-//			totalCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-//			totalCell.setBorder(Rectangle.NO_BORDER);
-//			totalCell.setMinimumHeight(24.0f);
-//			totalTable.addCell(totalCell);
-
-//			totalCell = new PdfPCell(new Phrase("DiscountID: ", headFont));
-//			totalCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-//			totalCell.setBorder(Rectangle.NO_BORDER);
-//			totalCell.setMinimumHeight(24.0f);
-//			totalTable.addCell(totalCell);
-//			totalCell = new PdfPCell(new Phrase(detail, headFont));
-//			totalCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-//			totalCell.setBorder(Rectangle.NO_BORDER);
-//			totalCell.setMinimumHeight(24.0f);
-//			totalTable.addCell(totalCell);
 
 			totalCell = new PdfPCell(new Phrase("Total: ", new Font(FontFamily.HELVETICA, 14.0f, Font.BOLD)));
 			totalCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
@@ -217,7 +197,7 @@ public class PDFExporter {
 			totalCell.setMinimumHeight(24.0f);
 			totalTable.addCell(totalCell);
 
-			PdfWriter.getInstance(document, new FileOutputStream("Bill.pdf"));
+			PdfWriter.getInstance(document, new FileOutputStream(PDF_PATH));
 			document.open();
 //            document.add(phrase);
 
@@ -236,20 +216,6 @@ public class PDFExporter {
 		} catch (FileNotFoundException e) {
 		}
 
-	}
-
-	public static void main(String[] args) {
-		PDFExporter.export(1L);
-		if (Desktop.isDesktopSupported()) {
-
-			try {
-				File myFile = new File("HelloWorld.pdf");
-				Desktop.getDesktop().open(myFile);
-			} catch (IOException ex) {
-				// no application registered for PDFs
-			}
-
-		}
 	}
 
 }

@@ -618,7 +618,7 @@ public class BillDetailPanel extends JPanel {
 		PDFExporter.export(this.billId);
 		if (Desktop.isDesktopSupported()) {
 			try {
-				File myFile = new File("Bill.pdf");
+				File myFile = new File(PDFExporter.PDF_PATH);
 				Desktop.getDesktop().open(myFile);
 			} catch (IOException ex) {
 				// no application registered for PDFs
